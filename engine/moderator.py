@@ -1,5 +1,6 @@
 import random
 from team import Team
+from helperes import squares_within_distance
 from robot_type import RobotType
 import constants as GameConstants
 from robots import Robot, HQ, Gunner, Tank, SensedRobot
@@ -60,12 +61,30 @@ class Moderator:
         return robot.location
 
 
+
     def sense(self, robot: Robot):
-        pass
+        sense_range = robot.sense_range
+        squares = squares_within_distance(sense_range)
+        robot_location = robot.location
+        sensed_list = []
+
+        for dx, dy in squares:
+            loc = (robot_location[0] + dx, robot_location[1] + dy)
+            sensed = self.sense_location(robot, loc)
+            if sensed and sensed.type != RobotType.NONE:
+                sensed_list.append(sense_location())
+
+        return sensed_list
+
+
+    def can_sense_location(self, robot: Robot, location: tuple):
+        if not self.inbounds(location):
+            return False
+        return robot.can_sense_location(location)
 
 
     def sense_location(self, robot: Robot, location: tuple):
-        if not robot.can_sense_location(location):
+        if not self.can_sense_location(robot, location):
             # The location you are trying to sense is not within your sensor range
             return None
         

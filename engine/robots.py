@@ -12,7 +12,7 @@ class Robot:
         pass
 
     def can_sense_location(self, location: tuple):
-        return dist(self.location, location) <= self.sense_radius
+        return dist(self.location, location) <= self.sense_range
 
 
 class HQ(Robot):
@@ -20,7 +20,7 @@ class HQ(Robot):
         super.__init__(id, location, team)
         self.cooldown = 0
         self.type = RobotType.HQ
-        self.sense_radius = GameConstants.HQ_SENSE_RADIUS
+        self.sense_range = GameConstants.HQ_SENSE_RANGE
         self.moveable = False
         self.attackable = False
     
@@ -43,7 +43,7 @@ class Moveable(Robot):
         self.moveable = True
     
     def move(self, target_location):
-        if dist(self.location, target_location) > self.range:
+        if dist(self.location, target_location) > self.attack_range:
             return False
         self.location = target_location
         return True
@@ -53,11 +53,11 @@ class Gunner(Moveable):
     def __init__(self, id, location, team):
         super.__init__(id, location, team)
         self.type = RobotType.GUNNER
-        self.sense_radius = GameConstants.GUNNER_SENSE_RADIUS
+        self.sense_range = GameConstants.GUNNER_SENSE_RANGE
         self.health = GameConstants.GUNNER_HEALTH
         self.damage = GameConstants.GUNNER_DAMAGE
         self.movement_speed = GameConstants.GUNNER_MOVEMENT_SPEED
-        self.range = GameConstants.GUNNER_RANGE
+        self.attack_range = GameConstants.GUNNER_ATTACK_RANGE
         self.attackable = True
 
 
@@ -65,11 +65,11 @@ class Tank(Moveable):
     def __init__(self, id):
         super.__init__(id)
         self.type = RobotType.TANK
-        self.sense_radius = GameConstants.TANK_SENSE_RADIUS
+        self.sense_range = GameConstants.TANK_SENSE_RANGE
         self.health = GameConstants.TANK_HEALTH
         self.damage = GameConstants.TANK_DAMAGE
         self.movement_speed = GameConstants.TANK_MOVEMENT_SPEED
-        self.range = GameConstants.TANK_RANGE
+        self.attack_range = GameConstants.TANK_ATTACK_RANGE
         self.attackable = True
 
 

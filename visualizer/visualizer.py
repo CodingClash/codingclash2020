@@ -3,7 +3,7 @@ import sys
 from pygame.locals import *
 import random
 import time
-
+from copy import deepcopy
 
 white = (255, 255, 255)
 black = (0,0,0)
@@ -75,8 +75,9 @@ class Visualizer:
 					pygame.quit()
 					sys.exit()
 			if x<len(board_states):
+				print("ok")
 				self.update(board_states[x])
-			time.sleep(.2)
+			time.sleep(1)
 			x+=1
 			pygame.display.update()
 	
@@ -89,12 +90,12 @@ class Visualizer:
 					sys.exit()
 			pygame.display.update()
 
-	def gen_random(self):
+	def gen_random(self, t = 5):
 		board = [["nn" for i in range(self.size)] for j in range(self.size)]
 		hqlocks = [(5, 5), (4, 5), (3, 5), (5, 4), (4, 4), (3, 4), (5, 3), (4, 3), (3, 3)]
 		for (r, c) in hqlocks: board[r][c] = "rh"
 		for (r, c) in hqlocks: board[self.size-r][self.size-c] = "bh"
-
+		out = []
 		#board[5][5] = "rh"
 		#board[35][35] = "bh"
 
@@ -103,12 +104,30 @@ class Visualizer:
 			if board[x][y]=="nn":
 				board[x][y]=random.choice(list(set(self.piece_to_col.keys()).difference({"rh", "bh"})))
 
-		return board
+		out.append(deepcopy(board))
+		for _ in range(t):
+			moved_to = set()
+			for r in range(self.size):
+				for c in range(self.size):
+					if (r, c) in moved_to: continue
+					elif board[r][c][0]=="r":
+						if r+1<self.size and board[r+1][c]=="nn" and board[r][c][1]!="h":
+							board[r+1][c]=board[r][c]
+							moved_to.add((r+1, c))
+							board[r][c]="nn"
 
+					elif board[r][c][0]=="b":
+						if r-1>=0 and board[r-1][c]=="nn" and board[r][c][1]!="h":
+							board[r-1][c]=board[r][c]
+							moved_to.add((r-1, c))
+							board[r][c]="nn"
+			out.append(deepcopy(board))
+
+		return out
 
 #v = Visualizer()
 #print(id(v))
 #v.view(v.gen_random())
-#v.save([v.gen_random()])
-#v.playback("out.txt")
+#v.save(v.gen_random())
+#v.playback("58879920.txt")
 

@@ -1,9 +1,9 @@
 import random
-from team import Team
-from helperes import squares_within_distance
-from robot_type import RobotType
-import constants as GameConstants
-from robots import Robot, HQ, Gunner, Tank, SensedRobot
+from .team import Team
+from .helpers import squares_within_distance
+from .robot_type import RobotType
+from . import constants as GameConstants
+from .robots import Robot, HQ, Gunner, Tank, SensedRobot
 
 class Moderator:
     def __init__(self):
@@ -18,6 +18,7 @@ class Moderator:
         }
         self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
         self.ids = set()
+        print(self.ids)
 
     
     ## Helper methods
@@ -59,7 +60,6 @@ class Moderator:
 
     def get_location(self, robot: Robot):
         return robot.location
-
 
 
     def sense(self, robot: Robot):

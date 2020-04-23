@@ -1,6 +1,7 @@
-from helpers import dist
-from robot_type import RobotType
-import constants as GameConstants
+from .team import Team
+from .helpers import dist
+from .robot_type import RobotType
+from . import constants as GameConstants
 
 class Robot:
     def __init__(self, id, location, team):

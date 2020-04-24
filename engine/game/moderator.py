@@ -44,21 +44,6 @@ class Moderator:
 
 
     ## Game State methods (player inputs)
-    def get_team(self, robot: Robot):
-        return robot.team
-
-
-    def get_type(self, robot: Robot):
-        return robot.type
-
-
-    def get_health(self, robot: Robot):
-        return robot.health
-
-
-    def get_location(self, robot: Robot):
-        return robot.location
-
 
     def sense(self, robot: Robot):
         sense_range = robot.sense_range
@@ -108,6 +93,8 @@ class Moderator:
             return False
         if not self.inbounds(location):
             return False
+        if self.get_robot(location) != RobotType.NONE:
+            return False
         curr_location = robot.location
         if robot.move(location):
             self.put_robot(robot, location)
@@ -131,33 +118,34 @@ class Moderator:
     Creates a new robot in a specified location.
     Returns the robot object if the creation is valid, otherwise returns None
     """
-    def create(self, robot: Robot, robot_type: RobotType, team: Team, location: tuple) -> Robot or None:
+    def create(self, robot: Robot, robot_type: RobotType, team: Team, location: tuple) -> bool:
         # TODO: Make this raise exceptions instead of returning None
         # Check if spawn is valid
         if not self.inbounds(location):
-            return None
+            return False
         if self.location_occupied(location):
-            return None
+            return False
         if robot.type != RobotType.HQ:
-            return None
+            return False
         assert(robot == self.HQs[team])
         if not robot.can_spawn_robot(robot_type, location):
-            return None
+            return False
 
         # Spawn the new robot
-        robot = None
+        new_robot = None
         id = random.random()
         if robot_type == RobotType.TANK:
-            robot = Tank(id, location, team)
-            self.ids.add(id)
+            new_robot = Tank(id, location, team)
         elif robot_type == RobotType.GUNNER:
-            robot = Gunner(id, location, team)
-            self.ids.add(id)
+            new_robot = Gunner(id, location, team)
         else:
-            return None
+            return False
         
-        self.put_robot(robot, location)
-        self.robots.append(robot)
+        self.ids.add(id)
+        self.put_robot(new_robot, location)
+        self.robots.append(new_robot)
+        robot.spawn(robot_type)
+        return True
 
 
     """

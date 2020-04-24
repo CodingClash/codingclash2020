@@ -46,4 +46,5 @@ class Supervisor:
 
     def run(self):
         for i in range(10):
+            print("Turn", i)
             self.run_turn()

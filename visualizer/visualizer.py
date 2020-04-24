@@ -12,13 +12,13 @@ blue = (0, 0, 255)
 green = (0, 255, 0)
 bg = (134, 161, 110)
 
-tank_r = pygame.image.load("tank_r.png")
-gunner_r = pygame.image.load("gunner_r.png")
-hq_r = pygame.image.load("hq_r.png")
+tank_r = pygame.image.load("images/tank_r.png")
+gunner_r = pygame.image.load("images/gunner_r.png")
+hq_r = pygame.image.load("images/hq_r.png")
 
-tank_b = pygame.image.load("tank_b.png")
-gunner_b = pygame.image.load("gunner_b.png")
-hq_b = pygame.image.load("hq_b.png")
+tank_b = pygame.image.load("images/tank_b.png")
+gunner_b = pygame.image.load("images/gunner_b.png")
+hq_b = pygame.image.load("images/hq_b.png")
 
 
 class Visualizer:
@@ -27,9 +27,10 @@ class Visualizer:
 		self.size = s
 		self.DISPLAYSURF = pygame.display.set_mode((s*20, s*20))
 		pygame.display.set_caption("Coding Clash!")
-
+		self.DISPLAYSURF.fill(bg)
+		pygame.display.update()
 		self.piece_to_col = {"rg":gunner_r, "rt": tank_r, "rh":hq_r, "bg":gunner_b, "bt": tank_b, "bh":hq_b}
-		
+
 		self.t1 = t1
 		self.t2 = t2
 
@@ -42,7 +43,7 @@ class Visualizer:
 		boards = [[j[x*self.size:(x+1)*self.size] for x in range(self.size)] for j in boards]
 		#print(boards)
 		self.play(boards)
-	
+
 	def update(self, board):
 		#print(board)
 		self.DISPLAYSURF.fill(bg)
@@ -53,7 +54,7 @@ class Visualizer:
 				else:
 					#print(board[row][col])
 					self.DISPLAYSURF.blit(self.piece_to_col[board[row][col]], (20*row, 20*col))
-	
+
 	#def string_to_board(self, string):
 	#	Eh no need
 
@@ -80,7 +81,7 @@ class Visualizer:
 			time.sleep(1)
 			x+=1
 			pygame.display.update()
-	
+
 	def view(self, board):
 		self.update(board)
 		while True:
@@ -130,4 +131,3 @@ class Visualizer:
 #v.view(v.gen_random())
 #v.save(v.gen_random())
 #v.playback("58879920.txt")
-

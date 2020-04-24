@@ -29,9 +29,11 @@ class Interfacer:
 
     def init_code(self):
         exec(self.code, self.globals, self.locals)
+        for key in self.locals:
+            self.globals[key] = self.locals[key]
 
     def run(self):
-        exec(self.code, self.globals, self.locals)
+        exec(self.locals['turn'].__code__, self.globals, self.locals)
 
     # Translation of moderator methods
     

@@ -1,1 +1,9 @@
 **/__pycache__/
+venv
+venv/
+__pycache__/
+secret.py
+.vagrant/
+.idea/
+.vscode/
+*.sqlite3

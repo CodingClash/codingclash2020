@@ -17,6 +17,7 @@ class Moderator:
             Team.BLUE: self.create_hq(Team.BLUE)
         }
         self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
+        self.game_over = False
 
     
     ## Helper methods
@@ -180,6 +181,9 @@ class Moderator:
         except:
             print("Robot that you're trying to kill not found: " + str(robot.id))
             return
+        if robot.type == RobotType.HQ:
+            self.game_over = True
+            self.winner = Team.RED if robot.type == Team.BLUE else Team.BLUE
         location = robot.location
         self.remove_robot(location)
 

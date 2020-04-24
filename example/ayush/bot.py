@@ -83,7 +83,8 @@ class HQ:
                     if dx == 0 and dy == 0:
                         continue
                     loc = (self.location[0] + dx, self.location[1] + dy)
-                    if create(robot, loc):
+                    if sense_location(loc).type == RobotType.NONE:
+                        create(robot, loc)
                         return
 
 

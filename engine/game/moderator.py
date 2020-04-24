@@ -55,7 +55,7 @@ class Moderator:
             loc = (robot_location[0] + dx, robot_location[1] + dy)
             sensed = self.sense_location(robot, loc)
             if sensed and sensed.type != RobotType.NONE:
-                sensed_list.append(sense_location())
+                sensed_list.append(sensed)
 
         return sensed_list
 
@@ -90,17 +90,16 @@ class Moderator:
     def move(self, robot: Robot, location: tuple) -> bool:
         # TODO: Make this raise exceptions instead of returning False
         if not robot.moveable:
-            return False
+            raise Exception("Robot of type {} is not moveable".format(robot.type))
         if not self.inbounds(location):
-            return False
+            raise Exception("Given location of {} is not inbounds".format(location))
         if self.get_robot(location) != RobotType.NONE:
-            return False
+            raise Exception("Robot is present at {} location".format(location))
         curr_location = robot.location
         if robot.move(location):
             self.put_robot(robot, location)
             self.remove_robot(curr_location)
             return True
-        return False
     
 
     def create_hq(self, team: Team) -> HQ:
@@ -119,17 +118,15 @@ class Moderator:
     Returns the robot object if the creation is valid, otherwise returns None
     """
     def create(self, robot: Robot, robot_type: RobotType, team: Team, location: tuple) -> bool:
-        # TODO: Make this raise exceptions instead of returning None
-        # Check if spawn is valid
         if not self.inbounds(location):
-            return False
+            raise Exception("Target creation location of {} is not inbounds".format(location))
         if self.location_occupied(location):
-            return False
+            raise Exception("Target creation location of {} is occupied".format(location))
         if robot.type != RobotType.HQ:
-            return False
+            raise Exception("Robot of type {} can't create other robots".format(robot_type))
         assert(robot == self.HQs[team])
         if not robot.can_spawn_robot(robot_type, location):
-            return False
+            raise Exception("Some other reason")
 
         # Spawn the new robot
         new_robot = None
@@ -139,7 +136,7 @@ class Moderator:
         elif robot_type == RobotType.GUNNER:
             new_robot = Gunner(id, location, team)
         else:
-            return False
+            raise Exception("Tryna create an unknown robot type")
         
         self.ids.add(id)
         self.put_robot(new_robot, location)
@@ -156,18 +153,17 @@ class Moderator:
         # TODO: Make this raise exceptions instead of returning None
         # Check if the attack is valid
         if not self.inbounds(target_location):
-            # Given location not on map
-            return False
+            raise Exception("Target attack location of {} is not on the map".format(target_location))
         if not robot.attackable:
             # This robot can't attack
-            return False
+            raise Exception("Robot of type {} can't attack".format(robot.type))
         target_robot = self.get_robot(target_location)
         if target_robot == RobotType.NONE:
             # Enemy robot not found at given location
-            return False
+            raise Exception("Enemy robot not found at {}".format(target_location))
         if target_robot.team == robot.team:
             # Can't attack teammate
-            return False
+            raise Exception("Can't attack teammate at {}".format(target_location))
         
         # Actually attack
         target_robot.health -= robot.damage

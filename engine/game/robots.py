@@ -24,6 +24,7 @@ class HQ(Robot):
         self.sense_range = GameConstants.HQ_SENSE_RANGE
         self.moveable = False
         self.attackable = False
+        self.health = GameConstants.HQ_HEALTH
     
     def run(self):
         self.cooldown -= GameConstants.HQ_COOLDOWN_REDUCTION
@@ -51,6 +52,7 @@ class Moveable(Robot):
     
     def move(self, target_location):
         if dist(self.location, target_location) > self.movement_speed:
+            raise Exception("Robot at {} can't go to {}".format(self.location, target_location))
             return False
         self.location = target_location
         return True

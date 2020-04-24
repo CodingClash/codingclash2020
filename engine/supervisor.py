@@ -49,6 +49,9 @@ class Supervisor:
         for i in range(max_rounds):
             print("Turn", i)
             self.run_turn()
+            if self.moderator.game_over:
+                break
+        print("Winner: {}".format(self.moderator.winner))
 
     
     def get_visualizable_board(self, moderator_board, visualizer):
@@ -73,6 +76,10 @@ class Supervisor:
             print("Turn", i)
             self.run_turn()
             self.visualized_boards.append(visualizer.copy(self.moderator.board))
+            if self.moderator.game_over:
+                break
+        print("Winner: {}".format(self.moderator.winner))
+        # Allow the rest of the frames in the visualizer to load
         while True:
             pass
 
@@ -81,7 +88,6 @@ class Supervisor:
     def vis_helper(self, visualizer, delay):
         idx = 0
         while True:
-            print(idx, len(self.visualized_boards))
             if idx >= len(self.visualized_boards):
                 continue
             visualized = self.get_visualizable_board(self.visualized_boards[idx], visualizer)

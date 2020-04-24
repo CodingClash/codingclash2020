@@ -10,7 +10,7 @@ MIN_ELEVATION = -20
 MAX_ELEVATION = 20
 
 # Navigation constants
-MOVEMENT_SPEED = 1
+MOVEMENT_SPEED = 2
 
 # HQ Constants
 HQ_HEALTH = 250

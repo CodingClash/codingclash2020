@@ -1,6 +1,7 @@
 from .container.interfacer import Interfacer
 from .game.moderator import Moderator
 from .game.team import Team
+from .game.robot_type import RobotType
 
 
 class Supervisor:
@@ -29,7 +30,7 @@ class Supervisor:
             self.robot_ids.add(robot.id)
             print("Creation")
 
-
+    
     def run_turn(self):
         self.update_interfacers()
         to_remove = []
@@ -48,3 +49,24 @@ class Supervisor:
         for i in range(10):
             print("Turn", i)
             self.run_turn()
+
+    
+    def get_visualizable_board(self, visualizer):
+        board = []
+        for row in self.moderator.board:
+            temp = []
+            for robot in row:
+                piece = visualizer.robot_to_str[RobotType.NONE]
+                if robot != RobotType.NONE:
+                    piece = visualizer.robot_to_str[(robot.team, robot.type)]
+                temp.append(piece)
+            board.append(temp)
+        return board
+
+
+    def run_visualized(self, visualizer):
+        for i in range(10):
+            print("Turn", i)
+            self.run_turn()
+            visualized = self.get_visualizable_board(visualizer)
+            visualizer.view(visualized)

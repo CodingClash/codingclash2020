@@ -1,16 +1,19 @@
 from ..game.team import Team
 from ..game.robot_type import RobotType
+from ..game import constants as GameConstants
+
 class Interfacer:
     def __init__(self, moderator, code, robot, id):
         self.moderator = moderator
         self.code = code
         self.robot = robot
         self.id = id
+        self.locals = {}
         self.globals = {
             '__builtins__': __builtins__.copy(),
             '__name__': '__main__'
             }
-        self.locals = {}
+
         self.game_methods = {
             'get_team': self.get_team,
             'get_type': self.get_type,
@@ -27,7 +30,8 @@ class Interfacer:
 
         self.enums = {
             'RobotType': RobotType,
-            'Team': Team
+            'Team': Team,
+            'GameConstants': GameConstants
         }
 
         for key in self.game_methods:

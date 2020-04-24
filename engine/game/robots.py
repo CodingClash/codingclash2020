@@ -31,12 +31,18 @@ class HQ(Robot):
             self.cooldown = 0
 
     def can_spawn_robot(self, robot_type, location):
-        if dist(robot_type, location) > GameConstants.SPAWN_RADIUS:
+        if dist(self.location, location) > GameConstants.SPAWN_RADIUS:
             return False
         if robot_type not in [RobotType.GUNNER, RobotType.TANK]:
             return False
         return self.cooldown == 0
     
+    def spawn(self, robot_type):
+        if robot_type == RobotType.GUNNER:
+            self.cooldown += GameConstants.GUNNER_SPAWN_COOLDOWN
+        if robot_type == RobotType.TANK:
+            self.cooldown += GameConstants.TANK_SPAWN_COOLDOWN
+
 
 class Moveable(Robot):
     def __init__(self, id, location, team):
@@ -44,7 +50,7 @@ class Moveable(Robot):
         self.moveable = True
     
     def move(self, target_location):
-        if dist(self.location, target_location) > self.attack_range:
+        if dist(self.location, target_location) > self.movement_speed:
             return False
         self.location = target_location
         return True
@@ -60,11 +66,14 @@ class Gunner(Moveable):
         self.movement_speed = GameConstants.GUNNER_MOVEMENT_SPEED
         self.attack_range = GameConstants.GUNNER_ATTACK_RANGE
         self.attackable = True
+    
+    def run(self):
+        pass
 
 
 class Tank(Moveable):
-    def __init__(self, id):
-        super().__init__(id)
+    def __init__(self, id, location, team):
+        super().__init__(id, location, team)
         self.type = RobotType.TANK
         self.sense_range = GameConstants.TANK_SENSE_RANGE
         self.health = GameConstants.TANK_HEALTH
@@ -72,6 +81,9 @@ class Tank(Moveable):
         self.movement_speed = GameConstants.TANK_MOVEMENT_SPEED
         self.attack_range = GameConstants.TANK_ATTACK_RANGE
         self.attackable = True
+    
+    def run(self):
+        pass
 
 
 class SensedRobot:

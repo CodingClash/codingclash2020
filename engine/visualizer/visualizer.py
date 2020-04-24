@@ -16,8 +16,8 @@ green = (0, 255, 0)
 bg = (134, 161, 110)
 FRAME_SIZE = 600
 
-assets_folder = "engine/visualizer/assets/"
-#assets_folder = "assets/"
+assets_folder = "engine/visualizer/assets/images/"
+#assets_folder = "assets/images/"
 
 os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (0, 25)
 

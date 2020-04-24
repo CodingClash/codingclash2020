@@ -1,13 +1,15 @@
 from ..game.team import Team
 class Interfacer:
     def __init__(self, moderator, code, robot, id):
-        self.code_input = None
-        self.code_output = None
         self.moderator = moderator
         self.code = code
         self.robot = robot
         self.id = id
-
+        self.globals = {
+            '__builtins__': __builtins__.copy(),
+            '__name__': '__main__'
+            }
+        self.locals = {}
         self.game_methods = {
             'get_team': self.get_team,
             'get_type': self.get_type,
@@ -21,31 +23,21 @@ class Interfacer:
             'attack': self.attack
         }
 
-        self.globals = {
-            '__builtins__': __builtins__,
-            '__name__': '__main__'
-            }
-
         for key in self.game_methods:
             self.globals['__builtins__'][key] = self.game_methods[key]
 
-        self.locals = {}
-
 
     def init_code(self):
-        print("Init:",  self.robot.team)
         exec(self.code, self.globals, self.locals)
+        for key in self.locals:
+            self.globals[key] = self.locals[key]
 
     def run(self):
-        print("Run:", self.robot.team)
-        print("Id: ", self.id)
-        exec(self.code, self.globals, self.locals)
+        exec(self.locals['turn'].__code__, self.globals, self.locals)
 
     # Translation of moderator methods
     
     def get_team(self):
-        print("Get team:", self.robot.team)
-        print("Id: ", self.id)
         return self.robot.team
 #        return self.moderator.get_team(self.robot)
 

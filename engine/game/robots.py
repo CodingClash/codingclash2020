@@ -7,7 +7,7 @@ class Robot:
     def __init__(self, id, location, team):
         self.id = id
         self.location = location
-        self.id = team
+        self.team = team
     
     def run(self):
         pass
@@ -18,7 +18,7 @@ class Robot:
 
 class HQ(Robot):
     def __init__(self, id, location, team):
-        super.__init__(id, location, team)
+        super().__init__(id, location, team)
         self.cooldown = 0
         self.type = RobotType.HQ
         self.sense_range = GameConstants.HQ_SENSE_RANGE
@@ -40,7 +40,7 @@ class HQ(Robot):
 
 class Moveable(Robot):
     def __init__(self, id, location, team):
-        super.__init__(id, location, team)
+        super().__init__(id, location, team)
         self.moveable = True
     
     def move(self, target_location):
@@ -52,7 +52,7 @@ class Moveable(Robot):
 
 class Gunner(Moveable):
     def __init__(self, id, location, team):
-        super.__init__(id, location, team)
+        super().__init__(id, location, team)
         self.type = RobotType.GUNNER
         self.sense_range = GameConstants.GUNNER_SENSE_RANGE
         self.health = GameConstants.GUNNER_HEALTH
@@ -64,7 +64,7 @@ class Gunner(Moveable):
 
 class Tank(Moveable):
     def __init__(self, id):
-        super.__init__(id)
+        super().__init__(id)
         self.type = RobotType.TANK
         self.sense_range = GameConstants.TANK_SENSE_RANGE
         self.health = GameConstants.TANK_HEALTH

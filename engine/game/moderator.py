@@ -8,17 +8,15 @@ from .robots import Robot, HQ, Gunner, Tank, SensedRobot
 class Moderator:
     def __init__(self):
         self.round_count = 1
-        self.board = []
         self.board_width = GameConstants.BOARD_WIDTH
         self.board_height = GameConstants.BOARD_HEIGHT
-        self.robots = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
+        self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
+        self.ids = set()
         self.HQs = { 
             Team.RED: self.create_hq(Team.RED),
             Team.BLUE: self.create_hq(Team.BLUE)
         }
         self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
-        self.ids = set()
-        print(self.ids)
 
     
     ## Helper methods
@@ -120,14 +118,12 @@ class Moderator:
 
     def create_hq(self, team: Team) -> HQ:
         id = random.random()
-        while id in self.ids:
-            id = random.random()
         if team == Team.RED:
             location = GameConstants.RED_HQ_LOCATION
         else:
             location = GameConstants.BLUE_HQ_LOCATION
         hq = HQ(id, location, team)
-        self.put_robot(location, hq)
+        self.put_robot(hq, location)
         self.ids.add(id)
         return hq
     
@@ -135,15 +131,17 @@ class Moderator:
     Creates a new robot in a specified location.
     Returns the robot object if the creation is valid, otherwise returns None
     """
-    def create(self, robot_type: RobotType, team: Team, location: tuple) -> Robot or None:
+    def create(self, robot: Robot, robot_type: RobotType, team: Team, location: tuple) -> Robot or None:
         # TODO: Make this raise exceptions instead of returning None
         # Check if spawn is valid
         if not self.inbounds(location):
             return None
         if self.location_occupied(location):
             return None
-        hq = self.HQs[team]
-        if not hq.can_spawn_robot(robot_type, location):
+        if robot.type != RobotType.HQ:
+            return None
+        assert(robot == self.HQs[team])
+        if not robot.can_spawn_robot(robot_type, location):
             return None
 
         # Spawn the new robot
@@ -200,8 +198,4 @@ class Moderator:
             return
         location = robot.location
         self.remove_robot(location)
-
-
-
-
 

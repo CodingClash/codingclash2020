@@ -16,7 +16,8 @@ class HQ:
                     if dx == 0 and dy == 0:
                         continue
                     loc = (self.location[0] + dx, self.location[1] + dy)
-                    create(robot, loc)
+                    if create(robot, loc):
+                        return
 
 
 class Gunner:

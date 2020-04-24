@@ -1,8 +1,8 @@
-from .container.interfacer import Interfacer
-from .game.moderator import Moderator
+import threading
 from .game.team import Team
+from .game.moderator import Moderator
 from .game.robot_type import RobotType
-
+from .container.interfacer import Interfacer
 
 class Supervisor:
     def __init__(self, filename1, filename2):
@@ -45,15 +45,15 @@ class Supervisor:
             self.interfacers.remove(interfacer)
 
 
-    def run(self):
-        for i in range(10):
+    def run(self, max_rounds=50):
+        for i in range(max_rounds):
             print("Turn", i)
             self.run_turn()
 
     
-    def get_visualizable_board(self, visualizer):
+    def get_visualizable_board(self, moderator_board, visualizer):
         board = []
-        for row in self.moderator.board:
+        for row in moderator_board:
             temp = []
             for robot in row:
                 piece = visualizer.robot_to_str[RobotType.NONE]
@@ -64,9 +64,26 @@ class Supervisor:
         return board
 
 
-    def run_visualized(self, visualizer):
-        for i in range(10):
+    def run_visualized(self, visualizer, max_rounds=50, delay=0.5):
+        self.visualized_boards = [visualizer.copy(self.moderator.board)]
+        vis_thread = threading.Thread(target=self.vis_helper, args=(visualizer, delay))
+        vis_thread.daemon = True
+        vis_thread.start()
+        for i in range(max_rounds):
             print("Turn", i)
             self.run_turn()
-            visualized = self.get_visualizable_board(visualizer)
-            visualizer.view(visualized)
+            self.visualized_boards.append(visualizer.copy(self.moderator.board))
+        while True:
+            pass
+
+
+
+    def vis_helper(self, visualizer, delay):
+        idx = 0
+        while True:
+            print(idx, len(self.visualized_boards))
+            if idx >= len(self.visualized_boards):
+                continue
+            visualized = self.get_visualizable_board(self.visualized_boards[idx], visualizer)
+            visualizer.view(visualized, delay)
+            idx += 1

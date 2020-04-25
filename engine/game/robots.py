@@ -27,6 +27,7 @@ class HQ(Robot):
         self.health = GameConstants.HQ_HEALTH
     
     def run(self):
+        super().run()
         self.cooldown -= GameConstants.HQ_COOLDOWN_REDUCTION
         if self.cooldown < 0:
             self.cooldown = 0
@@ -49,7 +50,12 @@ class Moveable(Robot):
     def __init__(self, id, location, team):
         super().__init__(id, location, team)
         self.moveable = True
+        self.performed_action = False
     
+    def run(self):
+        super().run()
+        self.performed_action = False
+
     def move(self, target_location):
         if dist(self.location, target_location) > self.movement_speed:
             raise Exception("Robot at {} can't go to {}".format(self.location, target_location))
@@ -70,6 +76,7 @@ class Gunner(Moveable):
         self.attackable = True
     
     def run(self):
+        super().run()
         pass
 
 
@@ -85,6 +92,7 @@ class Tank(Moveable):
         self.attackable = True
     
     def run(self):
+        super().run()
         pass
 
 

@@ -2,6 +2,8 @@ from ..game.team import Team
 from ..game.robot_type import RobotType
 from ..game import constants as GameConstants
 
+# TODO: Don't let troops perform multiple actions
+
 class Interfacer:
     def __init__(self, moderator, code, robot, id):
         self.moderator = moderator

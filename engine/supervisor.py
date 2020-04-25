@@ -78,9 +78,9 @@ class Supervisor:
 
     def run_visualized(self, visualizer, max_rounds, delay):
         self.boards = [[row.copy() for row in self.moderator.board]]
-        vis_thread = threading.Thread(target=self.vis_helper, args=(visualizer, delay))
-        vis_thread.daemon = True
-        vis_thread.start()
+        #vis_thread = threading.Thread(target=self.vis_helper, args=(visualizer, delay))
+        #vis_thread.daemon = True
+        #vis_thread.start()
         for i in range(max_rounds):
             print("Turn", i)
             self.run_turn()
@@ -89,8 +89,10 @@ class Supervisor:
                 break
         print("Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
         # Allow the rest of the frames in the visualizer to load
+        bors = [self.get_replayable_board(x) for x in self.boards]
+        visualizer.play(bors)
         while True:
-            pass
+           pass
 
 
     def vis_helper(self, visualizer, delay):

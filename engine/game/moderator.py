@@ -91,7 +91,6 @@ class Moderator:
 
         linex = lambda x: pointa[1]+dy/dx*(x-pointa[0])
 
-
         if dx == 0:
             r = sorted([pointa[1], pointb[1]])
             if pointc[0]==pointa[0] and r[0]<pointc[1]<r[1]: return True

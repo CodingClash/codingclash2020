@@ -4,8 +4,6 @@ import sys
 from pygame.locals import *
 import random
 import time
-from ..game.robot_type import RobotType
-from ..game.team import Team
 from ..game import constants as GameConstants
 
 white = (255, 255, 255)
@@ -39,9 +37,6 @@ class Visualizer:
 
 		self.spawnables = ["G", "T", "g", "t"]
 		self.piece_to_team = {"G": "r", "T": "r", "H": "r", "g": "b", "t": "b", "h": "b", "n": None}
-		self.robot_to_str = {(Team.RED, RobotType.GUNNER): "G", (Team.RED, RobotType.TANK): "T", (Team.RED, RobotType.HQ): "H",
-							       (Team.BLUE, RobotType.GUNNER): "g", (Team.BLUE, RobotType.TANK): "t", (Team.BLUE, RobotType.HQ): "h",
-								   RobotType.NONE: "n"}
 		
 		self.t1 = t1
 		self.t2 = t2
@@ -70,17 +65,6 @@ class Visualizer:
 
 	def copy(self, board):
 		return [row.copy() for row in board]
-
-
-	def board_to_string(self, board):
-		bout = [j for sub in board for j in sub]
-		return "#"+"".join(bout)
-
-
-	def save(self, board_states):
-		#print(board_states)
-		with open(str(id(self))+".txt", "w+") as file:
-			file.write("\n".join(["|blue: " + self.t1, "|red: " + self.t2] + [self.board_to_string(b) for b in board_states]))
 
 
 	def play(self, board_states, delay=0.5):

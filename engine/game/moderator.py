@@ -72,16 +72,34 @@ class Moderator:
         if not self.can_sense_location(robot, location):
             # The location you are trying to sense is not within your sensor range
             return None
-        
         robot = self.get_robot(location)
         sensed = None
         if robot == RobotType.NONE:
             sensed = SensedRobot(RobotType.NONE, None, None, None)
         else:
             sensed = SensedRobot(robot.type, robot.team, robot.location, robot.health)
-        
         return sensed
 
+    def in_between(self, pointa, pointb, pointc):
+        dx = pointb[0]-pointa[0]
+        dy = pointb[1]-pointa[1]
+
+        ranx = sorted([pointa[0], pointb[0]])
+        rany = sorted([pointa[1], pointb[1]])
+
+        if not (ranx[0]<pointc[0]<ranx[1] and rany[0]<pointc[1]<rany[1]): return False
+
+        linex = lambda x: pointa[1]+dy/dx*(x-pointa[0])
+
+
+        if dx == 0:
+            r = sorted([pointa[1], pointb[1]])
+            if pointc[0]==pointa[0] and r[0]<pointc[1]<r[1]: return True
+
+        elif (linex(pointc[0])<=pointc[1] and linex(pointc[0])+1>pointc[1]) or (linex(pointc[0])>=pointc[1] and linex(pointc[0])+1<pointc[1]):
+                return True
+
+        return False
 
     ## Game Action methods (player outputs)
 
@@ -165,7 +183,9 @@ class Moderator:
             raise Exception("Enemy robot not found at {}".format(target_location))
         if target_robot.team == robot.team:
             raise Exception("Can't attack teammate at {}".format(target_location))
-        
+        for i in self.sense(robot):
+            if i.team != robot.team and self.in_between(robot.location, target_location, i.location):
+                raise Exception("Cannot attack through opponent at {}".format(i.location))
         # Actually attack
         robot.performed_action = True
         target_robot.health -= robot.damage

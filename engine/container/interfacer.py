@@ -41,7 +41,7 @@ class Interfacer:
 
         for key in self.enums:
             self.globals['__builtins__'][key] = self.enums[key]
-
+        
 
     def init_code(self):
         exec(self.code, self.globals, self.locals)

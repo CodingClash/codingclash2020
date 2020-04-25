@@ -37,7 +37,7 @@ class Visualizer:
 
 		self.spawnables = ["G", "T", "g", "t"]
 		self.piece_to_team = {"G": "r", "T": "r", "H": "r", "g": "b", "t": "b", "h": "b", "n": None}
-		
+
 		self.t1 = t1
 		self.t2 = t2
 
@@ -58,7 +58,7 @@ class Visualizer:
 		self.DISPLAYSURF.fill(bg)
 		for row in range(len(board)):
 			for col in range(len(board)):
-				if board[row][col]=="n":
+				if board[row][col] not in self.piece_to_img.keys():
 					continue
 				self.DISPLAYSURF.blit(self.piece_to_img[board[row][col]], (self.block_size*row, self.block_size*col))
 

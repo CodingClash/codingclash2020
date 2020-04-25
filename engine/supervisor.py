@@ -6,6 +6,8 @@ from .container.interfacer import Interfacer
 
 class Supervisor:
     def __init__(self, filename1, filename2):
+        self.filename1 = filename1
+        self.filename2 = filename2
         self.code1 = self.read_code(filename1)
         self.code2 = self.read_code(filename2)
         self.moderator = Moderator()
@@ -51,7 +53,7 @@ class Supervisor:
             self.run_turn()
             if self.moderator.game_over:
                 break
-        print("Winner: {}".format(self.moderator.winner))
+        print("Winner: {}".format(self.filename1 if self.moderator.winner == Team.BLUE else self.filename2))
 
     
     def get_visualizable_board(self, moderator_board, visualizer):
@@ -78,7 +80,7 @@ class Supervisor:
             self.visualized_boards.append(visualizer.copy(self.moderator.board))
             if self.moderator.game_over:
                 break
-        print("Winner: {}".format(self.moderator.winner))
+        print("Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
         # Allow the rest of the frames in the visualizer to load
         while True:
             pass

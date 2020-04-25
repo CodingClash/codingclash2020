@@ -18,6 +18,7 @@ class Moderator:
         }
         self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
         self.game_over = False
+        self.winner = None
 
     
     ## Helper methods
@@ -183,7 +184,7 @@ class Moderator:
             return
         if robot.type == RobotType.HQ:
             self.game_over = True
-            self.winner = Team.RED if robot.type == Team.BLUE else Team.BLUE
+            self.winner = Team.RED if robot.team == Team.BLUE else Team.BLUE
         location = robot.location
         self.remove_robot(location)
 

@@ -84,9 +84,9 @@ class HQ:
 
     def run(self):
         if get_cooldown() == 0:
-            if len(self.spawned)<5:
+            if len(self.spawned)<8:
                 robot = RobotType.TANK
-            elif self.spawned[len(self.spawned)-3:] == [RobotType.TANK]*3:
+            elif self.spawned[len(self.spawned)-7:] == [RobotType.TANK]*7:
                 robot = RobotType.GUNNER
             elif self.spawned[len(self.spawned)-3:] == [RobotType.GUNNER]*3: 
                 robot = RobotType.TANK

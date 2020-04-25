@@ -90,15 +90,17 @@ class Moderator:
     Returns the True if the robot moved successfully, otherwise False
     """
     def move(self, robot: Robot, location: tuple) -> bool:
-        # TODO: Make this raise exceptions instead of returning False
         if not robot.moveable:
             raise Exception("Robot of type {} is not moveable".format(robot.type))
+        if robot.performed_action:
+            raise Exception("This robot already performed an action")
         if not self.inbounds(location):
             raise Exception("Given location of {} is not inbounds".format(location))
         if self.get_robot(location) != RobotType.NONE:
             raise Exception("Robot is present at {} location".format(location))
         curr_location = robot.location
         if robot.move(location):
+            robot.performed_action = True
             self.put_robot(robot, location)
             self.remove_robot(curr_location)
             return True
@@ -152,22 +154,20 @@ class Moderator:
     Returns True if the attack was possible, else False
     """
     def attack(self, robot: Robot, target_location: tuple) -> bool:
-        # TODO: Make this raise exceptions instead of returning None
-        # Check if the attack is valid
         if not self.inbounds(target_location):
             raise Exception("Target attack location of {} is not on the map".format(target_location))
         if not robot.attackable:
-            # This robot can't attack
             raise Exception("Robot of type {} can't attack".format(robot.type))
+        if robot.performed_action:
+            raise Exception("This robot already performed an action")
         target_robot = self.get_robot(target_location)
         if target_robot == RobotType.NONE:
-            # Enemy robot not found at given location
             raise Exception("Enemy robot not found at {}".format(target_location))
         if target_robot.team == robot.team:
-            # Can't attack teammate
             raise Exception("Can't attack teammate at {}".format(target_location))
         
         # Actually attack
+        robot.performed_action = True
         target_robot.health -= robot.damage
         if target_robot.health <= 0:
             self.kill(target_robot)

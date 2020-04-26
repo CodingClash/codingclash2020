@@ -26,6 +26,32 @@
                 <label class="btn btn-block mb-1" for="roundRange">Round #: <span id="roundNum"></span></label>
                 <input type="range" class="custom-range" id="roundRange" min="0" max="0" oninput="updateBoardNum(this.value);">
             </div>
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
+                <button class="tablinks" onclick="openTab(event, 'Blockchain')">Blockchain</button>
+                <button class="tablinks" onclick="openTab(event, 'Debug')">Debug</button>
+            </div>
+
+            <div id="Stats" class="tabcontent">
+                <h3>Stats</h3>
+                </br>
+                <p>Blue Tanks: <span id="pieceNumt"></span></p>
+                <p>Blue Gunners: <span id="pieceNumg"></span></p>
+                <p>Red Tanks: <span id="pieceNumT"></span></p>
+                <p>Red Gunners: <span id="pieceNumG"></span></p>
+            </div>
+            
+            <div id="Blockchain" class="tabcontent">
+            <h3>Hello</h3>
+            <p>Huge</p> 
+            </div>
+            
+            <div id="Debug" class="tabcontent">
+            <h3>Hai</h3>
+            <p>Massive</p>
+            </div>
+
+
         </div>
         <div id="gameboard" style="flex: 60%; padding: 5px; display: block; font-size: 0;">
         </div>

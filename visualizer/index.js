@@ -1,6 +1,8 @@
 const size = 40;
 const board_size = 550;
 const block_size = parseInt(board_size / size);
+var boards = ["#" + "n" * size * size];
+var board_num = 0;
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -33,9 +35,9 @@ function getFilename(char){
     }
 }
 
-function drawBoard(board_string){
-    let idx = 0;
-    console.log(board_string.length);
+function drawBoard(){
+    let idx = 1;
+    let board_string = boards[board_num];
     for(let r = 0; r < size; r++){
         for(let c = 0; c < size; c++){
             let filename = "images/" + getFilename(board_string[idx]);
@@ -45,6 +47,23 @@ function drawBoard(board_string){
     }
 
 }
+
+function uploadReplay(){
+    var fileReader = new FileReader();
+    fileReader.onload = function () {
+      var data = fileReader.result;  // data <-- in this var you have the file data in Base64 format
+      let content = data.split("\n");
+      boards = content.slice(2);
+      board_num = 0;
+      drawBoard();
+      console.log(boards.length);
+    };
+    fileReader.readAsText($('#myFile').prop('files')[0]);
+}
+
+//$("#myFile").on('change', function() {
+//    console.log("WASSUP");
+//});
 
 window.onload = function(){
     createEmptyBoard();

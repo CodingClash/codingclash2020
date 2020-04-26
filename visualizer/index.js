@@ -6,6 +6,12 @@ var board_num = 0;
 var playing = false;
 var playInterval;
 var speed = 2;
+var t = 0;
+var g = 0;
+var h = 0;
+var T = 0;
+var G = 0;
+var H = 0;
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -22,23 +28,29 @@ function createEmptyBoard(){
 function getFilename(char){
     switch(char){
         case "t":
+            t = t+1;
             return "tank_b.png";
         case "g":
+            g = g+1;
             return "gunner_b.png";
         case "h":
+            h = h+1;
             return "hq_b.png";
         case "T":
+            T = T+1;
             return "tank_r.png";
         case "G":
+            G = G+1;
             return "gunner_r.png";
         case "H":
+            H = H+1;
             return "hq_r.png";
         default:
             return "grass.png";
     }
 }
-
 function drawBoard(){
+    t = g = h = T = G = H = 0;
     let idx = 1;
     let board_string = boards[board_num];
     for(let r = 0; r < size; r++){
@@ -58,6 +70,29 @@ function updateBoardNum(new_num){
     board_num = Math.max(Math.min(new_num, boards.length - 1), 0);
     document.getElementById("roundRange").value = board_num;
     document.getElementById("roundNum").innerHTML = (board_num + 1) + " / " + boards.length;
+    drawBoard();
+    updatePieceNum();
+}
+
+function openTab(evt, cityName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+
+function updatePieceNum(){
+    document.getElementById("pieceNumt").innerHTML = t;
+    document.getElementById("pieceNumT").innerHTML = T;
+    document.getElementById("pieceNumg").innerHTML = g;
+    document.getElementById("pieceNumG").innerHTML = G;
     drawBoard();
 }
 

@@ -62,7 +62,7 @@ class Tank:
         dx = 1 if self.opp_hq[0] > self.location[0] else -1 if self.opp_hq[0] < self.location[0] else 0
         dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
         options = [(dx, dy), (dx, 0), (0, dy)]
-        if [i.type for i in sense()].count(RobotType.GUNNER)==0: return
+        if [i.type for i in sense()].count(RobotType.GUNNER)<2: return
         for dx, dy in options:
             loc = (self.location[0] + dx, self.location[1] + dy)
             if sense_location(loc).type == RobotType.NONE:
@@ -84,9 +84,9 @@ class HQ:
 
     def run(self):
         if get_cooldown() == 0:
-            if len(self.spawned)<8:
+            if len(self.spawned)<5:
                 robot = RobotType.TANK
-            elif self.spawned[len(self.spawned)-7:] == [RobotType.TANK]*7:
+            elif self.spawned[len(self.spawned)-5:] == [RobotType.TANK]*5:
                 robot = RobotType.GUNNER
             elif self.spawned[len(self.spawned)-3:] == [RobotType.GUNNER]*3: 
                 robot = RobotType.TANK

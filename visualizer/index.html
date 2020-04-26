@@ -8,18 +8,23 @@
 </head>
 <body>
     <div id="root" style="display: flex">
-        <div id="stats" style="flex: 40%; padding: 5px; display: block; font-size: 0;">
+        <div id="stats" style="flex: 40%; padding: 5px; display: block;">
             <label class="btn-secondary btn-sm btn-block">
                 Upload Replay File:
                 <input type="file" id="myFile" name="filename" class="ml-3" accept="text/plain" onchange="uploadReplay();">
             </label>
             <div class="btn-toolbar mb-3" role="toolbar">
-                <button class="btn btn-primary mr-3" onclick="updateBoardNum(board_num - 1);">Prev</button>
+                <button class="btn btn-primary mr-2" onclick="updateBoardNum(board_num - 1);">Prev</button>
                 <button class="btn btn-primary" onclick="updateBoardNum(board_num + 1);">Next</button>
+            </div>
+            <div class="btn-toolbar mb-3" role="toolbar">
+                <button class="btn btn-primary mr-2" id="play" onclick="togglePlay();">Play</button>
+                <label class="btn mb-1">Speed: <span id="speedNum" class="ml-2 mr-3"></span></label>
+                <input type="range" class="slider" id="speedRange" value="1" min="1" max="10" oninput="updateSpeed(this.value);">
             </div>
             <div class="input-group">
                 <label class="btn btn-block mb-1" for="roundRange">Round #: <span id="roundNum"></span></label>
-                <input type="range" class="custom-range" id="roundRange" min="0" max="0" onchange="updateBoardNum(this.value);">
+                <input type="range" class="custom-range" id="roundRange" min="0" max="0" oninput="updateBoardNum(this.value);">
             </div>
         </div>
         <div id="gameboard" style="flex: 60%; padding: 5px; display: block; font-size: 0;">

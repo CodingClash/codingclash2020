@@ -7,6 +7,11 @@
 <body>
     <div id="root" style="display: flex">
         <div id="stats" style="flex: 30%; padding: 5px; display: block; font-size: 0;">
+            <input type="file" id="myFile" name="filename" accept="text/plain">
+            <input type="button" value="Submit" onclick="uploadReplay();">
+            <br>
+            <input type="button" value="Prev" onclick="board_num = Math.max(board_num + 1, 0); drawBoard();">
+            <input type="button" value="Next" onclick="board_num = Math.min(board_num + 1, boards.length - 1); drawBoard();">
         </div>
         <div id="gameboard" style="flex: 70%; padding: 5px; display: block; font-size: 0;">
         </div>

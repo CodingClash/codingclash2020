@@ -1,6 +1,7 @@
 <html>
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script src="index.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="index.css">
@@ -10,15 +11,16 @@
         <div id="stats" style="flex: 40%; padding: 5px; display: block; font-size: 0;">
             <label class="btn-secondary btn-sm btn-block">
                 Upload Replay File:
-                <input type="file" id="myFile" name="filename" accept="text/plain" onchange="uploadReplay();">
+                <input type="file" id="myFile" name="filename" class="ml-3" accept="text/plain" onchange="uploadReplay();">
             </label>
-            <br>
-
-            <button class="btn btn-primary" onclick="updateBoardNum(board_num - 1);">Prev</button>
-            <button class="btn btn-primary" onclick="updateBoardNum(board_num + 1);">Next</button>
-
-            <label for="customRange1">Example range</label>
-            <input type="range" class="custom-range" id="customRange1">
+            <div class="btn-toolbar mb-3" role="toolbar">
+                <button class="btn btn-primary mr-3" onclick="updateBoardNum(board_num - 1);">Prev</button>
+                <button class="btn btn-primary" onclick="updateBoardNum(board_num + 1);">Next</button>
+            </div>
+            <div class="input-group">
+                <label class="btn btn-block mb-1" for="roundRange">Round #: <span id="roundNum"></span></label>
+                <input type="range" class="custom-range" id="roundRange" min="0" max="0" onchange="updateBoardNum(this.value);">
+            </div>
         </div>
         <div id="gameboard" style="flex: 60%; padding: 5px; display: block; font-size: 0;">
         </div>

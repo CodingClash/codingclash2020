@@ -3,6 +3,10 @@ const board_size = 600;
 const block_size = parseInt(board_size / size);
 var boards = ["#" + "n" * size * size];
 var board_num = 0;
+var playing = false;
+var playInterval;
+var speed = 2;
+const mindelay = 1000, maxdelay = 50, minspeed = 1, maxspeed = 10;
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -54,8 +58,37 @@ function drawBoard(){
 function updateBoardNum(new_num){
     board_num = Math.max(Math.min(new_num, boards.length - 1), 0);
     document.getElementById("roundRange").value = board_num;
-    document.getElementById("roundNum").innerHTML = board_num + "";
+    document.getElementById("roundNum").innerHTML = (board_num + 1) + " / " + boards.length;
     drawBoard();
+}
+
+function speedToSeconds(speed){
+    return (speed - minspeed) * (maxdelay - mindelay) / (maxspeed - minspeed) + mindelay;
+}
+
+function updateSpeed(new_speed){
+    speed = new_speed;
+    document.getElementById("speedNum").innerHTML = speed;
+    if(playing){
+        clearInterval(playInterval);
+        playInterval = setInterval(function(){
+            updateBoardNum(board_num + 1);
+        }, speedToSeconds(speed));
+    }
+}
+
+function togglePlay(){
+    playing = !playing;
+    let btn = document.getElementById("play");
+    if(playing){
+        btn.innerHTML = "Pause";
+        playInterval = setInterval(function(){
+            updateBoardNum(board_num + 1);
+        }, speedToSeconds(speed));
+    } else{
+        btn.innerHTML = "Play";
+        clearInterval(playInterval);
+    }
 }
 
 function uploadReplay(){
@@ -65,8 +98,8 @@ function uploadReplay(){
       let content = data.split("\n");
       boards = content.slice(2);
       board_num = 0;
-      drawBoard();
       document.getElementById("roundRange").max = boards.length - 1;
+      updateBoardNum(0);
     };
     fileReader.readAsText($('#myFile').prop('files')[0]);
 }
@@ -84,7 +117,8 @@ function keydown(e){
 }
 
 window.onload = function (){
-    document.getElementById("roundNum").innerHTML = board_num + "";
+    document.getElementById("roundNum").innerHTML = "1 / 1";
+    document.getElementById("speedNum").innerHTML = "1";
     createEmptyBoard();
 };
 

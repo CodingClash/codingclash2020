@@ -1,0 +1,26 @@
+.bluetank,
+.redtank,
+.bluegunner,
+.redgunner,
+.bluehq,
+.redhq,
+.grass {
+    width: 20px;
+    height: 20px;
+    font-size: 0;
+    float: left;
+}
+
+.bluetank { background: url(images/tank_b.png) 0 0; }
+
+.redtank { background: url(images/tank_r.png) 0 0; }
+
+.bluegunner { background: url(images/gunner_b.png) 0 0; }
+
+.redgunner { background: url(images/gunner_r.png) 0 0; }
+
+.bluehq { background: url(images/hq_b.png) 0 0; }
+
+.redhq { background: url(images/hq_r.png) 0 0; }
+
+.grass { background: #83A16E; }

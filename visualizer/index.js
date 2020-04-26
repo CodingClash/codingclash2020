@@ -6,7 +6,6 @@ var board_num = 0;
 var playing = false;
 var playInterval;
 var speed = 2;
-const mindelay = 1000, maxdelay = 50, minspeed = 1, maxspeed = 10;
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -63,7 +62,7 @@ function updateBoardNum(new_num){
 }
 
 function speedToSeconds(speed){
-    return (speed - minspeed) * (maxdelay - mindelay) / (maxspeed - minspeed) + mindelay;
+    return 1000 / speed;
 }
 
 function updateSpeed(new_speed){

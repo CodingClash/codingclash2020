@@ -56,7 +56,9 @@ class Supervisor:
         self.boards = [[row.copy() for row in self.moderator.board]]
         for i in range(max_rounds):
             print("Turn", i)
+            self.moderator.comments = []
             self.run_turn()
+            self.boards = self.boards + self.moderator.comments
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
@@ -83,16 +85,18 @@ class Supervisor:
         #vis_thread.start()
         for i in range(max_rounds):
             print("Turn", i)
+            self.moderator.comments = []
             self.run_turn()
+            self.boards = self.boards + self.moderator.comments
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
         print("Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
         # Allow the rest of the frames in the visualizer to load
-        bors = [self.get_replayable_board(x) for x in self.boards]
+        bors = [self.get_replayable_board(x) for x in self.boards if type(x)!=str]
         visualizer.play(bors)
-        while True:
-           pass
+        #while True:
+        #   pass
 
 
     def vis_helper(self, visualizer, delay):
@@ -107,15 +111,18 @@ class Supervisor:
 
 
     def board_to_string(self, board):
+        if type(board)==str: return board
         bout = [j for sub in board for j in sub]
         return "#"+"".join(bout)
 
 
     def save(self, filename):
+        #print(self.boards)
         boards = []
         for board in self.boards:
-            boards.append(self.get_replayable_board(board))
+            if type(board)==str: boards.append("[DLOG] "+board)
+            else: boards.append(self.get_replayable_board(board))
 
         with open(filename, "w+") as file:
             file.write("\n".join(["|blue: " + self.filename1, "|red: " + self.filename2]+[self.board_to_string(b) for b in boards]))
-            file.write("Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
+            file.write("\nWinner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))

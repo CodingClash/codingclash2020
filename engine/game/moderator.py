@@ -19,6 +19,7 @@ class Moderator:
         self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
         self.game_over = False
         self.winner = None
+        self.comments = []
 
     
     ## Helper methods
@@ -46,6 +47,9 @@ class Moderator:
 
 
     ## Game State methods (player inputs)
+
+    def dlog(self, robot: Robot, message: str):
+        self.comments.append("["+str(robot.id)+"] "+message)
 
     def sense(self, robot: Robot):
         sense_range = robot.sense_range

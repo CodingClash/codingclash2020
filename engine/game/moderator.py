@@ -7,7 +7,6 @@ from .robots import Robot, HQ, Gunner, Tank, SensedRobot
 
 class Moderator:
     def __init__(self):
-        self.round_count = 1
         self.board_width = GameConstants.BOARD_WIDTH
         self.board_height = GameConstants.BOARD_HEIGHT
         self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
@@ -19,8 +18,13 @@ class Moderator:
         self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
         self.game_over = False
         self.winner = None
-        self.comments = []
+        self.debug, self.info = [], []
 
+
+    def update_info(self):
+        for robot in self.robots:
+            # Format: [INFO] [ID] X Y HEALTH
+            self.info.append("[INFO] [{}] {} {} {}".format(robot.id, robot.location[0], robot.location[1], robot.health))
     
     ## Helper methods
 
@@ -49,7 +53,8 @@ class Moderator:
     ## Game State methods (player inputs)
 
     def dlog(self, robot: Robot, message: str):
-        self.comments.append("["+str(robot.id)+"] "+message)
+        self.debug.append("[DLOG] [{}] {}".format(robot.id, message))
+
 
     def sense(self, robot: Robot):
         sense_range = robot.sense_range
@@ -203,8 +208,7 @@ class Moderator:
         try:
             self.robots.remove(robot)
         except:
-            print("Robot that you're trying to kill not found: " + str(robot.id))
-            return
+            raise Exception("Robot that you're trying to kill not found: " + str(robot.id))
         if robot.type == RobotType.HQ:
             self.game_over = True
             self.winner = Team.RED if robot.team == Team.BLUE else Team.BLUE

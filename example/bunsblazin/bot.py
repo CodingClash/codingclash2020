@@ -94,7 +94,6 @@ class HQ:
             else:
                 robot = self.spawned[-1]
             dxdy = sorted([(x, y) for x in range(-1,2) for y in range(-1, 2)], key = lambda d: self.distance_2((self.location[0]+d[0], self.location[1]+d[1]), tuple(self.opp_hq)))
-            #print(dxdy)
             for (dx, dy) in dxdy:
                 if dx == 0 and dy == 0:
                     continue

@@ -35,7 +35,6 @@ class Supervisor:
             interfacer.init_code()
             self.interfacers.append(interfacer)
             self.robot_ids.add(robot.id)
-            print("Creation")
 
     
     def run_turn(self):
@@ -47,6 +46,8 @@ class Supervisor:
                 to_remove.append(interfacer)
                 continue
             interfacer.run()
+            if self.moderator.game_over:
+                break
 
         for interfacer in to_remove:
             self.interfacers.remove(interfacer)
@@ -54,11 +55,14 @@ class Supervisor:
 
     def run(self, max_rounds):
         self.boards = [[row.copy() for row in self.moderator.board]]
+        self.moderator.update_info()
+        self.comments = {0: self.moderator.info + self.moderator.debug.copy()}
         for i in range(max_rounds):
             print("Turn", i)
-            self.moderator.comments = []
+            self.moderator.debug, self.moderator.info = [], []
             self.run_turn()
-            self.boards = self.boards + self.moderator.comments
+            self.moderator.update_info()
+            self.comments[i + 1] = self.moderator.info + self.moderator.debug.copy()
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
@@ -78,51 +82,23 @@ class Supervisor:
         return board
 
 
-    def run_visualized(self, visualizer, max_rounds, delay):
-        self.boards = [[row.copy() for row in self.moderator.board]]
-        #vis_thread = threading.Thread(target=self.vis_helper, args=(visualizer, delay))
-        #vis_thread.daemon = True
-        #vis_thread.start()
-        for i in range(max_rounds):
-            print("Turn", i)
-            self.moderator.comments = []
-            self.run_turn()
-            self.boards = self.boards + self.moderator.comments
-            self.boards.append([row.copy() for row in self.moderator.board])
-            if self.moderator.game_over:
-                break
-        print("Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
-        # Allow the rest of the frames in the visualizer to load
-        bors = [self.get_replayable_board(x) for x in self.boards if type(x)!=str]
-        visualizer.play(bors)
-        #while True:
-        #   pass
-
-
-    def vis_helper(self, visualizer, delay):
-        print("Created viewing thread")
-        idx = 0
-        while True:
-            if idx >= len(self.boards):
-                continue
-            visualized = self.get_replayable_board(self.boards[idx])
-            visualizer.view(visualized, delay)
-            idx += 1
-
-
     def board_to_string(self, board):
-        if type(board)==str: return board
         bout = [j for sub in board for j in sub]
         return "#"+"".join(bout)
 
 
     def save(self, filename):
         #print(self.boards)
-        boards = []
-        for board in self.boards:
-            if type(board)==str: boards.append("[DLOG] "+board)
-            else: boards.append(self.get_replayable_board(board))
+        data = []
+        for i, board in enumerate(self.boards):
+            data.append(self.board_to_string(self.get_replayable_board(board)))
+            if i in self.comments:
+                for comment in self.comments[i]:
+                    data.append(comment)
+
 
         with open(filename, "w+") as file:
-            file.write("\n".join(["|blue: " + self.filename1, "|red: " + self.filename2]+[self.board_to_string(b) for b in boards]))
-            file.write("\nWinner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
+            file.write("|blue: {}\n".format(self.filename1))
+            file.write("|red: {}\n".format(self.filename2))
+            file.write("\n".join(data))
+            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))

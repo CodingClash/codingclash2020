@@ -9,6 +9,7 @@ class Gunner:
 
 
     def run(self):
+        dlog("Running gunner")
         self.location = get_location()
         attackable = sorted(sense(), key = lambda e: self.distance_2(e.location, self.location))
         for curr in attackable:

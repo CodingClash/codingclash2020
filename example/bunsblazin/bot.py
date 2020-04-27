@@ -8,7 +8,7 @@ class Gunner:
         self.opp_hq = [GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1]]
 
     def run(self):
-        dlog("Creating gunner")
+        dlog("Meme")
         self.location = get_location()
         attackable = [(self.distance_2(e.location, self.location), e) for e in sense()]
         attacker = []

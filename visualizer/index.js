@@ -2,6 +2,7 @@ const size = 40;
 const board_size = 600;
 const block_size = parseInt(board_size / size);
 var boards = [];
+var dlogs = [];
 var board_num = 0;
 var playing = false;
 var playInterval;
@@ -71,6 +72,7 @@ function updateBoardNum(new_num){
     document.getElementById("roundRange").value = board_num;
     document.getElementById("roundNum").innerHTML = (board_num + 1) + " / " + boards.length;
     drawBoard();
+    updateDlog(board_num);
     updatePieceNum();
 }
 
@@ -93,7 +95,16 @@ function updatePieceNum(){
     document.getElementById("pieceNumT").innerHTML = T;
     document.getElementById("pieceNumg").innerHTML = g;
     document.getElementById("pieceNumG").innerHTML = G;
-    drawBoard();
+}
+
+function updateDlog(board_num){
+    var outlist = [];
+    var i;
+    for (i = 0; i<board_num+1; i++){
+        outlist = outlist.concat(dlogs[i]);
+    }
+    document.getElementById("dlogs").innerHTML = outlist.join("<br>");
+    //drawBoard();
 }
 
 function speedToSeconds(speed){
@@ -131,10 +142,16 @@ function uploadReplay(){
       var data = fileReader.result;  // data <-- in this var you have the file data in Base64 format
       let content = data.split("\n");
       var bads = content.slice();
+      var li = [];
       for (index = 0; index < bads.length; index++) { 
             if (bads[index][0]=="#"){
                 boards.push(bads[index]);
             }
+            else if (bads[index][0]=="["){
+                li.push(bads[index]);
+            }
+            dlogs.push(li);
+            li = [];
         } 
       board_num = 0;
       document.getElementById("roundRange").max = boards.length - 1;

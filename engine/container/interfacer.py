@@ -37,6 +37,11 @@ class Interfacer:
             'GameConstants': GameConstants
         }
 
+        self.disallowed_enums = ['print']
+
+        for key in self.disallowed_enums:
+            del self.globals['__builtins__'][key]
+
         for key in self.game_methods:
             self.globals['__builtins__'][key] = self.game_methods[key]
 
@@ -88,17 +93,9 @@ class Interfacer:
         return self.moderator.sense_location(self.robot, location)
     
     def move(self, location):
-        if not self.robot.moveable:
-            print(str(self.robot.type) + " is not moveable")
-            raise Exception
-            return None
         return self.moderator.move(self.robot, location)
     
     def create(self, robot_type, location):
-        if self.robot.type != RobotType.HQ:
-            print(str(self.robot.type) + " can't create robots")
-            raise Exception
-            return None
         return self.moderator.create(self.robot, robot_type, self.robot.team, location)
 
     def attack(self, location):

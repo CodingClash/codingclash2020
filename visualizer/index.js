@@ -3,6 +3,9 @@ const board_size = 600;
 const block_size = parseInt(board_size / size);
 var boards = [];
 var dlogs = [];
+var info = [];
+var selected = "";
+var selectedID = "";
 var board_num = 0;
 var playing = false;
 var playInterval;
@@ -21,30 +24,65 @@ function createEmptyBoard(){
         for(let c = 0; c < size; c++){
             let id = "row-" + r + "_col-" + c;
             let img = $("<img></img>", {id: id, src: "images/grass.png", width: block_size});
+            img.click(handleClick);
             $("#row-" + r).append(img);
         }
     }
 }
 
+function handleClick(e){
+    selected = e.target.id;
+    // console.log("--------------------------")
+    // console.log(document.getElementById(selected).src);
+    // console.log(selected);
+    // console.log(board_num);
+    // console.log(info[board_num]);
+    updateInfo("loc");
+}
+
+function updateInfo(updateType){
+    if(updateType == "loc" && info[board_num][selected]){
+        let temp = info[board_num][selected].split(" ");
+        let info_arr = ["Robot ID: " + temp[1].slice(1, temp[1].length - 1),
+                        "X Location: " + temp[3],
+                        "Y Location: " + temp[2],
+                        "Health: " + temp[4]]
+        selectedID = temp[1].slice(1, temp[1].length - 1)
+        document.getElementById("robotinfo").innerHTML = info_arr.join("<br>");
+    }
+    else if(updateType == "ID" && info[board_num][selectedID]){
+        let temp = info[board_num][selectedID].split(" ");
+        let info_arr = ["Robot ID: " + temp[1].slice(1, temp[1].length - 1),
+                        "X Location: " + temp[3],
+                        "Y Location: " + temp[2],
+                        "Health: " + temp[4]]
+        document.getElementById("robotinfo").innerHTML = info_arr.join("<br>");
+    }
+    else {
+        document.getElementById("robotinfo").innerHTML = "";
+    }
+}
+
+
 function getFilename(char){
     switch(char){
         case "t":
-            t = t+1;
+            t = t + 1;
             return "tank_b.png";
         case "g":
-            g = g+1;
+            g = g + 1;
             return "gunner_b.png";
         case "h":
-            h = h+1;
+            h = h + 1;
             return "hq_b.png";
         case "T":
-            T = T+1;
+            T = T + 1;
             return "tank_r.png";
         case "G":
-            G = G+1;
+            G = G + 1;
             return "gunner_r.png";
         case "H":
-            H = H+1;
+            H = H + 1;
             return "hq_r.png";
         default:
             return "grass.png";
@@ -73,6 +111,7 @@ function updateBoardNum(new_num){
     document.getElementById("roundNum").innerHTML = (board_num + 1) + " / " + boards.length;
     drawBoard();
     updateDlog(board_num);
+    updateInfo("ID");
     updatePieceNum();
 }
 
@@ -99,12 +138,10 @@ function updatePieceNum(){
 
 function updateDlog(board_num){
     var outlist = [];
-    var i;
-    for (i = 0; i<board_num+1; i++){
+    for (let i = 0; i < board_num + 1; i++){
         outlist = outlist.concat(dlogs[i]);
     }
     document.getElementById("dlogs").innerHTML = outlist.join("<br>");
-    //drawBoard();
 }
 
 function speedToSeconds(speed){
@@ -139,23 +176,37 @@ function togglePlay(){
 function uploadReplay(){
     var fileReader = new FileReader();
     fileReader.onload = function () {
-      var data = fileReader.result;  // data <-- in this var you have the file data in Base64 format
-      let content = data.split("\n");
-      var bads = content.slice();
-      var li = [];
-      for (index = 0; index < bads.length; index++) { 
-            if (bads[index][0]=="#"){
-                boards.push(bads[index]);
+        var data = fileReader.result;
+        let content = data.split("\n");
+        boards = [];
+        dlogs = [];
+        info = [];
+        let roundNum = -1;
+        for (index = 0; index < content.length; index++) { 
+            if (content[index].startsWith("#")){
+                boards.push(content[index]);
+                dlogs.push([]);
+                info.push({});
+                roundNum += 1;
             }
-            else if (bads[index][0]=="["){
-                li.push(bads[index]);
+            else if (content[index].startsWith("[DLOG]")){
+                dlogs[roundNum].push(content[index]);
             }
-            dlogs.push(li);
-            li = [];
-        } 
-      board_num = 0;
-      document.getElementById("roundRange").max = boards.length - 1;
-      updateBoardNum(0);
+            else if (content[index].startsWith("[INFO]")){
+                let temp = content[index].split(" ");
+                let id = temp[1].slice(1, temp[1].length - 1);
+                let row = temp[2];
+                let col = temp[3];
+                info[roundNum]["row-" + row + "_col-" + col] = content[index];
+                info[roundNum][id] = content[index];
+            }
+            else{
+                console.log("Unknown line: " + content[index]);
+            }
+        }
+        board_num = 0;
+        document.getElementById("roundRange").max = boards.length - 1;
+        updateBoardNum(0);
     };
     fileReader.readAsText($('#myFile').prop('files')[0]);
 }

@@ -69,11 +69,13 @@ class Visualizer:
 
 	def play(self, board_states, delay=0.5):
 		for board in board_states:
+			if type(board)==str: continue
 			self.update(board)
 			for event in pygame.event.get():
 				if event.type == QUIT:
 					pygame.quit()
-					sys.exit()
+					return
+					#sys.exit()
 			pygame.display.update()
 			self.clock.tick(1 / delay)
 		# Pause on the last frame

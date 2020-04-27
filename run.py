@@ -25,5 +25,7 @@ if args.live:
 else:
     game.run(max_rounds=200)
 
+print(args.save)
 if args.save:
+    print("Saved")
     game.save(args.save)

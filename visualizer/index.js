@@ -1,7 +1,7 @@
 const size = 40;
 const board_size = 600;
 const block_size = parseInt(board_size / size);
-var boards = ["#" + "n" * size * size];
+var boards = [];
 var board_num = 0;
 var playing = false;
 var playInterval;
@@ -130,7 +130,12 @@ function uploadReplay(){
     fileReader.onload = function () {
       var data = fileReader.result;  // data <-- in this var you have the file data in Base64 format
       let content = data.split("\n");
-      boards = content.slice(2);
+      var bads = content.slice();
+      for (index = 0; index < bads.length; index++) { 
+            if (bads[index][0]=="#"){
+                boards.push(bads[index]);
+            }
+        } 
       board_num = 0;
       document.getElementById("roundRange").max = boards.length - 1;
       updateBoardNum(0);

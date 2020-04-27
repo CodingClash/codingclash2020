@@ -27,7 +27,8 @@ class Interfacer:
             'sense_location': self.sense_location,
             'move': self.move,
             'create': self.create,
-            'attack': self.attack
+            'attack': self.attack,
+            'dlog': self.dlog
         }
 
         self.enums = {
@@ -75,7 +76,11 @@ class Interfacer:
 
     def sense(self):
         return self.moderator.sense(self.robot)
-    
+
+    def dlog(self, message):
+        self.moderator.dlog(self.robot, message)
+        return
+
     def can_sense_location(self, location):
         return self.moderator.can_sense_location(self.robot, location)
 

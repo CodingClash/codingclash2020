@@ -19,6 +19,8 @@ class Moderator:
         self.game_over = False
         self.winner = None
         self.debug, self.info = [], []
+        self.ledger = []
+        self.round_num = 0
 
 
     def update_info(self):
@@ -26,6 +28,10 @@ class Moderator:
             # Format: [INFO] [ID] X Y HEALTH
             self.info.append("[INFO] [{}] {} {} {}".format(robot.id, robot.location[0], robot.location[1], robot.health))
     
+
+    def start_next_round(self):
+        self.ledger.append([])
+
     ## Helper methods
 
     def get_robot(self, location: tuple):
@@ -214,4 +220,28 @@ class Moderator:
             self.winner = Team.RED if robot.team == Team.BLUE else Team.BLUE
         location = robot.location
         self.remove_robot(location)
+
+
+    """
+    Adds message to blockchain board
+    @param data: a list of length 3 w/ bytes (ints from 0 to 255) 
+    """
+    def add_to_blockchain(self, robot: Robot, data: list):
+        if robot.added_blockchain:
+            raise Exception("Robot can only add to blockchain once per round")
+        if not isinstance(data, list) or not isinstance(data[0], int) or len(data) != GameConstants.BLOCKCHAIN_BYTE_COUNT:
+            raise Exception("Blockchain requires a list of ints of length {}".format(GameConstants.BLOCKCHAIN_BYTE_COUNT))
+        for byt in data:
+            if byt > GameConstants.BLOCKCHAIN_MAX_NUM_SIZE or byt < GameConstants.BLOCKCHAIN_MIN_NUM_SIZE:
+                raise Exception("Blockchain ints must be between {} and {}, but received int of {}".format(GameConstants.BLOCKCHAIN_MIN_NUM_SIZE, GameConstants.BLOCKCHAIN_MAX_NUM_SIZE, byt))
+        
+        self.ledger[-1].append(data)
+    
+    
+    def get_blockchain(self, robot: Robot, round_num: int):
+        if round_num < 0:
+            raise Exception("There's no blockchain prior to the first round")
+        if round_num >= len(self.ledger) - 1:
+            raise Exception("Round {} has not finished yet".format(round_num))
+        return self.ledger[round_num]
 

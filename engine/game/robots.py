@@ -8,9 +8,12 @@ class Robot:
         self.id = id
         self.location = location
         self.team = team
+        self.performed_action = False
+        self.added_blockchain = False
     
     def run(self):
-        pass
+        self.performed_action = False
+        self.added_blockchain = False
 
     def can_sense_location(self, location: tuple):
         return dist(self.location, location) <= self.sense_range
@@ -50,11 +53,9 @@ class Moveable(Robot):
     def __init__(self, id, location, team):
         super().__init__(id, location, team)
         self.moveable = True
-        self.performed_action = False
     
     def run(self):
         super().run()
-        self.performed_action = False
 
     def move(self, target_location):
         if dist(self.location, target_location) > self.movement_speed:

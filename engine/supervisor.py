@@ -60,6 +60,7 @@ class Supervisor:
         for i in range(max_rounds):
             print("Turn", i)
             self.moderator.debug, self.moderator.info = [], []
+            self.moderator.start_next_round()
             self.run_turn()
             self.moderator.update_info()
             self.comments[i + 1] = self.moderator.info + self.moderator.debug.copy()

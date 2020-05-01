@@ -17,18 +17,20 @@ class Interfacer:
             }
 
         self.game_methods = {
-            'get_team': self.get_team,
-            'get_type': self.get_type,
-            'get_health': self.get_health,
-            'get_location': self.get_location,
-            'get_cooldown': self.get_cooldown,
-            'sense': self.sense,
-            'can_sense_location': self.can_sense_location,
-            'sense_location': self.sense_location,
-            'move': self.move,
-            'create': self.create,
-            'attack': self.attack,
-            'dlog': self.dlog
+            'get_team': lambda : self.get_team(),
+            'get_type': lambda : self.get_type(),
+            'get_health': lambda : self.get_health(),
+            'get_location': lambda : self.get_location(),
+            'get_cooldown': lambda : self.get_cooldown(),
+            'sense': lambda : self.sense(),
+            'can_sense_location': lambda loc : self.can_sense_location(loc),
+            'sense_location': lambda loc : self.sense_location(loc),
+            'move': lambda loc : self.move(loc),
+            'create': lambda robot_type, loc : self.create(robot_type, loc),
+            'attack': lambda loc : self.attack(loc),
+            'get_blockchain': lambda round_num : self.get_blockchain(round_num),
+            'add_to_blockchain': lambda data : self.add_to_blockchain(data),
+            'dlog': lambda msg : self.dlog(msg)
         }
 
         self.enums = {
@@ -58,8 +60,10 @@ class Interfacer:
         self.robot.run()
         exec(self.locals['turn'].__code__, self.globals, self.locals)
 
-    # Translation of moderator methods
+    ## Translation of moderator methods
     
+    # Basic getter methods
+
     def get_team(self):
         return self.robot.team
 
@@ -79,25 +83,40 @@ class Interfacer:
         raise Exception
         return None
 
+    # Sensing
+
     def sense(self):
         return self.moderator.sense(self.robot)
-
-    def dlog(self, message):
-        self.moderator.dlog(self.robot, message)
-        return
 
     def can_sense_location(self, location):
         return self.moderator.can_sense_location(self.robot, location)
 
     def sense_location(self, location):
         return self.moderator.sense_location(self.robot, location)
-    
-    def move(self, location):
-        return self.moderator.move(self.robot, location)
-    
+
+    # Creating robots
+
     def create(self, robot_type, location):
         return self.moderator.create(self.robot, robot_type, self.robot.team, location)
 
+    # Robot actions (can only do one per turn)
+
+    def move(self, location):
+        return self.moderator.move(self.robot, location)
+    
     def attack(self, location):
         return self.moderator.attack(self.robot, location)
 
+    # Blockchain
+
+    def add_to_blockchain(self, data):
+        return self.moderator.add_to_blockchain(self.robot, data)
+
+    def get_blockchain(self, round_num):
+        return self.moderator.get_blockchain(self.robot, round_num)
+
+    # Logging
+
+    def dlog(self, message):
+        self.moderator.dlog(self.robot, message)
+        return

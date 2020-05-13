@@ -9,7 +9,7 @@ class Gunner:
 
 
     def run(self):
-        dlog("Running gunner")
+#        dlog("Running gunner")
         self.location = get_location()
         attackable = sorted(sense(), key = lambda e: self.distance_2(e.location, self.location))
         for curr in attackable:
@@ -38,6 +38,9 @@ class HQ:
     def __init__(self):
         self.team = get_team()
         self.location = get_location()
+        add_to_blockchain([1, 2, 3])
+        dlog(self.location)
+
 
     def run(self):
         if get_cooldown() == 0:

@@ -102,7 +102,11 @@ function drawBoard(){
             idx += 1;
         }
     }
+}
 
+function updateScroll(){
+    var element = document.getElementById("Debug");
+    element.scrollTop = element.scrollHeight;
 }
 
 function updateBoardNum(new_num){
@@ -142,6 +146,7 @@ function updateDlog(board_num){
         outlist = outlist.concat(dlogs[i]);
     }
     document.getElementById("dlogs").innerHTML = outlist.join("<br>");
+    updateScroll();
 }
 
 function speedToSeconds(speed){

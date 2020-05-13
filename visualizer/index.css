@@ -18,7 +18,14 @@
   opacity: 1; /* Fully shown on mouse-over */
 }
 
-
+::-webkit-scrollbar {
+  width: 14px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  background: #ccc;
+}
 
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -43,7 +50,7 @@
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
-  
+  border-radius: 10px 10px 0px 0px;
 }
 
 /* Style the buttons inside the tab */
@@ -74,8 +81,11 @@
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
-  max-height:25rem;
+  max-height:20rem;
   overflow:hidden;
   overflow-y: scroll;
-  
+  background-color: black;
+  color: white;
+  font-family: "Courier New", Courier, monospace;
+  border-radius: 0px 0px 10px 10px;
 }

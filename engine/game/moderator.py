@@ -27,7 +27,9 @@ class Moderator:
         for robot in self.robots:
             # Format: [INFO] [ID] X Y HEALTH
             self.info.append("[INFO] [{}] {} {} {}".format(robot.id, robot.location[0], robot.location[1], robot.health))
-    
+        if self.ledger:
+            self.info.append("[BCHAIN] {}".format(';'.join([str(i) for i in self.ledger[-1]])))
+
 
     def start_next_round(self):
         self.ledger.append([])
@@ -243,5 +245,5 @@ class Moderator:
             raise Exception("There's no blockchain prior to the first round")
         if round_num >= len(self.ledger) - 1:
             raise Exception("Round {} has not finished yet".format(round_num))
-        return self.ledger[round_num]
+        return self.ledger[round_num].copy()
 

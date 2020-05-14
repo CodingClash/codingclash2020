@@ -3,6 +3,7 @@ const board_size = 600;
 const block_size = parseInt(board_size / size);
 var boards = [];
 var dlogs = [];
+var bchain = [];
 var info = [];
 var selected = "";
 var selectedID = "";
@@ -16,6 +17,9 @@ var h = 0;
 var T = 0;
 var G = 0;
 var H = 0;
+var blue = "";
+var red = "";
+var winner = "";
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -104,8 +108,13 @@ function drawBoard(){
     }
 }
 
-function updateScroll(){
+function updateScrollD(){
     var element = document.getElementById("Debug");
+    element.scrollTop = element.scrollHeight;
+}
+
+function updateScrollB(){
+    var element = document.getElementById("Blockchain");
     element.scrollTop = element.scrollHeight;
 }
 
@@ -115,8 +124,28 @@ function updateBoardNum(new_num){
     document.getElementById("roundNum").innerHTML = (board_num + 1) + " / " + boards.length;
     drawBoard();
     updateDlog(board_num);
+    updateBchain(board_num);
     updateInfo("ID");
     updatePieceNum();
+    updateWinner(board_num);
+}
+
+function updateWinner(board_num){
+    gameboard = document.getElementById("gameboard");
+    if (board_num==boards.length-1){
+        if(winner.localeCompare(red)==0){
+            gameboard.style.padding = "0px"
+            gameboard.style.border = "5px solid red"
+        }
+        else if(winner.localeCompare(blue)==0){
+            gameboard.style.padding = "0px"
+            gameboard.style.border = "5px solid blue"
+        }
+    }
+    else{
+        gameboard.style.padding = "5px"
+        gameboard.style.border = "0px"
+    }
 }
 
 function openTab(evt, cityName) {
@@ -146,7 +175,19 @@ function updateDlog(board_num){
         outlist = outlist.concat(dlogs[i]);
     }
     document.getElementById("dlogs").innerHTML = outlist.join("<br>");
-    updateScroll();
+    updateScrollD();
+}
+
+function updateBchain(board_num){
+    var outlist = [];
+    for (let i = 0; i < board_num + 1; i++){
+        if(bchain[i].length!=0 && !bchain[i][0].startsWith("X")){
+            outlist = outlist.concat(bchain[i]);
+        }
+        
+    }
+    document.getElementById("bchain").innerHTML = outlist.join("<br>");
+    updateScrollB();
 }
 
 function speedToSeconds(speed){
@@ -186,16 +227,38 @@ function uploadReplay(){
         boards = [];
         dlogs = [];
         info = [];
+        bchain = [];
         let roundNum = -1;
         for (index = 0; index < content.length; index++) { 
             if (content[index].startsWith("#")){
                 boards.push(content[index]);
                 dlogs.push([]);
+                bchain.push([]);
                 info.push({});
                 roundNum += 1;
             }
             else if (content[index].startsWith("[DLOG]")){
                 dlogs[roundNum].push(content[index]);
+            }
+            else if (content[index].startsWith("[BCHAIN]")){
+                if (content[index].trim().length=="[BCHAIN]".length){
+                    bchain[roundNum].push("X"+roundNum.toString()+" "+content[index]);
+                }
+                else{
+                    bchain[roundNum].push(roundNum.toString()+" "+content[index]);
+                }
+                
+            }
+            else if (content[index].startsWith("|")){
+                if (content[index].startsWith("|blue: ")){
+                    blue = content[index].replace("|blue: ", "");
+                }
+                else if (content[index].startsWith("|red: ")){
+                    red = content[index].replace("|red: ", "");
+                }
+                else if (content[index].startsWith("|Winner: ")){
+                    winner = content[index].replace("|Winner: ", "");
+                }
             }
             else if (content[index].startsWith("[INFO]")){
                 let temp = content[index].split(" ");

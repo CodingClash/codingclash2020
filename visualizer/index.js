@@ -251,13 +251,13 @@ function uploadReplay(){
             }
             else if (content[index].startsWith("|")){
                 if (content[index].startsWith("|blue: ")){
-                    blue = content[index].replace("|blue: ", "");
+                    blue = content[index].replace("|blue: ", "").trim();
                 }
                 else if (content[index].startsWith("|red: ")){
-                    red = content[index].replace("|red: ", "");
+                    red = content[index].replace("|red: ", "").trim();
                 }
                 else if (content[index].startsWith("|Winner: ")){
-                    winner = content[index].replace("|Winner: ", "");
+                    winner = content[index].replace("|Winner: ", "").trim();
                 }
             }
             else if (content[index].startsWith("[INFO]")){

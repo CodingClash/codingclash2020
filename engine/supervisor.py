@@ -102,4 +102,5 @@ class Supervisor:
             file.write("|blue: {}\n".format(self.filename1))
             file.write("|red: {}\n".format(self.filename2))
             file.write("\n".join(data))
-            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == Team.RED else self.filename2))
+            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == Team.BLUE else 
+self.filename2))

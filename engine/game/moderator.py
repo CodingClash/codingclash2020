@@ -219,6 +219,7 @@ class Moderator:
             raise Exception("Robot that you're trying to kill not found: " + str(robot.id))
         if robot.type == RobotType.HQ:
             self.game_over = True
+            #print("Killed", robot.team)
             self.winner = Team.RED if robot.team == Team.BLUE else Team.BLUE
         location = robot.location
         self.remove_robot(location)

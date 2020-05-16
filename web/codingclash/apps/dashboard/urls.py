@@ -9,7 +9,7 @@ def default(request):
 
 
 urlpatterns = [
-    path("contact/", default, name="contact"),
+    path("about/", default, name="about"),
     path("rules/", default, name="rules"),
     path("schedule/", default, name="schedule"),
 ]

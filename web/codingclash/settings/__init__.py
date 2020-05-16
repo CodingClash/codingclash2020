@@ -4,8 +4,6 @@ from .secret import *
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = 'a88&*r)a^fr6&085ousi+#n@ib-xncm-=!e$my(*qq#wd-usw+'
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -82,7 +80,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-AUTHENTICATION_BACKENDS = ()
+AUTHENTICATION_BACKENDS = ("codingclash.apps.auth.oauth.IonOauth2",)
 
 if DEBUG:
     AUTH_PASSWORD_VALIDATORS = []
@@ -97,7 +95,7 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.social_uid",
     "social_core.pipeline.social_auth.auth_allowed",
     "social_core.pipeline.social_auth.social_user",
-    "othello.apps.auth.oauth.get_username",
+    "codingclash.apps.auth.oauth.get_username",
     "social_core.pipeline.social_auth.associate_by_email",
     "social_core.pipeline.user.create_user",
     "social_core.pipeline.social_auth.associate_user",
@@ -112,7 +110,7 @@ SOCIAL_AUTH_LOGIN_ERROR_URL = "/"
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 LOGIN_URL = "auth:login"
-LOGIN_REDIRECT_URL = "games:upload"
+LOGIN_REDIRECT_URL = "auth:index"
 LOGOUT_REDIRECT_URL = "auth:index"
 
 LANGUAGE_CODE = 'en-us'

@@ -30,22 +30,46 @@
 
             <ul class="list-unstyled components">
                 <li>
-                    <a href="{% url 'auth:index' %}">Home</a>
+                    <a>Home</a>
                 </li>
                 <li>
-                    <a href="{% url 'dashboard:rules' %}">Rules</a>
+                    <a>Dashboard</a>
+                    <ul class="list-unstyled components">
+                        <li>
+                            <a href="{% url 'dashboard:rules' %}">Rules</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:schedule' %}">Schedule</a>
+                        </li>
+                        <li>
+                            <a href="{% url 'dashboard:about' %}">About</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="{% url 'dashboard:schedule' %}">Schedule</a>
+                    <a>Game</a>
+                    <ul class="list-unstyled components">
+                        <li>
+                            <a href="#">Leaderboard</a>
+                        </li>
+                        <li>
+                            <a href="#">Visualizer</a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="{% url 'dashboard:about' %}">About</a>
-                </li>
-                <li>
-                    <a href="#">Scrimmaging</a>
-                </li>
-                <li>
-                    <a href="#">Contact</a>
+                    <a>Team</a>
+                    <ul class="list-unstyled components">
+                        <li>
+                            <a href="#">Team Info</a>
+                        </li>
+                        <li>
+                            <a href="#">Submit code</a>
+                        </li>
+                        <li>
+                            <a href="#">Scrimmage History</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </nav>

@@ -80,11 +80,10 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-AUTHENTICATION_BACKENDS = ("codingclash.apps.auth.oauth.IonOauth2",)
-
-if DEBUG:
-    AUTH_PASSWORD_VALIDATORS = []
-    AUTHENTICATION_BACKENDS += ("django.contrib.auth.backends.ModelBackend",)
+AUTHENTICATION_BACKENDS = (
+    "codingclash.apps.auth.oauth.IonOauth2",
+    "django.contrib.auth.backends.ModelBackend",
+)
 
 SOCIAL_AUTH_USER_FIELDS = ["username", "first_name", "last_name", "email", "id"]
 

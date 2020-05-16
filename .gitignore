@@ -7,3 +7,4 @@ secret.py
 .idea/
 .vscode/
 *.sqlite3
+serve/

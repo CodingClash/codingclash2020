@@ -11,4 +11,7 @@ def default(request):
 
 
 urlpatterns = [
+    path("info/", default, name="info"),
+    path("submission/", default, name="submission"),
+    path("history/", default, name="history"),
 ]

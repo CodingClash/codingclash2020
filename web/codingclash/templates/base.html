@@ -61,13 +61,13 @@
                     <a>Team</a>
                     <ul class="list-unstyled components">
                         <li>
-                            <a href="#">Team Info</a>
+                            <a href="{% url 'teams:info' %}">Team Info</a>
                         </li>
                         <li>
-                            <a href="#">Submit code</a>
+                            <a href="{% url 'teams:submission' %}">Submit code</a>
                         </li>
                         <li>
-                            <a href="#">Scrimmage History</a>
+                            <a href="{% url 'teams:history' %}">Scrimmage History</a>
                         </li>
                     </ul>
                 </li>

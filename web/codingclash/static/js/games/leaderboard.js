@@ -79,9 +79,18 @@ function display(data, block_num){
     set_table(block);
 }
 
+function set_search_options(data){
+    $("#searchOptions").empty();
+    for(let i = 0; i < data.length; i++){
+        let option = $("<option>").val(data[i][1]);
+        $("#searchOptions").append(option);
+    }
+}
+
 function set_leaderboard(block_num){
     display(leaderboard_data, block_num);
     set_buttons(leaderboard_data, block_num);
+    set_search_options(leaderboard_data);
 }
 
 window.onload = function(){

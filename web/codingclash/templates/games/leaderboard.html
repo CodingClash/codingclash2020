@@ -9,15 +9,19 @@
 {% block main %}
 
 <div>
-    <h1>Leaderboard</h1>
+    <h1 class="pb-4">Leaderboard</h1>
 
-    <br>
+    <form class="mb-5 form-inline" action="" onsubmit="search();">
+        <div class="form-group mx-sm-3 mb-2">
+            <input class="form-control" id="searchBox" placeholder="Team Name">
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Search</button>
+    </form>
+
 
     <table id="table"></table>
 
-    <br>
-
-    <div id="buttons" class="btn-group"></div>
+    <div id="buttons" class="btn-group pt-4"></div>
 </div>
 
 

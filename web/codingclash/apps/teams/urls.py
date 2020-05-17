@@ -11,7 +11,7 @@ def default(request):
 
 
 urlpatterns = [
-    path("info/", default, name="info"),
-    path("submission/", default, name="submission"),
-    path("history/", default, name="history"),
+    path("info/", views.info, name="info"),
+    path("submission/", views.submission, name="submission"),
+    path("history/", views.history, name="history"),
 ]

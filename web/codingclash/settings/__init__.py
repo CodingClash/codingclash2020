@@ -24,7 +24,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
-    'codingclash.apps.auth.apps.AuthConfig'
+    'codingclash.apps.auth.apps.AuthConfig',
+    'codingclash.apps.games',
+    'codingclash.apps.teams'
 ]
 
 MIDDLEWARE = [

@@ -1,4 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}CodingClash: Submission History{% endblock %}
+{% block head %}
+    <script>const game_data = {{games|safe}};</script>
+    <link rel="stylesheet" href="{% static 'css/table.css' %}">
+    <script src="{% static 'js/history.js' %}" type="text/javascript"></script>
+{% endblock %}
+
 {% block main %}
+
+<div>
+    <h1 class="pb-4">Submission History</h1>
+
+    <form class="mb-5 form-inline" action="" onsubmit="search();">
+        <div class="form-group mx-sm-3 mb-2">
+            <input list="searchOptions" class="form-control" id="searchBox" placeholder="Team Name">
+            <datalist id="searchOptions"></datalist>
+        </div>
+        <button type="submit" class="btn btn-primary mb-2">Search</button>
+    </form>
+
+
+    <table id="table"></table>
+
+</div>
+
 {% endblock %}

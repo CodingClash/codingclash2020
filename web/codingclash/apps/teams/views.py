@@ -1,7 +1,8 @@
 import json
-from django.core.serializers.json import DjangoJSONEncoder
-from django.shortcuts import render, redirect
-from .models import *
+from django.shortcuts import render
+
+from ..games.models import *
+
 
 def info(request):
     return render(request, "teams/info.html")

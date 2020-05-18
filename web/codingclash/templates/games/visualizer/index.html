@@ -1,16 +1,15 @@
 {% extends "base.html" %}
-{% load static %}
 {% block title %}CodingClash: Visualizer{% endblock %}
-{% block head %}
-    <link rel="stylesheet" href="{% static 'css/visualizer.css' %}" type="text/css">
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" >
-    <script src="{% static 'js/visualizer.js' %}" type="text/javascript"></script>
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"type="text/javascript"></script>
-    <script src="{% static 'vendor/jquery/jquery-ui.js' %}"type="text/javascript"></script>
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-{% endblock %}
-
 {% block main %}
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+<body>
     <div id="root" style="display: flex">
         <div id="stats" style="flex: 40%; padding: 5px; display: block;">
             <label class="btn-secondary btn-sm btn-block">
@@ -24,7 +23,7 @@
             <div class="btn-toolbar mb-3" role="toolbar">
                 <button class="btn btn-primary mr-2" id="play" onclick="togglePlay();">Play</button>
                 <label class="btn mb-1">Speed: <span id="speedNum" class="ml-2 mr-3"></span></label>
-                <input type="range" class="slider" style="height: 10px" id="speedRange" value="1" min="1" max="20" oninput="updateSpeed(this.value);">
+                <input type="range" class="slider" id="speedRange" value="1" min="1" max="20" oninput="updateSpeed(this.value);">
             </div>
             <div class="input-group">
                 <label class="btn btn-block mb-1" for="roundRange">Round #: <span id="roundNum"></span></label>
@@ -61,6 +60,6 @@
         <div id="gameboard" style="width: 610px; padding: 5px; display: block; font-size: 0;">
         </div>
     </div>
-
-
+</body>
+</html>
 {% endblock %}

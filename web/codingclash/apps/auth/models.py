@@ -2,6 +2,7 @@ import logging
 
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from ..teams.models import Team
 
 logger = logging.getLogger(__name__)
 
@@ -12,6 +13,8 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True)
 
     access_type = models.CharField(max_length=10, choices=ACCESS_TYPES, default="none")
+
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="users", blank=True, null=True)
 
     @property
     def has_management_permission(self) -> bool:

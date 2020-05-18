@@ -4,12 +4,30 @@ from django.shortcuts import render
 from ..games.models import *
 
 
+
 def info(request):
     return render(request, "teams/info.html")
 
 
+def create_submission(request):
+    print(request.FILES)
+    for filename, file in request.FILES.items():
+        file = request.FILES[filename]
+    team = request.user.team
+    submission = Submission(team=team, name=file.name, code=file)
+    submission.save()
+
+
 def submission(request):
-    return render(request, "teams/submission.html")
+    if request.method == 'POST':
+        form = SubmissionUpload(request.POST, request.FILES)
+        print(request.user)
+        if form.is_valid():
+            create_submission(request)
+            return history(request)
+    else:
+        form = SubmissionUpload()
+    return render(request, "teams/submission.html", {'form': form})
 
 
 def history(request):
@@ -18,18 +36,3 @@ def history(request):
     games_display = sorted(games_display, key=lambda game: game['time'], reverse=True)
     return render(request, "teams/history.html", {"games": json.dumps(games_display)})
 
-"""
-def replay(request):
-    if request.method == "POST":
-        form = PDFForm(request.POST)
-        if form.is_valid():
-            buffer = io.BytesIO()
-            cd = form.cleaned_data
-            create_pdf(buffer, cd['board'], cd['solved'], cd['height'], cd['clues']['across'], cd['clues']['down'], cd['title'], cd['solution']).save()
-            buffer.seek(0)
-            return FileResponse(buffer, as_attachment=True, filename='puzzle.pdf')
-        else:
-            for err in form.errors.as_data()["__all__"]:
-                messages.error(request, err.message, extra_tags="danger")
-    return redirect("codingclash:history")
-"""

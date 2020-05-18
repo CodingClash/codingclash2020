@@ -1,11 +1,14 @@
 import os
 import uuid
+from django import forms
 from django.db import models
 from django.contrib.auth import get_user_model
+from ..teams.models import Team
 
 
 def _code_save_path(instance, filename):
-    return os.path.join(instance.user.short_name, f"{uuid.uuid4()}.py")
+    print(instance.__dict__)
+    return os.path.join(instance.team.name, f"{uuid.uuid4()}.py")
 
 
 def _replay_save_path(instance, filename):
@@ -14,7 +17,7 @@ def _replay_save_path(instance, filename):
 
 class Submission(models.Model):
 
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name="user")
+    team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team")
     name = models.CharField(max_length=500, default="")
     submitted_time = models.DateTimeField(auto_now=True)
     code = models.FileField(upload_to=_code_save_path, default=None)
@@ -22,8 +25,8 @@ class Submission(models.Model):
     def get_name(self):
         return self.name
 
-    def get_user_name(self):
-        return self.user.short_name
+    def get_team_name(self):
+        return self.team.name
 
     def get_submitted_time(self):
         return self.submitted_time.strftime("%Y-%m-%d %H:%M:%S")
@@ -39,7 +42,7 @@ class Submission(models.Model):
         super(Submission, self).delete(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.get_user_name()}: {self.get_submission_name()}"
+        return f"{self.get_team_name()}: {self.get_submission_name()}"
 
 
 class Game(models.Model):
@@ -56,11 +59,11 @@ class Game(models.Model):
     replay = models.FileField(upload_to=_replay_save_path, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
 
-    def get_red_user(self):
-        return self.red.get_user_name()
+    def get_red_team(self):
+        return self.red.get_team_name()
 
-    def get_blue_user(self):
-        return self.blue.get_user_name()
+    def get_blue_team(self):
+        return self.blue.get_team_name()
 
     def get_finished(self):
         return self.finished
@@ -81,8 +84,12 @@ class Game(models.Model):
             else:
                 outcome = "Lost"
         return {
-            "red": self.get_red_user(),
-            "blue": self.get_blue_user(),
+            "red": self.get_red_team(),
+            "blue": self.get_blue_team(),
             "outcome": outcome,
             "time": self.get_played_time()
         }
+
+
+class SubmissionUpload(forms.Form):
+    file = forms.FileField()

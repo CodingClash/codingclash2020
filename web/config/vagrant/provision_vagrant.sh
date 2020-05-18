@@ -39,6 +39,7 @@ rm -rf venv
 python3 -m venv venv
 source ./venv/bin/activate
 pip install -r requirements.txt
+cp -n codingclash/settings/secret.sample.py codingclash/settings/secret.py
 
 python3 manage.py migrate
 python3 manage.py collectstatic --noinput

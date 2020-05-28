@@ -1,25 +1,28 @@
+// Sizing data
 const size = 40;
-const board_size = 600;
-const block_size = parseInt(board_size / size);
-var boards = [];
-var dlogs = [];
-var bchain = [];
-var info = [];
-var selected = "";
-var selectedID = "";
-var board_num = 0;
-var playing = false;
-var playInterval;
-var speed = 2;
-var t = 0;
-var g = 0;
-var h = 0;
-var T = 0;
-var G = 0;
-var H = 0;
-var blue = "";
-var red = "";
-var winner = "";
+let [board_size, block_size] = [undefined, undefined];
+
+// Game data
+let boards = [];
+let dlogs = [];
+let bchain = [];
+let info = [];
+let t = 0;
+let g = 0;
+let h = 0;
+let T = 0;
+let G = 0;
+let H = 0;
+let blue = "";
+let red = "";
+let winner = "";
+
+let selected = "";
+let selectedID = "";
+let board_num = 0;
+let playing = false;
+let playInterval;
+let speed = 2;
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -27,7 +30,7 @@ function createEmptyBoard(){
         $("#gameboard").append(row);
         for(let c = 0; c < size; c++){
             let id = "row-" + r + "_col-" + c;
-            let img = $("<img></img>", {id: id, src: "/static/img/images/grass.png", width: block_size});
+            let img = $("<img />", {id: id, src: "/static/img/images/grass.png", width: block_size});
             img.click(handleClick);
             $("#row-" + r).append(img);
         }
@@ -36,11 +39,6 @@ function createEmptyBoard(){
 
 function handleClick(e){
     selected = e.target.id;
-    // console.log("--------------------------")
-    // console.log(document.getElementById(selected).src);
-    // console.log(selected);
-    // console.log(board_num);
-    // console.log(info[board_num]);
     updateInfo("loc");
 }
 
@@ -109,12 +107,12 @@ function drawBoard(){
 }
 
 function updateScrollD(){
-    var element = document.getElementById("Debug");
+    let element = document.getElementById("Debug");
     element.scrollTop = element.scrollHeight;
 }
 
 function updateScrollB(){
-    var element = document.getElementById("Blockchain");
+    let element = document.getElementById("Blockchain");
     element.scrollTop = element.scrollHeight;
 }
 
@@ -149,7 +147,7 @@ function updateWinner(board_num){
 }
 
 function openTab(evt, cityName) {
-    var i, tabcontent, tablinks;
+    let i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
       tabcontent[i].style.display = "none";
@@ -170,7 +168,7 @@ function updatePieceNum(){
 }
 
 function updateDlog(board_num){
-    var outlist = [];
+    let outlist = [];
     for (let i = 0; i < board_num + 1; i++){
         outlist = outlist.concat(dlogs[i]);
     }
@@ -179,7 +177,7 @@ function updateDlog(board_num){
 }
 
 function updateBchain(board_num){
-    var outlist = [];
+    let outlist = [];
     for (let i = 0; i < board_num + 1; i++){
         if(bchain[i].length!=0 && !bchain[i][0].startsWith("X")){
             outlist = outlist.concat(bchain[i]);
@@ -220,9 +218,9 @@ function togglePlay(){
 }
 
 function uploadReplay(){
-    var fileReader = new FileReader();
+    let fileReader = new FileReader();
     fileReader.onload = function () {
-        var data = fileReader.result;
+        let data = fileReader.result;
         let content = data.split("\n");
         boards = [];
         dlogs = [];
@@ -294,6 +292,8 @@ function keydown(e){
 window.onload = function (){
     document.getElementById("roundNum").innerHTML = "1 / 1";
     document.getElementById("speedNum").innerHTML = "1";
+    board_size = parseInt($("#gameboard").css("width"));
+    block_size = Math.floor(board_size / size);
     createEmptyBoard();
 };
 

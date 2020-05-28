@@ -2,6 +2,10 @@
 {% load static %}
 {% block title %}CodingClash: Visualizer{% endblock %}
 {% block head %}
+    <script>const replayData = "";</script>
+    {% if replay %}
+        <script>const replayData = {{ replay }}</script>
+    {% endif %}
     <link rel="stylesheet" href="{% static 'css/visualizer.css' %}" type="text/css">
     <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" >
     <script src="{% static 'js/visualizer.js' %}" type="text/javascript"></script>
@@ -13,7 +17,6 @@
 {% block main %}
     <div id="root" style="display: flex">
         <div id="gameBoard" style="float: left; width: 610px; min-width: 610px; margin-right: 20px; display: block; font-size: 0;">
-            HI
         </div>
         <div id="stats" style="width: auto; padding: 5px; display: block;">
             <label class="btn-secondary btn-sm btn-block">

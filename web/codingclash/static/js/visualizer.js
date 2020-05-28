@@ -180,53 +180,54 @@ function togglePlay(){
     }
 }
 
-function uploadReplay(){
-    let fileReader = new FileReader();
-    fileReader.onload = function () {
-        let data = fileReader.result;
-        let content = data.split("\n");
-        boards = [];
-        dlogs = [];
-        info = [];
-        bchain = [];
-        let roundNum = -1;
-        for (index = 0; index < content.length; index++) {
-            let line = content[index];
-            if (line.startsWith("#")){
-                boards.push(line.substr(1));
-                dlogs.push([]);
-                bchain.push([]);
-                info.push({});
-                roundNum += 1;
-            }
-            else if (line.startsWith("[DLOG]")){
-                dlogs[roundNum].push(line);
-            }
-            else if (line.startsWith("[BCHAIN]")){
-                if (line.trim().length != "[BCHAIN]".length){
-                    bchain[roundNum].push(roundNum.toString() + " " + line);
-                }
-            }
-            else if (line.startsWith("|")){
-                let key = line.substring(1, line.indexOf(":")).trim();
-                let value = line.substring(line.indexOf(":") + 1).trim();
-                gameData[key] = value;
-            }
-            else if (line.startsWith("[INFO]")){
-                let temp = line.split(" ");
-                let id = temp[1].slice(1, temp[1].length - 1);
-                let row = temp[2];
-                let col = temp[3];
-                info[roundNum]["row-" + row + "_col-" + col] = line;
-                info[roundNum][id] = line;
-            }
-            else{
-                console.log("Unknown line: " + line);
+function processReplay(data){
+    let content = data.split("\n");
+    boards = [];
+    dlogs = [];
+    info = [];
+    bchain = [];
+    let roundNum = -1;
+    for (index = 0; index < content.length; index++) {
+        let line = content[index];
+        if (line.startsWith("#")){
+            boards.push(line.substr(1));
+            dlogs.push([]);
+            bchain.push([]);
+            info.push({});
+            roundNum += 1;
+        }
+        else if (line.startsWith("[DLOG]")){
+            dlogs[roundNum].push(line);
+        }
+        else if (line.startsWith("[BCHAIN]")){
+            if (line.trim().length != "[BCHAIN]".length){
+                bchain[roundNum].push(roundNum.toString() + " " + line);
             }
         }
-        $("#roundRange").attr("max", boards.length - 1);
-        updateBoardNum(0);
-    };
+        else if (line.startsWith("|")){
+            let key = line.substring(1, line.indexOf(":")).trim();
+            let value = line.substring(line.indexOf(":") + 1).trim();
+            gameData[key] = value;
+        }
+        else if (line.startsWith("[INFO]")){
+            let temp = line.split(" ");
+            let id = temp[1].slice(1, temp[1].length - 1);
+            let row = temp[2];
+            let col = temp[3];
+            info[roundNum]["row-" + row + "_col-" + col] = line;
+            info[roundNum][id] = line;
+        }
+        else{
+            console.log("Unknown line: " + line);
+        }
+    }
+    $("#roundRange").attr("max", boards.length - 1);
+    updateBoardNum(0);
+};
+
+function uploadReplay(){
+    let fileReader = new FileReader();
+    fileReader.onload = () => processReplay(fileReader.result);
     fileReader.readAsText($('#myFile').prop('files')[0]);
 }
 
@@ -250,5 +251,8 @@ window.onload = function(){
     createEmptyBoard();
     console.log("Created empty board");
     document.addEventListener('keydown', keydown);
+    if(replayData){
+        processReplay(replayData);
+    }
 };
 

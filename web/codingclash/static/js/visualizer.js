@@ -7,17 +7,21 @@ let boards = [];
 let dlogs = [];
 let bchain = [];
 let info = [];
-let t = 0;
-let g = 0;
-let h = 0;
-let T = 0;
-let G = 0;
-let H = 0;
-let blue = "";
-let red = "";
-let winner = "";
+let piece_counts = {"t": 0,
+                    "g": 0,
+                    "h": 0,
+                    "T": 0,
+                    "G": 0,
+                    "H": 0};
+const filenameDict = {"t": "tank_b.png",
+                      "g": "gunner_b.png",
+                      "h": "hq_b.png",
+                      "T": "tank_r.png",
+                      "G": "gunner_r.png",
+                      "H": "hq_r.png",
+                      "n": "grass.png"};
+let gameData = {};
 
-let selected = "";
 let selectedID = "";
 let board_num = 0;
 let playing = false;
@@ -27,7 +31,7 @@ let speed = 2;
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
         let row = $("<div></div>", {id: "row-" + r, style: "display: block; font-size: 0"})
-        $("#gameboard").append(row);
+        $("#gameBoard").append(row);
         for(let c = 0; c < size; c++){
             let id = "row-" + r + "_col-" + c;
             let img = $("<img />", {id: id, src: "/static/img/images/grass.png", width: block_size});
@@ -37,66 +41,53 @@ function createEmptyBoard(){
     }
 }
 
+function get_piece_ID(html_id){
+    console.log(html_id);
+    console.log(info[board_num]);
+    if(!info[board_num][html_id]){
+        return -1;
+    }
+    let temp = info[board_num][html_id].split(" ");
+    return temp[1].slice(1, temp[1].length - 1);
+}
+
 function handleClick(e){
-    selected = e.target.id;
-    updateInfo("loc");
+    console.log("Clicked");
+    selectedID = get_piece_ID(e.target.id);
+    updateInfo();
 }
 
-function updateInfo(updateType){
-    if(updateType == "loc" && info[board_num][selected]){
-        let temp = info[board_num][selected].split(" ");
-        let info_arr = ["Robot ID: " + temp[1].slice(1, temp[1].length - 1),
-                        "X Location: " + temp[3],
-                        "Y Location: " + temp[2],
-                        "Health: " + temp[4]]
-        selectedID = temp[1].slice(1, temp[1].length - 1)
-        document.getElementById("robotinfo").innerHTML = info_arr.join("<br>");
+function updateInfo(){
+    if(!info[board_num][selectedID]){
+        $("robotinfo").text("");
+        return;
     }
-    else if(updateType == "ID" && info[board_num][selectedID]){
-        let temp = info[board_num][selectedID].split(" ");
-        let info_arr = ["Robot ID: " + temp[1].slice(1, temp[1].length - 1),
-                        "X Location: " + temp[3],
-                        "Y Location: " + temp[2],
-                        "Health: " + temp[4]]
-        document.getElementById("robotinfo").innerHTML = info_arr.join("<br>");
-    }
-    else {
-        document.getElementById("robotinfo").innerHTML = "";
+    let temp = info[board_num][selectedID].split(" ");
+    let info_arr = ["Robot ID: " + temp[1].slice(1, temp[1].length - 1),
+                    "X Location: " + temp[3],
+                    "Y Location: " + temp[2],
+                    "Health: " + temp[4]];
+    console.log("Appending");
+    $("#robotinfo").empty();
+    for(let info_thing of info_arr){
+        $("#robotinfo").append($("<p>").text(info_thing));
     }
 }
 
-
-function getFilename(char){
-    switch(char){
-        case "t":
-            t = t + 1;
-            return "tank_b.png";
-        case "g":
-            g = g + 1;
-            return "gunner_b.png";
-        case "h":
-            h = h + 1;
-            return "hq_b.png";
-        case "T":
-            T = T + 1;
-            return "tank_r.png";
-        case "G":
-            G = G + 1;
-            return "gunner_r.png";
-        case "H":
-            H = H + 1;
-            return "hq_r.png";
-        default:
-            return "grass.png";
-    }
-}
 function drawBoard(){
-    t = g = h = T = G = H = 0;
-    let idx = 1;
+    piece_counts = {"t": 0,
+                    "g": 0,
+                    "h": 0,
+                    "T": 0,
+                    "G": 0,
+                    "H": 0};
+    let idx = 0;
     let board_string = boards[board_num];
     for(let r = 0; r < size; r++){
         for(let c = 0; c < size; c++){
-            let filename = "/static/img/images/" + getFilename(board_string[idx]);
+            let char = board_string[idx];
+            piece_counts[char] += 1;
+            let filename = "/static/img/images/" + filenameDict[char];
             let block = $("#row-" + r + "_col-" + c);
             if(block.attr("src") != filename){
                 block.attr("src", filename);
@@ -106,86 +97,61 @@ function drawBoard(){
     }
 }
 
-function updateScrollD(){
-    let element = document.getElementById("Debug");
-    element.scrollTop = element.scrollHeight;
+function openTab(evt, cityName) {
+    $(".tabcontent").css("display", "none");
+    $(".tablinks").removeClass("active");
+    $("#" + cityName).css("display", "block");
+    evt.currentTarget.className += " active";
 }
 
-function updateScrollB(){
-    let element = document.getElementById("Blockchain");
-    element.scrollTop = element.scrollHeight;
+function updateScrolls(){
+    $("#Debug").attr("scrollTop", $("#Debug").attr("scrollHeight"));
+    $("#Blockchain").attr("scrollTop", $("#Blockchain").attr("scrollHeight"));
 }
 
 function updateBoardNum(new_num){
     board_num = Math.max(Math.min(new_num, boards.length - 1), 0);
-    document.getElementById("roundRange").value = board_num;
-    document.getElementById("roundNum").innerHTML = (board_num + 1) + " / " + boards.length;
+    $("#roundRange").val(board_num);
+    $("#roundNum").text((board_num + 1) + " / " + boards.length);
     drawBoard();
     updateDlog(board_num);
-    updateBchain(board_num);
-    updateInfo("ID");
+    updateBChain(board_num);
+    updateScrolls();
+    updateInfo();
     updatePieceNum();
     updateWinner(board_num);
 }
 
 function updateWinner(board_num){
-    gameboard = document.getElementById("gameboard");
-    if (board_num==boards.length-1){
-        if(winner.localeCompare(red)==0){
-            gameboard.style.padding = "0px"
-            gameboard.style.border = "5px solid red"
-        }
-        else if(winner.localeCompare(blue)==0){
-            gameboard.style.padding = "0px"
-            gameboard.style.border = "5px solid blue"
-        }
+    if (board_num != boards.length-1) {
+        $("#gameBoard").css("border", "0px");
+        return;
     }
-    else{
-        gameboard.style.padding = "5px"
-        gameboard.style.border = "0px"
-    }
+    let color = gameData["Winner"] == gameData["red"] ? "red" : gameData["Winner"] == gameData["blue"] ? "blue" : "black";
+    $("#gameBoard").css("border", "5px solid " + color);
 }
 
-function openTab(evt, cityName) {
-    let i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
-  }
-
 function updatePieceNum(){
-    document.getElementById("pieceNumt").innerHTML = t;
-    document.getElementById("pieceNumT").innerHTML = T;
-    document.getElementById("pieceNumg").innerHTML = g;
-    document.getElementById("pieceNumG").innerHTML = G;
+    $("#numBlueTanks").text(piece_counts["t"]);
+    $("#numRedTanks").text(piece_counts["T"]);
+    $("#numBlueGunners").text(piece_counts["g"]);
+    $("#numRedGunners").text(piece_counts["G"]);
 }
 
 function updateDlog(board_num){
-    let outlist = [];
+    $("#dlogs").empty();
     for (let i = 0; i < board_num + 1; i++){
-        outlist = outlist.concat(dlogs[i]);
+        $("#dlogs").append($("<p>").text(dlogs[i]));
     }
-    document.getElementById("dlogs").innerHTML = outlist.join("<br>");
-    updateScrollD();
 }
 
-function updateBchain(board_num){
-    let outlist = [];
+function updateBChain(board_num){
+    $("#bchain").empty();
     for (let i = 0; i < board_num + 1; i++){
-        if(bchain[i].length!=0 && !bchain[i][0].startsWith("X")){
-            outlist = outlist.concat(bchain[i]);
+        if(bchain[i].length != 0 && !bchain[i][0].startsWith("X")) {
+            $("#bchain").append($("<p>").text(bchain[i]));
         }
-        
     }
-    document.getElementById("bchain").innerHTML = outlist.join("<br>");
-    updateScrollB();
 }
 
 function speedToSeconds(speed){
@@ -194,7 +160,7 @@ function speedToSeconds(speed){
 
 function updateSpeed(new_speed){
     speed = new_speed;
-    document.getElementById("speedNum").innerHTML = speed;
+    $("#speedNum").text(speed);
     if(playing){
         clearInterval(playInterval);
         playInterval = setInterval(function(){
@@ -205,14 +171,11 @@ function updateSpeed(new_speed){
 
 function togglePlay(){
     playing = !playing;
-    let btn = document.getElementById("play");
     if(playing){
-        btn.innerHTML = "Pause";
-        playInterval = setInterval(function(){
-            updateBoardNum(board_num + 1);
-        }, speedToSeconds(speed));
+        $("#play").text("Pause");
+        updateSpeed(speed);
     } else{
-        btn.innerHTML = "Play";
+        $("#play").text("Play");
         clearInterval(playInterval);
     }
 }
@@ -227,51 +190,41 @@ function uploadReplay(){
         info = [];
         bchain = [];
         let roundNum = -1;
-        for (index = 0; index < content.length; index++) { 
-            if (content[index].startsWith("#")){
-                boards.push(content[index]);
+        for (index = 0; index < content.length; index++) {
+            let line = content[index];
+            if (line.startsWith("#")){
+                boards.push(line.substr(1));
                 dlogs.push([]);
                 bchain.push([]);
                 info.push({});
                 roundNum += 1;
             }
-            else if (content[index].startsWith("[DLOG]")){
-                dlogs[roundNum].push(content[index]);
+            else if (line.startsWith("[DLOG]")){
+                dlogs[roundNum].push(line);
             }
-            else if (content[index].startsWith("[BCHAIN]")){
-                if (content[index].trim().length=="[BCHAIN]".length){
-                    bchain[roundNum].push("X"+roundNum.toString()+" "+content[index]);
-                }
-                else{
-                    bchain[roundNum].push(roundNum.toString()+" "+content[index]);
-                }
-                
-            }
-            else if (content[index].startsWith("|")){
-                if (content[index].startsWith("|blue: ")){
-                    blue = content[index].replace("|blue: ", "").trim();
-                }
-                else if (content[index].startsWith("|red: ")){
-                    red = content[index].replace("|red: ", "").trim();
-                }
-                else if (content[index].startsWith("|Winner: ")){
-                    winner = content[index].replace("|Winner: ", "").trim();
+            else if (line.startsWith("[BCHAIN]")){
+                if (line.trim().length != "[BCHAIN]".length){
+                    bchain[roundNum].push(roundNum.toString() + " " + line);
                 }
             }
-            else if (content[index].startsWith("[INFO]")){
-                let temp = content[index].split(" ");
+            else if (line.startsWith("|")){
+                let key = line.substring(1, line.indexOf(":")).trim();
+                let value = line.substring(line.indexOf(":") + 1).trim();
+                gameData[key] = value;
+            }
+            else if (line.startsWith("[INFO]")){
+                let temp = line.split(" ");
                 let id = temp[1].slice(1, temp[1].length - 1);
                 let row = temp[2];
                 let col = temp[3];
-                info[roundNum]["row-" + row + "_col-" + col] = content[index];
-                info[roundNum][id] = content[index];
+                info[roundNum]["row-" + row + "_col-" + col] = line;
+                info[roundNum][id] = line;
             }
             else{
-                console.log("Unknown line: " + content[index]);
+                console.log("Unknown line: " + line);
             }
         }
-        board_num = 0;
-        document.getElementById("roundRange").max = boards.length - 1;
+        $("#roundRange").attr("max", boards.length - 1);
         updateBoardNum(0);
     };
     fileReader.readAsText($('#myFile').prop('files')[0]);
@@ -289,12 +242,13 @@ function keydown(e){
     }
 }
 
-window.onload = function (){
-    document.getElementById("roundNum").innerHTML = "1 / 1";
-    document.getElementById("speedNum").innerHTML = "1";
-    board_size = parseInt($("#gameboard").css("width"));
+window.onload = function(){
+    $("#roundNum").text("1 / 1");
+    $("#speedNum").text("1");
+    board_size = parseInt($("#gameBoard").css("width")) - 10; // 10px padding for the border
     block_size = Math.floor(board_size / size);
     createEmptyBoard();
+    console.log("Created empty board");
+    document.addEventListener('keydown', keydown);
 };
 
-document.addEventListener('keydown', keydown);

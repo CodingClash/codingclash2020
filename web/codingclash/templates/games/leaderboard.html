@@ -2,13 +2,12 @@
 {% load static %}
 {% block title %}CodingClash: Leaderboard{% endblock %}
 {% block head %}
+    <script>const leaderboard_data = {{teams|safe}};</script>
     <link rel="stylesheet" href="{% static 'css/table.css' %}">
     <script src="{% static 'js/leaderboard.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block main %}
-
-
 <div>
     <h1 class="pb-4">Leaderboard</h1>
 

@@ -15,5 +15,5 @@ urlpatterns = [
     path("rules/", default, name="rules"),
     path("schedule/", default, name="schedule"),
     path("visualizer/", default, name="visualizer"),
-    path("leaderboard/", default, name="leaderboard"),
+    path("leaderboard/", views.leaderboard, name="leaderboard"),
 ]

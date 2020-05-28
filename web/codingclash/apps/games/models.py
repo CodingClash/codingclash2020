@@ -45,7 +45,18 @@ class Submission(models.Model):
         return f"{self.get_team_name()}: {self.get_submission_name()}"
 
 
+class GameSet(models.Manager):
+    def get_user_games(self, user):
+        games = []
+        for game in self.objects.all():
+            if game.red.get_team_name() == user.team or game.blue.get_team_name() == user.team:
+                games.append(game)
+        return games
+
+
 class Game(models.Model):
+
+    objects = GameSet()
 
     OUTCOME_CHOICES = (
         ("R", "Red"), ("B", "Blue"), ("T", "Tie")
@@ -89,6 +100,7 @@ class Game(models.Model):
             "outcome": outcome,
             "time": self.get_played_time()
         }
+
 
 
 class SubmissionUpload(forms.Form):

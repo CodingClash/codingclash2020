@@ -1,5 +1,17 @@
 const col_widths = ["25%", "15%", "15%", "15%", "30%"];
 
+function requestScrim(){
+    let oppTeam = $("#oppName").text();
+    let csrftoken = Cookies.get('csrftoken');
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", location.origin + "/request/", true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('X-CSRFToken', csrftoken);
+    xhr.send(JSON.stringify({
+        "opponent": oppTeam
+    }));
+}
+
 function search(){
     let searchTerm = $("#searchBox").val();
     let matches = [];

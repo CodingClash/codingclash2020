@@ -34,3 +34,10 @@ def history(request):
     games = Game.objects.get_user_displayable(request.user)
     teams = [team.name for team in Team.objects.all()]
     return render(request, "teams/history.html", {"games": json.dumps(games), "teams": teams})
+
+
+def request(request):
+    print(request.method)
+    print(request)
+    print(request.body)
+    return render(request, "teams/history.html")

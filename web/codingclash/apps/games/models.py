@@ -53,6 +53,12 @@ class GameSet(models.Manager):
                 games.append(game)
         return games
 
+    def get_user_displayable(self, user):
+        games = self.get_user_games(user)
+        displayable = [game.get_displayable(user) for game in games]
+        displayable = sorted(displayable, key=lambda game: game['time'], reverse=True)
+        return displayable
+
 
 class Game(models.Model):
 
@@ -85,12 +91,12 @@ class Game(models.Model):
     def get_played_time(self):
         return self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-    def get_displayable(self, user):
+    def get_displayable(self, team):
         outcome = "Pending"
         if self.finished:
             if not self.outcome:
                 outcome = "Tie"
-            elif self.outcome.user == user:
+            elif self.outcome.get_team_name() == team:
                 outcome = "Won"
             else:
                 outcome = "Lost"

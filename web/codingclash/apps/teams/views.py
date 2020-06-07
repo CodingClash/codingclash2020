@@ -31,8 +31,7 @@ def submission(request):
 
 
 def history(request):
-    games = Game.objects.filter(red__user=request.user) | Game.objects.filter(blue__user=request.user)
-    games_display = [game.get_displayable(request.user) for game in games]
-    games_display = sorted(games_display, key=lambda game: game['time'], reverse=True)
-    return render(request, "teams/history.html", {"games": json.dumps(games_display)})
-
+#    games = Game.objects.filter(red__user=request.user) | Game.objects.filter(blue__user=request.user)
+    games = GameSet.get_user_displayable(request.user)
+    print(games)
+    return render(request, "teams/history.html", {"games": json.dumps(games)})

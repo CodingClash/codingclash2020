@@ -101,7 +101,8 @@ class Game(models.Model):
             "red": self.get_red_team(),
             "blue": self.get_blue_team(),
             "outcome": outcome,
-            "time": self.get_played_time()
+            "time": self.get_played_time(),
+            "replay": self.replay.url
         }
 
 

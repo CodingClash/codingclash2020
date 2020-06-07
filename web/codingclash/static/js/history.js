@@ -1,25 +1,33 @@
-const col_widths = ["25%", "25%", "25%", "25%"];
+const col_widths = ["25%", "15%", "15%", "15%", "30%"];
 
 function search(){
     let searchTerm = $("#searchBox").val();
     let matches = [];
-    for(let i = 0; i < leaderboard_data.length; i++){
-        if(leaderboard_data[i][1].indexOf(searchTerm) != -1){
-            matches.push(leaderboard_data[i]);
+    if(!team_list.includes(searchTerm)){
+        alert("Team " + searchTerm + " not found.");
+        $("#playBlock").removeClass("d-block").addClass("d-none");
+        return false;
+    }
+    for(let i = 0; i < game_data.length; i++){
+        if(game_data[i][1] == searchTerm || game_data[i][2] == searchTerm){
+            matches.push(game_data[i]);
         }
     }
-    set_table(matches, 0);
+    set_replay_table(matches, 0);
+    console.log("HII " + searchTerm);
+    $("#oppName").text(searchTerm);
+    $("#playBlock").removeClass("d-none").addClass("d-block");
     return false;
 }
 
 function get_row(row_data){
-    let divs = [];
     console.log(row_data);
     let row = $("<tr>").addClass("table-row");
     for(let i = 0; i < row_data.length; i++){
         let div = $("<th>").text( row_data[i] + "").css("width", col_widths[i]);
         row.append(div);
     }
+    console.log(row);
     return row;
 }
 
@@ -35,13 +43,15 @@ function set_replay_table(data){
     console.log(data);
     let table = $("#table");
     table.empty();
-    table.append(get_row(["Time", "Red", "Blue", "Result"]));
+    console.log("HI");
+    table.append(get_row(["Time", "Red", "Blue", "Result", "Replay"]));
     for(let i = 0; i < data.length; i++){
-        let arr = [data[i]['time'], data[i]['red'], data[i]['blue'], data[i]['outcome']];
+        let arr = [data[i]['time'], data[i]['red'], data[i]['blue'], data[i]['outcome'], data[i]["replay"]];
         table.append(get_row(arr));
     }
 }
 
 window.onload = function(){
     set_replay_table(game_data);
+    set_search_options(team_list);
 };

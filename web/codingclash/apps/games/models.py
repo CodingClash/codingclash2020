@@ -3,6 +3,7 @@ import uuid
 from django import forms
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 from ..teams.models import Team
 
 
@@ -47,10 +48,12 @@ class Submission(models.Model):
 
 class GameSet(models.Manager):
     def get_user_games(self, user):
-        games = []
-        for game in self.objects.all():
-            if game.red.get_team_name() == user.team or game.blue.get_team_name() == user.team:
-                games.append(game)
+        return self.get_queryset().filter(Q(red__team__name=user.team.name) |
+                                          Q(blue__team__name=user.team.name))
+
+    def get_user_displayable(self, user):
+        games = self.get_user_games(user).order_by('timestamp')
+        games = [game.get_displayable(user.team) for game in games]
         return games
 
 
@@ -85,12 +88,12 @@ class Game(models.Model):
     def get_played_time(self):
         return self.timestamp.strftime("%Y-%m-%d %H:%M:%S")
 
-    def get_displayable(self, user):
+    def get_displayable(self, team):
         outcome = "Pending"
         if self.finished:
             if not self.outcome:
                 outcome = "Tie"
-            elif self.outcome.user == user:
+            elif self.outcome.get_team_name() == team.name:
                 outcome = "Won"
             else:
                 outcome = "Lost"

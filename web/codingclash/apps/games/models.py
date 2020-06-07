@@ -105,6 +105,5 @@ class Game(models.Model):
         }
 
 
-
 class SubmissionUpload(forms.Form):
     file = forms.FileField()

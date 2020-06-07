@@ -32,5 +32,5 @@ def submission(request):
 
 def history(request):
     games = Game.objects.get_user_displayable(request.user)
+    print(games)
     return render(request, "teams/history.html", {"games": json.dumps(games)})
-

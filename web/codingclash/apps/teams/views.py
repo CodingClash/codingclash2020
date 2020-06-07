@@ -1,8 +1,8 @@
 import json
 from django.shortcuts import render
+from django.http import HttpResponse
 
 from ..games.models import *
-
 
 
 def info(request):
@@ -37,7 +37,14 @@ def history(request):
 
 
 def request(request):
-    print(request.method)
-    print(request)
-    print(request.body)
-    return render(request, "teams/history.html")
+    if request.method == "POST" and request.is_ajax():
+        json_data = json.loads(request.body)
+        if 'opponent' not in json_data:
+            return HttpResponse("Failed")
+        try:
+            opponent = Team.objects.all().get(name=json_data['opponent'])
+        except Team.DoesNotExist:
+            return HttpResponse("Failed")
+        print("Successfully playing game")
+        return HttpResponse("OK")
+    return HttpResponse("Failed")

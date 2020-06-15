@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 from ..games.models import *
+from ..games.tasks import play_game
 
 
 def info(request):
@@ -37,14 +38,29 @@ def history(request):
 
 
 def request(request):
-    if request.method == "POST" and request.is_ajax():
-        json_data = json.loads(request.body)
-        if 'opponent' not in json_data:
-            return HttpResponse("Failed")
+    if request.method == "POST":
+        opp_team = None
         try:
-            opponent = Team.objects.all().get(name=json_data['opponent'])
+            json_data = json.loads(request.body)
+            opp_team_name = json_data['opponent']
+            assert(request.user.team.name != opp_team_name)
+            opp_team = Team.objects.all().get(name=opp_team_name)
+        except json.decoder.JSONDecodeError:
+            print("Incorrect request json format")
+        except KeyError:
+            print("Opponent field not found in request body")
         except Team.DoesNotExist:
+            print("Opponent team not found")
+        except AssertionError:
+            print("Can't play against yourself")
+
+        if not opp_team:
             return HttpResponse("Failed")
-        print("Successfully playing game")
+        game_request = GameRequest(my_team=request.user.team, opp_team=opp_team)
+        game_request.save()
+        print("Successfully starting game")
+        play_game.delay(game_request.id)
         return HttpResponse("OK")
+    # Incorrect request format
     return HttpResponse("Failed")
+

@@ -12,12 +12,17 @@ class Team(models.Model):
     def display_name(self):
         return self.name
 
+    def get_latest_submission(self):
+        print(self.submission_set)
+
+
     def get_displayable(self):
         return {
             "name": self.display_name,
             "rank": self.rank,
             "elo": self.elo,
         }
+
 
     def __str__(self):
         return self.name

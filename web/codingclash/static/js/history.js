@@ -15,7 +15,8 @@ function requestScrim(){
 function search(){
     let searchTerm = $("#searchBox").val();
     let matches = [];
-    if(!team_list.includes(searchTerm)){
+    let index = team_lowercase.indexOf(searchTerm.toLowerCase());
+    if(index == -1){
         alert("Team " + searchTerm + " not found.");
         $("#playBlock").removeClass("d-block").addClass("d-none");
         return false;
@@ -26,8 +27,7 @@ function search(){
         }
     }
     set_replay_table(matches, 0);
-    console.log("HII " + searchTerm);
-    $("#oppName").text(searchTerm);
+    $("#oppName").text(team_list[index]);
     $("#playBlock").removeClass("d-none").addClass("d-block");
     return false;
 }
@@ -64,6 +64,9 @@ function set_replay_table(data){
 }
 
 window.onload = function(){
+    for (let i = 0; i < team_list.length; i++) {
+        team_lowercase.push(team_list[i].toLowerCase());
+    }
     set_replay_table(game_data);
     set_search_options(team_list);
 };

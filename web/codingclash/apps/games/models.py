@@ -67,7 +67,7 @@ class Game(models.Model):
 
     red = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name="red")
     blue = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name="blue")
-    outcome = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name="outcome", blank=True, null=True)
+    outcome = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="outcome", blank=True, null=True)
     finished = models.BooleanField(default=False)
 
     replay = models.FileField(upload_to=_replay_save_path, blank=True)
@@ -106,5 +106,11 @@ class Game(models.Model):
         }
 
 
+class GameRequest(models.Model):
+    my_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="my_team")
+    opp_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="opp_team")
+
+
 class SubmissionUpload(forms.Form):
     file = forms.FileField()
+

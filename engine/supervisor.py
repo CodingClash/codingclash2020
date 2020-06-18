@@ -1,8 +1,30 @@
-import threading
+# Local imports
 from .game.team import Team
 from .game.moderator import Moderator
 from .game.robot_type import RobotType
 from .container.interfacer import Interfacer
+from .game import constants as GameConstants
+
+# Imports used for setting time limit on method
+import signal
+from contextlib import contextmanager
+
+# Exception when time limit is exceeded
+class TimeoutException(Exception): pass
+
+
+@contextmanager
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Timed out!")
+    signal.signal(signal.SIGALRM, signal_handler)
+#    signal.alarm(seconds)
+    signal.setitimer(signal.ITIMER_REAL, seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
 
 class Supervisor:
     def __init__(self, filename1, filename2):
@@ -45,7 +67,15 @@ class Supervisor:
                 # The robot died this turn
                 to_remove.append(interfacer)
                 continue
-            interfacer.run()
+            try:
+                with time_limit(GameConstants.TIME_LIMIT):
+                    interfacer.run()
+            except Exception as e:
+                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team, interfacer.robot.type, e)
+                print(error_str)
+                self.errors.append(error_str)
+            signal.alarm(0)
+
             if self.moderator.game_over:
                 break
 
@@ -57,13 +87,14 @@ class Supervisor:
         self.boards = [[row.copy() for row in self.moderator.board]]
         self.moderator.update_info()
         self.comments = {0: self.moderator.info + self.moderator.debug.copy()}
+        self.errors = []
         for i in range(max_rounds):
             print("Turn", i)
-            self.moderator.debug, self.moderator.info = [], []
+            self.moderator.debug, self.moderator.info, self.errors = [], [], []
             self.moderator.start_next_round()
             self.run_turn()
             self.moderator.update_info()
-            self.comments[i + 1] = self.moderator.info + self.moderator.debug.copy()
+            self.comments[i + 1] = self.moderator.info + self.moderator.debug.copy() + self.errors
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
@@ -97,10 +128,9 @@ class Supervisor:
                 for comment in self.comments[i]:
                     data.append(comment)
 
-
         with open(filename, "w+") as file:
             file.write("|blue: {}\n".format(self.filename1))
             file.write("|red: {}\n".format(self.filename2))
             file.write("\n".join(data))
-            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == Team.BLUE else 
-self.filename2))
+            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == Team.BLUE else self.filename2))
+            file.write("\n|Winner color: {}".format("blue" if self.moderator.winner == Team.BLUE else "red"))

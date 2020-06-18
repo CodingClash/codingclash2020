@@ -1,3 +1,5 @@
+#python run.py example/gunsblazin example/bunsblazin --save timertest.txt
+
 import os
 import argparse
 from engine.supervisor import Supervisor

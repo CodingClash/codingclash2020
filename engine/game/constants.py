@@ -3,11 +3,12 @@ Notes
 Ranges are in euclidian distance
 """
 
-# Gameboard constants
+# General constants
 BOARD_WIDTH = 40
 BOARD_HEIGHT = 40
 MIN_ELEVATION = -20
 MAX_ELEVATION = 20
+TIME_LIMIT = 0.1
 
 # Navigation constants
 MOVEMENT_SPEED = 2

@@ -1,3 +1,4 @@
+import time
 import random
 
 class Gunner:
@@ -7,9 +8,10 @@ class Gunner:
         self.opp_hq = [GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1]]
 
 
-
     def run(self):
 #        dlog("Running gunner")
+#        time.sleep(1)
+#        dlog(1/0)
         self.location = get_location()
         attackable = sorted(sense(), key = lambda e: self.distance_2(e.location, self.location))
         for curr in attackable:

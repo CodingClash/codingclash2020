@@ -1,5 +1,4 @@
 import random
-#import time
 
 class Gunner:
     def __init__(self):
@@ -7,27 +6,26 @@ class Gunner:
         self.my_hq = [i.location for i in sense() if i.type == RobotType.HQ and i.team == self.team][0]
         self.opp_hq = [GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1]]
 
-    def run(self):
-        dlog("Meme")
-        self.location = get_location()
-        attackable = [(self.distance_2(e.location, self.location), e) for e in sense()]
-        attacker = []
-        dists = []
-        for curr in attackable:
-            if curr[1].team == get_team():
+    def try_attack(self):
+        sensed = [e for e in sense()]
+        attackable = []
+        for robot in sensed:
+            if robot.team == self.team:
                 continue
-            if curr[0] <= GameConstants.GUNNER_ATTACK_RANGE:
-                dists.append(curr[0])
-                attacker.append(curr)
-        
-        if len(attacker)>0:
-            min_dist = min(dists)
-            attacker = [i[1] for i in attacker if i[0]==min_dist]
-            attacker = [(0, i) if i.type == RobotType.GUNNER else (1, i) for i in attacker]
-            #time.sleep(.1)
-            attack(min(attacker, key = lambda x: x[0])[1].location)
-            return
+            dist = self.distance_2(e.location, self.location)
+            attackable.append((dist, robot))
 
+        if len(attackable) == 0:
+            return False
+
+        attackable = min(attackable, lambda a: key = 0 if a[1].type == RobotType.HQ else 1 if a[1].type == RobotType.GUNNER else 2)
+        attackable = min(attackable, lambda a: key = a[0])
+
+        attack(attackable[0][1].location)
+        return True
+
+
+    def try_move(self):
         dx = 1 if self.opp_hq[0] > self.location[0] else -1 if self.opp_hq[0] < self.location[0] else 0
         dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
         options = [(dx, dy), (dx, 0), (0, dy)]
@@ -36,6 +34,17 @@ class Gunner:
             if sense_location(loc).type == RobotType.NONE:
                 move(loc)
                 return
+
+
+
+    def run(self):
+        dlog("You're going down buddy")
+        self.location = get_location()
+        if self.try_attack():
+            return
+
+
+        self.try_move()
 
 
     def distance_2(self, p1, p2):
@@ -49,27 +58,38 @@ class Tank:
         self.opp_hq = [GameConstants.BOARD_HEIGHT-self.my_hq[0], GameConstants.BOARD_WIDTH-self.my_hq[1]]
 
 
-
-    def run(self):
-        self.location = get_location()
+    def try_attack(self):
         attackable = sorted(sense(), key = lambda e: self.distance_2(e.location, self.location))
         for curr in attackable:
             if curr.team == get_team():
                 continue
             if self.distance_2(curr.location, self.location) <= GameConstants.TANK_ATTACK_RANGE:
                 attack(curr.location)
-                return
+                return True
+        return False
 
+
+    def move_towards_opp(self):
         dx = 1 if self.opp_hq[0] > self.location[0] else -1 if self.opp_hq[0] < self.location[0] else 0
         dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
         options = [(dx, dy), (dx, 0), (0, dy)]
 
-        if [i.type for i in sense()].count(RobotType.GUNNER) < 2: return
         for dx, dy in options:
             loc = (self.location[0] + dx, self.location[1] + dy)
             if sense_location(loc).type == RobotType.NONE:
                 move(loc)
-                return
+                return True
+        return False
+
+
+    def run(self):
+        self.location = get_location()
+        if self.try_attack():
+            return
+
+        if [i.type for i in sense()].count(RobotType.GUNNER) < 2: return
+        if self.move_towards_opp():
+            return
 
 
     def distance_2(self, p1, p2):

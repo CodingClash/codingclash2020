@@ -26,7 +26,7 @@ let selectedID = "";
 let board_num = 0;
 let playing = false;
 let playInterval;
-let speed = 2;
+let speed = 1;
 
 function createEmptyBoard(){
     for(let r = 0; r < size; r++){
@@ -141,7 +141,10 @@ function updatePieceNum(){
 function updateDlog(board_num){
     $("#dlogs").empty();
     for (let i = 0; i < board_num + 1; i++){
-        $("#dlogs").append($("<p>").text(dlogs[i]));
+        if (dlogs[i]!=""){
+            $("#dlogs").append($("<p>").text(dlogs[i]));
+        }
+        
     }
 }
 

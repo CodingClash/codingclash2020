@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 def base_template_name_context_processor(request):
     # Use request.user.is_authenticated() if using Django < 2.0
     if request.user.is_authenticated:
@@ -14,10 +15,9 @@ def context_var(request):
     # Use request.user.is_authenticated() if using Django < 2.0
     if request.user.is_authenticated:
         uname = request.user.username
+        try:
+            return {'thing': uname, "secret_key": request.user.team.pk, "name": request.user.team.name}
+        except:  return {'thing': uname}
     else:
         uname = "NONE"
-
-    try:
-        return {'thing': uname, 'secret_key': request.user.team.secret_key, 'players': str(request.user.team.players)}
-    except:
         return {'thing': uname}

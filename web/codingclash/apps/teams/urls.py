@@ -14,9 +14,9 @@ class JoinForm(forms.Form):
     secret = forms.CharField(label="Secret Key", max_length = 32)
 
 class CreateForm(forms.Form):
-    name = forms.CharField(label="Group Name", max_length = 32)
+    name = forms.CharField(label="Team Name", max_length = 32)
 
-def join_team(request):
+def join(request):
     if request.method == 'POST':
         form = JoinForm(request.POST)
         if form.is_valid():
@@ -25,11 +25,11 @@ def join_team(request):
                 tm=Team.objects.get(pk=int(secret))
                 user = get_user_model()
 
-                tm.players.append(user)
+                #tm.players.append(user)
 
                 user.team = tm
 
-                user.team.save()
+                #user.team.save()
 
             except:
                 return redirect('/join')
@@ -39,22 +39,22 @@ def join_team(request):
     return render(request, f"teams/join.html", {'form': form})
 
 
-def create_team(request):
+def create(request):
     if request.method == 'POST':
         form = CreateForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data.get('name')
-            tm = models.Team(name=name)
+            k = int(''.join(random.choice('0123456789') for i in range(16)))
+            tm = models.Team(name=name, pk=k)
             user = get_user_model()
 
-            tm.players.append(user)
+            #tm.players.append(user)
 
             user.team = tm
 
             #user.team.save()
-            user.team.pk = user.team.secret_key
 
-            return redirect('/')
+            return redirect('/info')
     else:
         form = CreateForm()
     return render(request, f"teams/create.html", {'form': form})
@@ -64,8 +64,8 @@ def default(request):
 
 
 urlpatterns = [
-    path("join/", join_team, name="join"),
-    path("create/", create_team, name="create"),
+    path("join/", join, name="join"),
+    path("create/", create, name="create"),
     path("info/", views.info, name="info"),
     path("submission/", views.submission, name="submission"),
     path("history/", views.history, name="history"),

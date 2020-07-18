@@ -7,17 +7,16 @@ class Team(models.Model):
     name = models.CharField(max_length=100)
     rank = models.IntegerField(default=-1)
     elo = models.IntegerField(default=0)
-    secret_key = int(''.join(random.choice('0123456789') for i in range(16)))
+    #secret_key = models.IntegerField(default=0)
     
-    players = []
+    #players = []
 
     @property
     def display_name(self):
         return self.name
-
+        
     def get_latest_submission(self):
         print(self.submission_set)
-
 
     def get_displayable(self):
         return {

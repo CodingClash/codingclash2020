@@ -1,6 +1,6 @@
 {% extends base_template_name %}
 {% block title %}CodingClash: Team Info{% endblock %}
 {% block main %}
-{{ secret_key }}
-{{ players }}
+<p>{{ name }}</p>
+<input type="text" value={{ secret_key }} readonly>
 {% endblock %}

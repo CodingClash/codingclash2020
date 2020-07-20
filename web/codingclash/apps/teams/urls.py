@@ -23,8 +23,9 @@ def join(request):
             teams = Team.objects.filter(secret=secret)
             assert(len(teams) <= 1)
             if teams:
-                user = get_user_model()
+                user = request.user
                 user.team = teams[0]
+                user.save()
                 return redirect('/')
             messages.error(request, "Error, that secret key is not recognized")
             return redirect('/join')
@@ -46,9 +47,10 @@ def create(request):
                     k = ''.join(random.choice('0123456789') for i in range(16))
 
                 team = Team(name=name, secret=k)
-                user = get_user_model()
+                user = request.user
                 team.save()
                 user.team = team
+                user.save()
                 return redirect('/info')
     else:
         form = CreateForm()

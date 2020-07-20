@@ -1,4 +1,4 @@
-SECRET_KEY = 'a88&*r)a^fr6&085ousi+#n@ib-xncm-=!e$my(*qq#wd-usw+'
+SECRET_KEY = ''
 
 DB_NAME = 'codingclash'
 DB_USER = 'codingclash'

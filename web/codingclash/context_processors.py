@@ -16,8 +16,9 @@ def context_var(request):
     if request.user.is_authenticated:
         uname = request.user.username
         try:
-            return {'thing': uname, "secret_key": request.user.team.pk, "name": request.user.team.name}
-        except:  return {'thing': uname}
+            return {'thing': uname, "secret_key": request.user.team.secret, "name": request.user.team.name}
+        except:
+            return {'thing': uname}
     else:
         uname = "NONE"
         return {'thing': uname}

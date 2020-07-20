@@ -1,12 +1,11 @@
 from django.urls import path
-from django.shortcuts import render
-from django.contrib.auth.models import Group
 from django import forms
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 
 import random
-from . import models
+from .models import Team
 from . import views
 
 app_name = "teams"
@@ -21,19 +20,14 @@ def join(request):
         form = JoinForm(request.POST)
         if form.is_valid():
             secret = form.cleaned_data.get('secret')
-            try:
-                tm=Team.objects.get(pk=int(secret))
+            teams = Team.objects.filter(secret=secret)
+            assert(len(teams) <= 1)
+            if teams:
                 user = get_user_model()
-
-                #tm.players.append(user)
-
-                user.team = tm
-
-                #user.team.save()
-
-            except:
-                return redirect('/join')
-            return redirect('/')
+                user.team = teams[0]
+                return redirect('/')
+            messages.error(request, "Error, that secret key is not recognized")
+            return redirect('/join')
     else:
         form = JoinForm()
     return render(request, f"teams/join.html", {'form': form})
@@ -44,17 +38,18 @@ def create(request):
         form = CreateForm(request.POST)
         if form.is_valid():
             name = form.cleaned_data.get('name')
-            k = int(''.join(random.choice('0123456789') for i in range(16)))
-            tm = models.Team(name=name, pk=k)
-            user = get_user_model()
+            if Team.objects.filter(name=name):
+                messages.error(request, "Error, that name is already chosen")
+            else:
+                k = ''.join(random.choice('0123456789') for i in range(16))
+                while Team.objects.filter(secret=k):
+                    k = ''.join(random.choice('0123456789') for i in range(16))
 
-            #tm.players.append(user)
-
-            user.team = tm
-
-            #user.team.save()
-
-            return redirect('/info')
+                team = Team(name=name, secret=k)
+                user = get_user_model()
+                team.save()
+                user.team = team
+                return redirect('/info')
     else:
         form = CreateForm()
     return render(request, f"teams/create.html", {'form': form})

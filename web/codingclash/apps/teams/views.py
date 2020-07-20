@@ -7,7 +7,7 @@ from ..games.tasks import play_game
 
 
 def info(request):
-    return render(request, "teams/info.html")
+    return render(request, "teams/info.html", {"secret": request.user.team.secret})
 
 
 def create_submission(request):

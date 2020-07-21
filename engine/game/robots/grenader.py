@@ -23,3 +23,4 @@ class Grenader(Moveable, Attackable, Stunnable, Robot):
         Robot.run(self)
         Moveable.run(self)
         Attackable.run(self)
+        Stunnable.run(self)

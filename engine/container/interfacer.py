@@ -89,6 +89,9 @@ class Interfacer:
     def sense(self):
         return self.moderator.sense(self.robot)
 
+    def sense_radius(self, radius):
+        return self.moderator.sense(self.robot, radius)
+
     def can_sense_location(self, location):
         return self.moderator.can_sense_location(self.robot, location)
 

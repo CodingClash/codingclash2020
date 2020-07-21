@@ -1,12 +1,17 @@
 {% extends base_template_name %}
 {% block title %}CodingClash: Submit Code{% endblock %}
 {% block main %}
-<h1 class="pb-4">Code Submission</h1>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{form.as_p}}
-    <input id="submit" class="temp btn btn-primary" type="submit" value="Submit" accesskey="s" title="Click to submit your code.">
-</form>
-
+<div class="card">
+    <div class="header">
+        <h4 class="title">Code Submission</h4>
+    </div>
+    <div class="content">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input id="submit" class="temp btn btn-primary" type="submit" value="Submit" accesskey="s" title="Click to submit your code.">
+        </form>
+    </div>
+</div>
 {% endblock %}

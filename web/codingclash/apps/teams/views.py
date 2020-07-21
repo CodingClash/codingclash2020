@@ -1,13 +1,22 @@
 import json
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 
 from ..games.models import *
 from ..games.tasks import play_game
 
+class LeaveForm(forms.Form):
+    pass
 
 def info(request):
-    return render(request, "teams/info.html", {"secret": request.user.team.secret})
+    if request.method == 'POST':
+        form = LeaveForm(request.POST)
+        if form.is_valid():
+            request.user.team = None
+            request.user.save()
+            return redirect('/join')
+    else:
+        return render(request, "teams/info.html", {"secret": request.user.team.secret, "elo":request.user.team.elo, "rank": request.user.team.rank, "players": [u.username for u in request.user.team.users.all()]})
 
 
 def create_submission(request):

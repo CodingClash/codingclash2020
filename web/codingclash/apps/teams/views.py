@@ -16,7 +16,7 @@ def info(request):
             request.user.save()
             return redirect('/join')
     else:
-        return render(request, "teams/info.html", {"secret": request.user.team.secret})
+        return render(request, "teams/info.html", {"secret": request.user.team.secret, "elo":request.user.team.elo, "rank": request.user.team.rank, "players": [u.username for u in request.user.team.users.all()]})
 
 
 def create_submission(request):

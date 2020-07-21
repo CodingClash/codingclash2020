@@ -220,3 +220,13 @@ a.article, a.article:hover {
 .card .content {
     padding: 15px 15px 10px 15px;
 }
+
+.card .title {
+    margin: 0;
+    color: #333333;
+    font-weight: 600;
+}
+
+.card .header {
+    padding: 15px 15px 0;
+}

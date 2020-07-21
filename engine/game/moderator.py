@@ -1,5 +1,6 @@
 import random
 from .team import Team
+from .team_color import TeamColor
 from .helpers import squares_within_distance
 from .robot_type import RobotType
 from . import constants as GameConstants
@@ -22,11 +23,12 @@ class Moderator:
         self.board_height = GameConstants.BOARD_HEIGHT
         self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
         self.ids = set()
+        self.red, self.blue = Team(TeamColor.RED), Team(TeamColor.BLUE)
         self.HQs = { 
-            Team.RED: self.create_hq(Team.RED),
-            Team.BLUE: self.create_hq(Team.BLUE)
+            TeamColor.RED: self.create_hq(self.red),
+            TeamColor.BLUE: self.create_hq(self.blue)
         }
-        self.robots = [self.HQs[Team.RED], self.HQs[Team.BLUE]]
+        self.robots = [self.HQs[TeamColor.RED], self.HQs[TeamColor.BLUE]]
         self.game_over = False
         self.winner = None
         self.debug, self.info = [], []
@@ -105,8 +107,9 @@ class Moderator:
         if robot == RobotType.NONE:
             sensed = SensedRobot(RobotType.NONE, None, None, None)
         else:
-            sensed = SensedRobot(robot.type, robot.team, robot.location, robot.health)
+            sensed = SensedRobot(robot.type, robot.team.color, robot.location, robot.health)
         return sensed
+
 
     def in_between(self, pointa, pointb, pointc):
         dx = pointb[0]-pointa[0]
@@ -152,7 +155,7 @@ class Moderator:
 
     def create_hq(self, team: Team) -> HQ:
         id = random.random()
-        if team == Team.RED:
+        if team.color == TeamColor.RED:
             location = GameConstants.RED_HQ_LOCATION
         else:
             location = GameConstants.BLUE_HQ_LOCATION
@@ -199,10 +202,10 @@ class Moderator:
         target_robot = self.get_robot(target_location)
         if target_robot == RobotType.NONE:
             raise Exception("Enemy robot not found at {}".format(target_location))
-        if target_robot.team == robot.team:
+        if target_robot.team.color == robot.team.color:
             raise Exception("Can't attack teammate at {}".format(target_location))
         for i in self.sense(robot):
-            if i.team != robot.team and self.in_between(robot.location, target_location, i.location):
+            if i.team.color != robot.team.color and self.in_between(robot.location, target_location, i.location):
                 raise Exception("Cannot attack through opponent at {}".format(i.location))
         if not robot.can_attack(target_robot):
             return False
@@ -224,7 +227,7 @@ class Moderator:
         if robot.type == RobotType.HQ:
             self.game_over = True
             #print("Killed", robot.team)
-            self.winner = Team.RED if robot.team == Team.BLUE else Team.BLUE
+            self.winner = TeamColor.RED if robot.team.color == TeamColor.BLUE else TeamColor.BLUE
         location = robot.location
         self.remove_robot(location)
 

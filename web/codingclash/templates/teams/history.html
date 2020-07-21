@@ -13,25 +13,27 @@
 {% endblock %}
 
 {% block main %}
-
-<div>
-    <h1 class="pb-4">Scrimmages</h1>
-
-    <form class="mb-4 form-inline" action="#    " onsubmit="search();">
-        <h5 class>Search Team:</h5>
-        <div class="form-group mx-sm-3 mb-2">
-            <input list="searchOptions" class="form-control" id="searchBox" placeholder="Team Name">
-            <datalist id="searchOptions"></datalist>
-        </div>
-        <button type="submit" class="btn btn-primary mb-2">Search</button>
-    </form>
-    <div id="playBlock" class="d-none mb-4">
-        <button class="btn btn-danger" onclick="requestScrim();">Request scrimmage against <span id="oppName"></span></button>
+<div class="card">
+    <div class="header">
+        <h4 class="title">Scrimmages</h4>
     </div>
-
-
-    <table id="table"></table>
-
+    <div class="content">
+        <form class="mb-4 form-inline" action="#    " onsubmit="search();">
+            <h5 class>Search Team:</h5>
+            <div class="form-group mx-sm-3 mb-2">
+                <input list="searchOptions" class="form-control" id="searchBox" placeholder="Team Name">
+                <datalist id="searchOptions"></datalist>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Search</button>
+        </form>
+        <div id="playBlock" class="d-none mb-4">
+            <button class="btn btn-danger" onclick="requestScrim();">Request scrimmage against <span id="oppName"></span></button>
+        </div>
+    
+    
+        <table id="table"></table>
+    </div>
 </div>
+
 
 {% endblock %}

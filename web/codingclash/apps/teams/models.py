@@ -6,7 +6,7 @@ class Team(models.Model):
 
     name = models.CharField(max_length=100)
     rank = models.IntegerField(default=-1)
-    elo = models.IntegerField(default=0)
+    elo = models.IntegerField(default=1200)
     secret = models.CharField(max_length=16)
 
     @property

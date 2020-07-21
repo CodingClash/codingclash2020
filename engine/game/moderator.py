@@ -85,6 +85,23 @@ class Moderator:
 
         return sensed_list
 
+    def sense_radius(self, robot: Robot, radius):
+        sense_range = radius
+        if sense_range > robot.sense_range:
+            # Can't sense outside of your sensor range
+            return None
+        squares = squares_within_distance(sense_range)
+        robot_location = robot.location
+        sensed_list = []
+
+        for dx, dy in squares:
+            loc = (robot_location[0] + dx, robot_location[1] + dy)
+            sensed = self.sense_location(robot, loc)
+            if sensed and sensed.type != RobotType.NONE:
+                sensed_list.append(sensed)
+
+        return sensed_list
+
     def can_sense_location(self, robot: Robot, location: tuple):
         if not self.inbounds(location):
             return False

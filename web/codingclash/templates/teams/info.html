@@ -1,6 +1,20 @@
 {% extends base_template_name %}
 {% block title %}CodingClash: Team Info{% endblock %}
 {% block main %}
-<p>{{ name }}</p>
-<input type="text" value={{ secret }} readonly>
+<div class="card">
+    <div class="content">
+        <label>Team Name (static): </label>
+        <input type="text" value={{ name }} style="cursor: not-allowed" readonly disabled>
+        <br>
+        <label>Secret Key (static): </label>
+        <input type="text" value={{ secret }} style="cursor: not-allowed" readonly disabled>
+        
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button class="btn btn-primary mb-2" type="submit">Leave Team</button>
+        </form>
+
+    </div>
+</div>
 {% endblock %}

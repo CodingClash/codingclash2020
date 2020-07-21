@@ -28,6 +28,7 @@ class Interfacer:
             'move': lambda loc : self.move(loc),
             'create': lambda robot_type, loc : self.create(robot_type, loc),
             'attack': lambda loc : self.attack(loc),
+            'stun': lambda loc: self.stun(loc),
             'get_blockchain': lambda round_num : self.get_blockchain(round_num),
             'add_to_blockchain': lambda data : self.add_to_blockchain(data),
             'dlog': lambda msg : self.dlog(msg)
@@ -106,8 +107,8 @@ class Interfacer:
     def attack(self, location):
         return self.moderator.attack(self.robot, location)
     
-    def attack(self, location, attack_type):
-        return self.moderator.attack(self.robot, location, attack_type)
+    def stun(self, location):
+        return self.moderator.stun(self.robot, location)
 
     # Blockchain
 

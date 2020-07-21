@@ -45,7 +45,7 @@ class HQ:
 
 
     def run(self):
-        if get_cooldown() == 0:
+        if get_oil() >= GameConstants.GUNNER_COST:
             robot = RobotType.GUNNER
             for dx in range(-1, 2):
                 for dy in range(-1, 2):

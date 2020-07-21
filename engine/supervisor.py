@@ -1,5 +1,5 @@
 # Local imports
-from .game.team import Team
+from .game.team_color import TeamColor
 from .game.moderator import Moderator
 from .game.robot_type import RobotType
 from .container.interfacer import Interfacer
@@ -36,9 +36,13 @@ class Supervisor:
         self.interfacers = []
         self.robot_ids = set()
         # Used for visualization
-        self.robot_to_str = {(Team.RED, RobotType.GUNNER): "G", (Team.RED, RobotType.TANK): "T", (Team.RED, RobotType.HQ): "H",
-							       (Team.BLUE, RobotType.GUNNER): "g", (Team.BLUE, RobotType.TANK): "t", (Team.BLUE, RobotType.HQ): "h",
-								   RobotType.NONE: "n"}
+        self.robot_letter_map = {RobotType.BARRACKS: "S", RobotType.BUILDER: "B", RobotType.GUNNER: "G", RobotType.GRENADER: "E", RobotType.HQ: "H", RobotType.REFINERY: "R", RobotType.TANK: "T", RobotType.TURRET: "U", RobotType.WALL: "W"}
+        self.robot_to_str = {}
+        for robot_type in self.robot_letter_map:
+            letter = self.robot_letter_map[letter]
+            self.robot_to_str[(TeamColor.RED, robot_type)] = letter.upper()
+            self.robot_to_str[(TeamColor.BLUE, robot_type)] = letter.lower()
+        self.robot_to_str[RobotType.NONE] = "n"
         self.boards = []
 
 
@@ -52,7 +56,7 @@ class Supervisor:
         for robot in self.moderator.robots:
             if robot.id in self.robot_ids:
                 continue
-            code = self.code1 if robot.team == Team.BLUE else self.code2
+            code = self.code1 if robot.team.color == TeamColor.BLUE else self.code2
             interfacer = Interfacer(self.moderator, code, robot, robot.id)
             interfacer.init_code()
             self.interfacers.append(interfacer)
@@ -71,7 +75,7 @@ class Supervisor:
                 with time_limit(GameConstants.TIME_LIMIT):
                     interfacer.run()
             except Exception as e:
-                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team, interfacer.robot.type, e)
+                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
                 print(error_str)
                 self.errors.append(error_str)
             signal.alarm(0)
@@ -98,7 +102,7 @@ class Supervisor:
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
-        print("Winner: {}".format(self.filename1 if self.moderator.winner == Team.BLUE else self.filename2))
+        print("Winner: {}".format(self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2))
 
     
     def get_replayable_board(self, moderator_board):
@@ -108,7 +112,7 @@ class Supervisor:
             for robot in row:
                 piece = self.robot_to_str[RobotType.NONE]
                 if robot != RobotType.NONE:
-                    piece = self.robot_to_str[(robot.team, robot.type)]
+                    piece = self.robot_to_str[(robot.team.color, robot.type)]
                 temp.append(piece)
             board.append(temp)
         return board
@@ -132,5 +136,5 @@ class Supervisor:
             file.write("|blue: {}\n".format(self.filename1))
             file.write("|red: {}\n".format(self.filename2))
             file.write("\n".join(data))
-            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == Team.BLUE else self.filename2))
-            file.write("\n|Winner color: {}".format("blue" if self.moderator.winner == Team.BLUE else "red"))
+            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2))
+            file.write("\n|Winner color: {}".format("blue" if self.moderator.winner == TeamColor.BLUE else "red"))

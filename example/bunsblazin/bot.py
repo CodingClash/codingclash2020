@@ -83,17 +83,21 @@ class HQ:
         self.team = get_team()
         self.location = get_location()
         self.opp_hq = [GameConstants.BOARD_HEIGHT-self.location[0], GameConstants.BOARD_WIDTH-self.location[1]]
+        self.costs = {
+            RobotType.TANK: GameConstants.TANK_COST,
+            RobotType.GUNNER: GameConstants.GUNNER_COST
+        }
+
 
     def run(self):
-        if get_cooldown() == 0:
-            if len(self.spawned) < 5:
-                robot = RobotType.TANK
-            elif self.spawned[len(self.spawned)-5:] == [RobotType.TANK] * 5:
-                robot = RobotType.GUNNER
-            elif self.spawned[len(self.spawned)-3:] == [RobotType.GUNNER] * 3: 
-                robot = RobotType.TANK
-            else:
-                robot = self.spawned[-1]
+        to_spawn = self.spawned[-1]
+        if len(self.spawned) < 5:
+            to_spawn = RobotType.TANK
+        elif self.spawned[len(self.spawned)-5:] == [RobotType.TANK] * 5:
+            to_spawn = RobotType.GUNNER
+        elif self.spawned[len(self.spawned)-3:] == [RobotType.GUNNER] * 3: 
+            to_spawn = RobotType.TANK
+        if get_oil() >= self.costs[to_spawn]:
             dxdy = sorted([(x, y) for x in range(-1,2) for y in range(-1, 2)], key = lambda d: self.distance_2((self.location[0]+d[0], self.location[1]+d[1]), tuple(self.opp_hq)))
             for (dx, dy) in dxdy:
                 if dx == 0 and dy == 0:

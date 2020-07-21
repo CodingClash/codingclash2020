@@ -16,16 +16,16 @@ class Stunnable(Robot):
 
     def can_stun(self, target_robots):
         if not self.can_perform_action():
-            return []
+            return [], "Robot is currently stunned"
         if self.attacked or self.moved or self.spawned:
-            return []
+            return [], "Robot already performed another action this turn"
         if self.team.oil < self.stun_cost:
-            return []
+            return [], "The robot's team doesn't have enough oil to attack"
         filtered = []
         for target in target_robots:
             if dist(self.location, target.loc) <= self.stun_range:
                 filtered.append(target)
-        return filtered
+        return filtered, None
 
 
     def stun(self):

@@ -6,3 +6,4 @@ from .refinery import Refinery
 from .tank import Tank
 from .turret import Turret
 from .wall import Wall
+from .sensed_robot import SensedRobot

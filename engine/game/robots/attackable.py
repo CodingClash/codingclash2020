@@ -6,7 +6,7 @@ class Attackable(Robot):
         self.attackable = True
         self.damage = damage
         self.attack_range = attack_range
-        self.attack_cost = attack_range
+        self.attack_cost = attack_cost
         self.attack_aoe = attack_aoe
 
 

@@ -82,7 +82,7 @@ class Interfacer:
         return self.robot.team.oil
     
     def is_stunned(self):
-        return self.robot.stun_rounds > 0
+         return self.robot.stun_rounds > 0
 
     # Sensing
 

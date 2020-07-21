@@ -13,6 +13,7 @@ def info(request):
         form = LeaveForm(request.POST)
         if form.is_valid():
             request.user.team = None
+            request.user.save()
             return redirect('/join')
     else:
         return render(request, "teams/info.html", {"secret": request.user.team.secret})

@@ -81,7 +81,6 @@ class Interfacer:
             return self.robot.cooldown
         print(str(self.robot.type) + " has no method 'get_cooldown'")
         raise Exception
-        return None
 
     # Sensing
 
@@ -119,4 +118,4 @@ class Interfacer:
 
     def dlog(self, message):
         self.moderator.dlog(self.robot, message)
-        return
+

@@ -3,7 +3,18 @@ from .team import Team
 from .helpers import squares_within_distance
 from .robot_type import RobotType
 from . import constants as GameConstants
-from .robots import Robot, HQ, Gunner, Tank, SensedRobot
+from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenade, SensedRobot
+
+ROBOT_MAP = {
+    RobotType.REFINERY: Refinery,
+    RobotType.BARRACKS: Barracks,
+    RobotType.TURRET: Turret,
+    RobotType.BUILDER: Builder,
+    RobotType.GUNNER: Gunner,
+    RobotType.TANK: Tank,
+    RobotType.GRENADE: Grenade,
+}
+
 
 class Moderator:
     def __init__(self):
@@ -126,18 +137,17 @@ class Moderator:
     def move(self, robot: Robot, location: tuple) -> bool:
         if not robot.moveable:
             raise Exception("Robot of type {} is not moveable".format(robot.type))
-        if robot.performed_action:
-            raise Exception("This robot already performed an action")
-        if not self.inbounds(location):
-            raise Exception("Given location of {} is not inbounds".format(location))
         if self.get_robot(location) != RobotType.NONE:
             raise Exception("Robot is present at {} location".format(location))
+        if not self.inbounds(location):
+            raise Exception("Given location of {} is not inbounds".format(location))
+        if not robot.can_move(location):
+            raise Exception("Can't move to {} for some other reason".format(location))
         curr_location = robot.location
-        if robot.move(location):
-            robot.performed_action = True
-            self.put_robot(robot, location)
-            self.remove_robot(curr_location)
-            return True
+        robot.move(location)
+        self.put_robot(robot, location)
+        self.remove_robot(curr_location)
+        return True
     
 
     def create_hq(self, team: Team) -> HQ:
@@ -160,26 +170,20 @@ class Moderator:
             raise Exception("Target creation location of {} is not inbounds".format(location))
         if self.location_occupied(location):
             raise Exception("Target creation location of {} is occupied".format(location))
-        if robot.type != RobotType.HQ:
-            raise Exception("Robot of type {} can't create other robots".format(robot_type))
-        assert(robot == self.HQs[team])
         if not robot.can_spawn_robot(robot_type, location):
-            raise Exception("Some other reason")
+            raise Exception("Some other reason as to why you can't spawn {} at {}".format(robot_type, location))
 
+        robot.spawn(robot_type)
         # Spawn the new robot
-        new_robot = None
+        assert(robot_type in ROBOT_MAP)
+        new_robot_type = ROBOT_MAP[robot_type]
         id = random.random()
-        if robot_type == RobotType.TANK:
-            new_robot = Tank(id, location, team)
-        elif robot_type == RobotType.GUNNER:
-            new_robot = Gunner(id, location, team)
-        else:
-            raise Exception("Tryna create an unknown robot type")
+        new_robot = new_robot_type(id, location, team)
         
         self.ids.add(id)
         self.put_robot(new_robot, location)
-        self.robots.append(new_robot)
-        robot.spawn(robot_type)
+        if new_robot.type != RobotType.WALL:
+            self.robots.append(new_robot)
         return True
 
 
@@ -192,8 +196,6 @@ class Moderator:
             raise Exception("Target attack location of {} is not on the map".format(target_location))
         if not robot.attackable:
             raise Exception("Robot of type {} can't attack".format(robot.type))
-        if robot.performed_action:
-            raise Exception("This robot already performed an action")
         target_robot = self.get_robot(target_location)
         if target_robot == RobotType.NONE:
             raise Exception("Enemy robot not found at {}".format(target_location))
@@ -202,8 +204,10 @@ class Moderator:
         for i in self.sense(robot):
             if i.team != robot.team and self.in_between(robot.location, target_location, i.location):
                 raise Exception("Cannot attack through opponent at {}".format(i.location))
+        if not robot.can_attack(target_robot):
+            return False
         # Actually attack
-        robot.performed_action = True
+        robot.attack(target_location)
         target_robot.health -= robot.damage
         if target_robot.health <= 0:
             self.kill(target_robot)
@@ -227,7 +231,7 @@ class Moderator:
 
     """
     Adds message to blockchain board
-    @param data: a list of length 3 w/ bytes (ints from 0 to 255) 
+    @param data: a list of length 5 w/ bytes (ints from 0 to 255) 
     """
     def add_to_blockchain(self, robot: Robot, data: list):
         if robot.added_blockchain:
@@ -247,4 +251,3 @@ class Moderator:
         if round_num >= len(self.ledger) - 1:
             raise Exception("Round {} has not finished yet".format(round_num))
         return self.ledger[round_num].copy()
-

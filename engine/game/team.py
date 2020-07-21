@@ -1,5 +1,7 @@
-from enum import Enum, auto
+from .team_color import TeamColor
 
-class Team(Enum):
-    RED = auto()
-    BLUE = auto()
+class Team:
+
+    def __init__(self, color):
+        self.color = color
+        self.oil = 0

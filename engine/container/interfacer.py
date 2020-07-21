@@ -22,6 +22,7 @@ class Interfacer:
             'get_health': lambda : self.get_health(),
             'get_location': lambda : self.get_location(),
             'get_oil': lambda : self.get_oil(),
+            'is_stunned': lambda : self.is_stunned(),
             'sense': lambda : self.sense(),
             'can_sense_location': lambda loc : self.can_sense_location(loc),
             'sense_location': lambda loc : self.sense_location(loc),
@@ -79,6 +80,9 @@ class Interfacer:
     
     def get_oil(self):
         return self.robot.team.oil
+    
+    def is_stunned(self):
+        return self.robot.stun_rounds > 0
 
     # Sensing
 

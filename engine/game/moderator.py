@@ -225,10 +225,10 @@ class Moderator:
     """
 
     def stun(self, robot: Robot, target_location: tuple) -> bool:
-        if not self.inbounds(target_location):
-            raise Exception("Target attack location of {} is not on the map".format(target_location))
         if not robot.stunnable:
             raise Exception("Robot of type {} can't stun".format(robot.type))
+        if not self.inbounds(target_location):
+            raise Exception("Target attack location of {} is not on the map".format(target_location))
 
         target_robots = []
         squares = squares_within_distance(robot.stun_aoe)

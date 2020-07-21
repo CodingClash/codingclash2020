@@ -21,13 +21,15 @@ class Interfacer:
             'get_type': lambda : self.get_type(),
             'get_health': lambda : self.get_health(),
             'get_location': lambda : self.get_location(),
-            'get_cooldown': lambda : self.get_cooldown(),
+            'get_oil': lambda : self.get_oil(),
+            'is_stunned': lambda : self.is_stunned(),
             'sense': lambda : self.sense(),
             'can_sense_location': lambda loc : self.can_sense_location(loc),
             'sense_location': lambda loc : self.sense_location(loc),
             'move': lambda loc : self.move(loc),
             'create': lambda robot_type, loc : self.create(robot_type, loc),
             'attack': lambda loc : self.attack(loc),
+            'stun': lambda loc: self.stun(loc),
             'get_blockchain': lambda round_num : self.get_blockchain(round_num),
             'add_to_blockchain': lambda data : self.add_to_blockchain(data),
             'dlog': lambda msg : self.dlog(msg)
@@ -76,11 +78,11 @@ class Interfacer:
     def get_location(self):
         return self.robot.location
     
-    def get_cooldown(self):
-        if self.robot.type == RobotType.HQ:
-            return self.robot.cooldown
-        print(str(self.robot.type) + " has no method 'get_cooldown'")
-        raise Exception
+    def get_oil(self):
+        return self.robot.team.oil
+    
+    def is_stunned(self):
+         return self.robot.stun_rounds > 0
 
     # Sensing
 
@@ -109,8 +111,8 @@ class Interfacer:
     def attack(self, location):
         return self.moderator.attack(self.robot, location)
     
-    def attack(self, location, attack_type):
-        return self.moderator.attack(self.robot, location, attack_type)
+    def stun(self, location):
+        return self.moderator.stun(self.robot, location)
 
     # Blockchain
 

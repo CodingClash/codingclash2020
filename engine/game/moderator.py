@@ -154,8 +154,11 @@ class Moderator:
             raise Exception("Robot is present at {} location".format(location))
         if not self.inbounds(location):
             raise Exception("Given location of {} is not inbounds".format(location))
-        if not robot.can_move(location):
-            raise Exception("Can't move to {} for some other reason".format(location))
+
+        can_move, reason = robot.can_move(location)
+        if not can_move:
+            raise Exception(reason)
+
         curr_location = robot.location
         robot.move(location)
         self.put_robot(robot, location)
@@ -179,12 +182,15 @@ class Moderator:
     """
 
     def create(self, robot: Robot, robot_type: RobotType, team: Team, location: tuple) -> bool:
+        if not robot.spawnable:
+            raise Exception("Robot of type {} cannot spawn other robots".format(robot.type))
         if not self.inbounds(location):
             raise Exception("Target creation location of {} is not inbounds".format(location))
         if self.location_occupied(location):
             raise Exception("Target creation location of {} is occupied".format(location))
-        if not robot.can_spawn_robot(robot_type, location):
-            raise Exception("Some other reason as to why you can't spawn {} at {}".format(robot_type, location))
+        can_spawn, reason = robot.can_spawn(robot_type, location)
+        if not can_spawn:
+            raise Exception(reason)
 
         robot.spawn(robot_type)
         # Spawn the new robot
@@ -225,7 +231,9 @@ class Moderator:
                     worked = False
             if worked:
                 target_robots.append(target_robot)
-        filtered = robot.can_attack(target_robots):
+        filtered, reason = robot.can_attack(target_robots)
+        if reason:
+            raise Exception(reason)
         if not filtered:
             raise Exception("No valid enemy robots to attack around that location {}".format(target_location))
 
@@ -242,10 +250,10 @@ class Moderator:
     """
 
     def stun(self, robot: Robot, target_location: tuple) -> bool:
-        if not self.inbounds(target_location):
-            raise Exception("Target attack location of {} is not on the map".format(target_location))
         if not robot.stunnable:
             raise Exception("Robot of type {} can't stun".format(robot.type))
+        if not self.inbounds(target_location):
+            raise Exception("Target attack location of {} is not on the map".format(target_location))
 
         target_robots = []
         squares = squares_within_distance(robot.stun_aoe)
@@ -262,9 +270,11 @@ class Moderator:
                     worked = False
             if worked:
                 target_robots.append(target_robot)
-        filtered = robot.can_stun(target_robots):
+        filtered, reason = robot.can_stun(target_robots)
+        if reason:
+            raise Exception(reason)
         if not filtered:
-            raise Exception("No valid enemy robots to attack around that location {}".format(target_location))
+            raise Exception("No valid enemy robots to stun around that location {}".format(target_location))
 
         # Actually attack
         robot.stun()

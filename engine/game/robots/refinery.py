@@ -2,6 +2,7 @@ from .. import constants as GameConstants
 from ..robot_type import RobotType
 from ..helpers import dist
 from .robot import Robot
+from .spawnable import Spawnable
 
 class Refinery(Spawnable, Robot):
     def __init__(self, id, location, team):

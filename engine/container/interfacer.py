@@ -105,6 +105,9 @@ class Interfacer:
     
     def attack(self, location):
         return self.moderator.attack(self.robot, location)
+    
+    def attack(self, location, attack_type):
+        return self.moderator.attack(self.robot, location, attack_type)
 
     # Blockchain
 

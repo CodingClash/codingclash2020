@@ -14,7 +14,7 @@ class Gunner(Moveable, Attackable, Robot):
                          GameConstants.GUNNER_HEALTH, 
                          GameConstants.GUNNER_SENSE_RANGE)
         Moveable.__init__(self, GameConstants.GUNNER_SPEED)
-        Attackable.__init__(self, GameConstants.GUNNER_DAMAGE, GameConstants.GUNNER_ATTACK_RANGE, GameConstants.GUNNER_ATTACK_COST)
+        Attackable.__init__(self, GameConstants.GUNNER_DAMAGE, GameConstants.GUNNER_ATTACK_RANGE, GameConstants.GUNNER_ATTACK_COST, GameConstants.GUNNER_AOE)
     
 
     def run(self):

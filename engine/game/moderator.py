@@ -4,7 +4,7 @@ from .team_color import TeamColor
 from .helpers import squares_within_distance
 from .robot_type import RobotType
 from . import constants as GameConstants
-from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenade, SensedRobot
+from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenader, SensedRobot
 
 ROBOT_MAP = {
     RobotType.REFINERY: Refinery,
@@ -13,7 +13,7 @@ ROBOT_MAP = {
     RobotType.BUILDER: Builder,
     RobotType.GUNNER: Gunner,
     RobotType.TANK: Tank,
-    RobotType.GRENADE: Grenade,
+    RobotType.GRENADER: Grenader,
 }
 
 
@@ -199,21 +199,32 @@ class Moderator:
             raise Exception("Target attack location of {} is not on the map".format(target_location))
         if not robot.attackable:
             raise Exception("Robot of type {} can't attack".format(robot.type))
-        target_robot = self.get_robot(target_location)
-        if target_robot == RobotType.NONE:
-            raise Exception("Enemy robot not found at {}".format(target_location))
-        if target_robot.team.color == robot.team.color:
-            raise Exception("Can't attack teammate at {}".format(target_location))
-        for i in self.sense(robot):
-            if i.team.color != robot.team.color and self.in_between(robot.location, target_location, i.location):
-                raise Exception("Cannot attack through opponent at {}".format(i.location))
-        if not robot.can_attack(target_robot):
-            return False
+
+        target_robots = []
+        squares = squares_within_distance(robot.attack_aoe)
+        for dx, dy in squares:
+            loc = (target_location[0] + dx, target_location[1] + dy)
+            worked = True
+            target_robot = self.get_robot(loc)
+            if target_robot == RobotType.NONE:
+                worked = False
+            if target_robot.team.color == robot.team.color:
+                worked = False
+            for i in self.sense(robot):
+                if i.team.color != robot.team.color and self.in_between(robot.location, loc, i.location):
+                    worked = False
+            if worked:
+                target_robots.append(target_robot)
+        filtered = robot.can_attack(target_robots):
+        if not filtered:
+            raise Exception("No valid enemy robots to attack around that location {}".format(target_location))
+        
         # Actually attack
-        robot.attack(target_location)
-        target_robot.health -= robot.damage
-        if target_robot.health <= 0:
-            self.kill(target_robot)
+        robot.attack()
+        for target_robot in filtered:
+            target_robot.health -= robot.damage
+            if target_robot.health <= 0:
+                self.kill(target_robot)
 
 
     """

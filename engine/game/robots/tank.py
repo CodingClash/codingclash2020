@@ -14,7 +14,7 @@ class Tank(Moveable, Attackable, Robot):
                          GameConstants.TANK_HEALTH, 
                          GameConstants.TANK_SENSE_RANGE)
         Moveable.__init__(self, GameConstants.TANK_SPEED)
-        Attackable.__init__(self, GameConstants.TANK_DAMAGE, GameConstants.TANK_ATTACK_RANGE, GameConstants.TANK_ATTACK_COST)
+        Attackable.__init__(self, GameConstants.TANK_DAMAGE, GameConstants.TANK_ATTACK_RANGE, GameConstants.TANK_ATTACK_COST, GameConstants.TANK_AOE)
 
 
     def run(self):

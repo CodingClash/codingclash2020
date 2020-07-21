@@ -9,5 +9,5 @@ class RobotType(Enum):
     BUILDER = auto()
     TANK = auto()
     GUNNER = auto()
-    GRENADE = auto()
+    GRENADER = auto()
     WALL = auto()

@@ -12,7 +12,7 @@ class Turret(Attackable, Robot):
                          RobotType.TURRET, 
                          GameConstants.TURRET_HEALTH, 
                          GameConstants.TURRET_SENSE_RANGE)
-        Attackable.__init__(self, GameConstants.TURRET_DAMAGE, GameConstants.TURRET_ATTACK_RANGE, GameConstants.TURRET_ATTACK_COST)
+        Attackable.__init__(self, GameConstants.TURRET_DAMAGE, GameConstants.TURRET_ATTACK_RANGE, GameConstants.TURRET_ATTACK_COST, GameConstants.TURRET_AOE)
 
 
     def run(self):

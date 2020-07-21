@@ -9,7 +9,7 @@ class HQ:
         self.opp_hq = [GameConstants.BOARD_HEIGHT - self.location[0], GameConstants.BOARD_WIDTH - self.location[1]]
 
     def run(self):
-        if get_cooldown() == 0:
+        if True:#get_cooldown() == 0:
             robot = RobotType.BUILDER
             if len(self.spawned) > 3:
                 return

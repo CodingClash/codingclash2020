@@ -39,7 +39,7 @@ class Supervisor:
         self.robot_letter_map = {RobotType.BARRACKS: "S", RobotType.BUILDER: "B", RobotType.GUNNER: "G", RobotType.GRENADER: "E", RobotType.HQ: "H", RobotType.REFINERY: "R", RobotType.TANK: "T", RobotType.TURRET: "U", RobotType.WALL: "W"}
         self.robot_to_str = {}
         for robot_type in self.robot_letter_map:
-            letter = self.robot_letter_map[letter]
+            letter = self.robot_letter_map[robot_type]
             self.robot_to_str[(TeamColor.RED, robot_type)] = letter.upper()
             self.robot_to_str[(TeamColor.BLUE, robot_type)] = letter.lower()
         self.robot_to_str[RobotType.NONE] = "n"

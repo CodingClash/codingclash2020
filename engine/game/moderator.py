@@ -192,9 +192,9 @@ class Moderator:
         if not can_spawn:
             raise Exception(reason)
 
-        robot.spawn(robot_type)
+        robot.spawn(robot_type, location)
         # Spawn the new robot
-        assert (robot_type in ROBOT_MAP)
+        assert(robot_type in ROBOT_MAP)
         new_robot_type = ROBOT_MAP[robot_type]
         id = random.random()
         new_robot = new_robot_type(id, location, team)

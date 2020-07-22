@@ -1,6 +1,6 @@
 #python run.py example/gunsblazin example/bunsblazin --save timertest.txt
 #cd /cygdrive/c/Users/Srikar/Documents/Projects/CodingClash/CodingClash2020
-#python3 run.py example/gunsblazin example/bunsblazin --save timertest.txt
+#python3 run.py example/new_bot example/new_bot --save testing.txt
 
 #https://docs.google.com/document/d/1EOVxW90hnHGjP_ymLJZFV8mYr4PDA5B82qLAjYh-J_k/edit
 

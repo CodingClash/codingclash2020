@@ -30,7 +30,7 @@ class Spawnable(Robot):
         return True, None
 
 
-    def attack(self, robot_type, target_location):
+    def spawn(self, robot_type, target_location):
         self.team.oil -= self.costs[robot_type]
         self.spawned = True
         self.num_spawned += 1

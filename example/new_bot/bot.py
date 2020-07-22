@@ -9,22 +9,26 @@ class HQ:
         self.opp_hq = [GameConstants.BOARD_HEIGHT - self.location[0], GameConstants.BOARD_WIDTH - self.location[1]]
 
     def run(self):
-        if True:#get_cooldown() == 0:
-            robot = RobotType.BUILDER
-            if len(self.spawned) > 3:
-                return
+        self.try_create()
 
-            dxdy = sorted([(x, y) for x in range(-1, 2) for y in range(-1, 2)],
-                          key=lambda d: self.distance_2((self.location[0] + d[0], self.location[1] + d[1]),
-                                                        tuple(self.opp_hq)))
-            for (dx, dy) in dxdy:
-                if dx == 0 and dy == 0:
-                    continue
-                loc = (self.location[0] + dx, self.location[1] + dy)
-                if sense_location(loc).type == RobotType.NONE:
-                    self.spawned.append(robot)
-                    create(robot, loc)
-                    return
+    def try_create(self):
+        robot = RobotType.BUILDER
+        if len(self.spawned) > 3:
+            return False
+        if get_oil() < GameConstants.BUILDER_COST:
+            return False
+
+        dxdy = sorted([(x, y) for x in range(-1, 2) for y in range(-1, 2)],
+                      key=lambda d: self.distance_2((self.location[0] + d[0], self.location[1] + d[1]),
+                                                    tuple(self.opp_hq)))
+        for (dx, dy) in dxdy:
+            if dx == 0 and dy == 0:
+                continue
+            loc = (self.location[0] + dx, self.location[1] + dy)
+            if sense_location(loc).type == RobotType.NONE:
+                self.spawned.append(robot)
+                create(robot, loc)
+                return True
 
     def distance_2(self, p1, p2):
         return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2
@@ -45,11 +49,17 @@ class Builder:
 
     def try_create(self):
         robot = RobotType.REFINERY
+        cost = GameConstants.REFINERY_COST
         if len(self.spawned) == 1:
             robot = RobotType.BARRACKS
+            cost = GameConstants.BARRACKS_COST
         elif len(self.spawned) == 2:
             robot = RobotType.TURRET
+            cost = GameConstants.TURRET_COST
         elif len(self.spawned) != 0:
+            return False
+
+        if get_oil() < cost:
             return False
 
         dxdy = sorted([(x, y) for x in range(-1, 2) for y in range(-1, 2)],
@@ -60,8 +70,8 @@ class Builder:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
             if sense_location(loc).type == RobotType.NONE:
-                create(robot, loc)
                 self.spawned.append(robot)
+                create(robot, loc)
                 return True
 
     def try_move(self):
@@ -86,6 +96,8 @@ class Gunner:
         # self.opp_hq = [GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1]]
 
     def try_attack(self):
+        if get_oil() < GameConstants.GUNNER_ATTACK_COST:
+            return False
         attackable = sorted(sense(), key=lambda e: self.distance_2(e.location, self.location))
         for curr in attackable:
             if curr.team == get_team():
@@ -124,6 +136,8 @@ class Tank:
         # self.opp_hq = [GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1]]
 
     def try_attack(self):
+        if get_oil() < GameConstants.TANK_ATTACK_COST:
+            return False
         attackable = sorted(sense(), key=lambda e: self.distance_2(e.location, self.location))
         for curr in attackable:
             if curr.team == get_team():
@@ -163,6 +177,8 @@ class Grenader:
         # self.opp_hq = [GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1]]
 
     def try_attack(self):
+        if get_oil() < GameConstants.GRENADER_DAMAGE_COST:
+            return False
         targets = sorted(sense(), key=lambda e: self.distance_2(e.location, self.location))
         for curr in targets:
             if curr.team == get_team():
@@ -173,6 +189,8 @@ class Grenader:
         return False
 
     def try_stun(self):
+        if get_oil() < GameConstants.GRENADER_STUN_COST:
+            return False
         targets = sorted(sense(), key=lambda e: self.distance_2(e.location, self.location))
         for curr in targets:
             if curr.team == get_team():
@@ -222,11 +240,17 @@ class Barracks:
 
     def try_create(self):
         robot = RobotType.GUNNER
+        cost = GameConstants.GUNNER_COST
         if len(self.spawned) == 1:
             robot = RobotType.TANK
+            cost = GameConstants.TANK_COST
         elif len(self.spawned) == 2:
             robot = RobotType.GRENADER
+            cost = GameConstants.GRENADER_COST
         elif len(self.spawned) != 0:
+            return False
+
+        if get_oil() < cost:
             return False
 
         dxdy = [(x, y) for x in range(-1, 2) for y in range(-1, 2)]
@@ -271,6 +295,8 @@ class Turret:
             return
 
     def try_attack(self):
+        if get_oil() < GameConstants.TURRET_ATTACK_COST:
+            return False
         targets = sorted(sense(), key=lambda e: self.distance_2(e.location, self.location))
         for curr in targets:
             if curr.team == get_team():

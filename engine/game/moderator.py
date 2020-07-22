@@ -102,10 +102,12 @@ class Moderator:
 
         return sensed_list
 
+
     def can_sense_location(self, robot: Robot, location: tuple):
         if not self.inbounds(location):
             return False
         return robot.can_sense_location(location)
+
 
     def sense_location(self, robot: Robot, location: tuple):
         if not self.can_sense_location(robot, location):
@@ -220,17 +222,18 @@ class Moderator:
         squares = squares_within_distance(robot.attack_aoe)
         for dx, dy in squares:
             loc = (target_location[0] + dx, target_location[1] + dy)
-            worked = True
             target_robot = self.get_robot(loc)
             if target_robot == RobotType.NONE:
-                worked = False
+                continue
             if target_robot.team.color == robot.team.color:
-                worked = False
+                continue
+            worked = True
             for i in self.sense(robot):
-                if i.team.color != robot.team.color and self.in_between(robot.location, loc, i.location):
+                if i.team != robot.team.color and self.in_between(robot.location, loc, i.location):
                     worked = False
-            if worked:
-                target_robots.append(target_robot)
+            if not worked:
+                continue
+            target_robots.append(target_robot)
         filtered, reason = robot.can_attack(target_robots)
         if reason:
             raise Exception(reason)

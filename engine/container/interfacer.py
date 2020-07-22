@@ -41,7 +41,9 @@ class Interfacer:
             'GameConstants': GameConstants
         }
 
-        self.disallowed_enums = ['print']
+        # TODO: add print back to this
+        self.disallowed_enums = []
+#        self.disallowed_enums = ['print']
 
         for key in self.disallowed_enums:
             del self.globals['__builtins__'][key]
@@ -96,7 +98,10 @@ class Interfacer:
         return self.moderator.can_sense_location(self.robot, location)
 
     def sense_location(self, location):
-        return self.moderator.sense_location(self.robot, location)
+        sensed = self.moderator.sense_location(self.robot, location)
+        if not sensed:
+            raise Exception("The location {} that you're trying to sense is either out of bounds or not within your sensor range".format(location))
+        return sensed
 
     # Creating robots
 

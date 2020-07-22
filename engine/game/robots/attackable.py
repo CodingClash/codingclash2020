@@ -23,7 +23,7 @@ class Attackable(Robot):
             return [], "The robot's team doesn't have enough oil to attack"
         filtered = []
         for target in target_robots:
-            if dist(self.location, target.loc) <= self.attack_range:
+            if dist(self.location, target.location) <= self.attack_range:
                 filtered.append(target)
         return filtered, None
 

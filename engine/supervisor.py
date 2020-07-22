@@ -49,6 +49,12 @@ class Supervisor:
     def read_code(self, filename):
         file = open(filename, 'r')
         code = file.read().strip()
+        lines = code.split("\n")
+        new_lines = []
+        for line in lines:
+            if "from stubs import" not in line:
+                new_lines.append(line)
+        code = '\n'.join(lines)
         return code
 
 

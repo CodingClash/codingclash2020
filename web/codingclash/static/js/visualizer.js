@@ -187,7 +187,7 @@ function updateDlog(board_num){
     $("#dlogs").empty();
     for (let i = 0; i < board_num + 1; i++){
         if (dlogs[i]!=""){
-            $("#dlogs").append($("<p>").text(dlogs[i]));
+            $("#dlogs").append($("<p>").text(dlogs[i].join(', ')));
         }
         
     }
@@ -245,7 +245,7 @@ function processReplay(data){
             roundNum += 1;
         }
         else if (line.startsWith("[DLOG]")){
-            dlogs[roundNum].push(line);
+            dlogs[roundNum].push(line.trimLeft().trimRight());
         }
         else if (line.startsWith("[BCHAIN]")){
             if (line.trim().length != "[BCHAIN]".length){

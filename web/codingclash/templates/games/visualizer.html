@@ -37,17 +37,34 @@
                 <input type="range" class="custom-range" id="roundRange" min="0" max="0" oninput="updateBoardNum(this.value);">
             </div>
             <div class="tab">
-                <button class="tablinks" onclick="openTab(event, 'Stats')">Stats</button>
-                <button class="tablinks" onclick="openTab(event, 'Blockchain')">Blockchain</button>
-                <button class="tablinks" onclick="openTab(event, 'Debug')">Debug</button>
-                <button class="tablinks" onclick="openTab(event, 'RobotData')">Robot Data</button>
+                <button class="tablinks" onclick="openTab(event, 'Stats')" style="outline: none; border: none;">Stats</button>
+                <button class="tablinks" onclick="openTab(event, 'Blockchain')" style="outline: none; border: none;">Blockchain</button>
+                <button class="tablinks" onclick="openTab(event, 'Debug')" style="outline: none; border: none;">Debug</button>
+                <button class="tablinks" onclick="openTab(event, 'RobotData')" style="outline: none; border: none;">Robot Data</button>
             </div>
 
             <div id="Stats" class="tabcontent">
-                <p style="color:powderblue;">Blue Tanks: <span id="numBlueTanks"></span></p>
-                <p style="color:powderblue;">Blue Gunners: <span id="numBlueGunners"></span></p>
-                <p style="color:lightcoral;">Red Tanks: <span id="numRedTanks"></span></p>
-                <p style="color:lightcoral;">Red Gunners: <span id="numRedGunners"></span></p>
+                <div class="row">
+                    <div class="col-sm">
+                        <p style="color:powderblue;">Blue Tanks: <span id="numBlueTanks"></span></p>
+                        <p style="color:powderblue;">Blue Gunners: <span id="numBlueGunners"></span></p>
+                        <p style="color:powderblue;">Blue Grenade Launchers: <span id="numBlueGrenaders"></span></p>
+                        <p style="color:powderblue;">Blue Turrets: <span id="numBlueTurrets"></span></p>
+                        <p style="color:powderblue;">Blue Builders: <span id="numBlueBuilders"></span></p>
+                        <p style="color:powderblue;">Blue Barracks: <span id="numBlueBarracks"></span></p>
+                        <p style="color:powderblue;">Blue Oil Refineries: <span id="numBlueOilRefineries"></span></p>
+                    </div>
+
+                    <div class="col-sm">
+                        <p style="color:lightcoral;">Red Tanks: <span id="numRedTanks"></span></p>
+                        <p style="color:lightcoral;">Red Gunners: <span id="numRedGunners"></span></p>
+                        <p style="color:lightcoral;">Red Grenade Launchers: <span id="numRedGrenaders"></span></p>
+                        <p style="color:lightcoral;">Red Turrets: <span id="numRedTurrets"></span></p>
+                        <p style="color:lightcoral;">Red Builders: <span id="numRedBuilders"></span></p>
+                        <p style="color:lightcoral;">Red Barracks: <span id="numRedBarracks"></span></p>
+                        <p style="color:lightcoral;">Red Oil Refineries: <span id="numRedOilRefineries"></span></p>
+                    </div>
+                </div>
             </div>
             
             <div id="Blockchain" class="tabcontent">

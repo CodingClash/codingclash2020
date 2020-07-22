@@ -10,16 +10,39 @@ let info = [];
 let piece_counts = {"t": 0,
                     "g": 0,
                     "h": 0,
+                    "b": 0,
+                    "s": 0,
+                    "e": 0,
+                    "r": 0,
+                    "u": 0,
                     "T": 0,
                     "G": 0,
-                    "H": 0};
+                    "H": 0,
+                    "B": 0,
+                    "S": 0,
+                    "E": 0,
+                    "R": 0,
+                    "U": 0
+                    };
 const filenameDict = {"t": "tank_b.png",
                       "g": "gunner_b.png",
                       "h": "hq_b.png",
                       "T": "tank_r.png",
                       "G": "gunner_r.png",
                       "H": "hq_r.png",
-                      "n": "grass.png"};
+                      "n": "grass.png",
+                      "B": "builder_r.png",
+                      "b": "builder_b.png",
+                      "S": "barracks_r.png",
+                      "s": "barracks_b.png",
+                      "E": "grenade_launcher_r.png",
+                      "e": "grenade_launcher_b.png",
+                      "R": "oil_refinery_r.png",
+                      "r": "oil_refinery_b.png",
+                      "U": "turret_r.png",
+                      "u": "turret_b.png",
+                      "w": "wall.png",
+                      "W": "wall.png"};
 let gameData = {};
 
 let selectedID = "";
@@ -76,11 +99,23 @@ function updateInfo(){
 
 function drawBoard(){
     piece_counts = {"t": 0,
-                    "g": 0,
-                    "h": 0,
-                    "T": 0,
-                    "G": 0,
-                    "H": 0};
+                        "g": 0,
+                        "h": 0,
+                        "b": 0,
+                        "s": 0,
+                        "e": 0,
+                        "r": 0,
+                        "u": 0,
+                        "T": 0,
+                        "G": 0,
+                        "H": 0,
+                        "B": 0,
+                        "S": 0,
+                        "E": 0,
+                        "R": 0,
+                        "U": 0
+                        };
+
     let idx = 0;
     let board_string = boards[board_num];
     for(let r = 0; r < size; r++){
@@ -127,7 +162,7 @@ function updateWinner(board_num){
         $("#gameBoard").css("border", "0px");
         return;
     }
-    let color = gameData["Winner"] == gameData["red"] ? "red" : gameData["Winner"] == gameData["blue"] ? "blue" : "black";
+    let color = gameData["Winner color"] == "red" ? "red" : gameData["Winner color"] == "blue" ? "blue" : "black";
     $("#gameBoard").css("border", "5px solid " + color);
 }
 
@@ -136,6 +171,16 @@ function updatePieceNum(){
     $("#numRedTanks").text(piece_counts["T"]);
     $("#numBlueGunners").text(piece_counts["g"]);
     $("#numRedGunners").text(piece_counts["G"]);
+    $("#numBlueGrenaders").text(piece_counts["e"]);
+    $("#numRedGrenaders").text(piece_counts["E"]);
+    $("#numBlueBuilders").text(piece_counts["b"]);
+    $("#numRedBuilders").text(piece_counts["B"]);
+    $("#numBlueBarracks").text(piece_counts["s"]);
+    $("#numRedBarracks").text(piece_counts["S"]);
+    $("#numBlueTurrets").text(piece_counts["u"]);
+    $("#numRedTurrets").text(piece_counts["U"]);
+    $("#numBlueOilRefineries").text(piece_counts["r"]);
+    $("#numRedOilRefineries").text(piece_counts["R"]);
 }
 
 function updateDlog(board_num){

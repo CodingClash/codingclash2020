@@ -54,7 +54,7 @@ class Supervisor:
         for line in lines:
             if "from stubs import" not in line:
                 new_lines.append(line)
-        code = '\n'.join(lines)
+        code = '\n'.join(new_lines)
         return code
 
 

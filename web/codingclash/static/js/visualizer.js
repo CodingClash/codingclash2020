@@ -291,6 +291,50 @@ function keydown(e){
     }
 }
 
+function fullscreen(){
+    if (document.getElementById("gameBoard").style.minWidth != "100%"){
+        document.getElementById("gameBoard").style.minWidth = "100%";
+        document.getElementById("gameBoard").style.width = "100%";
+        document.getElementById("stats").style.display = "none";
+        board_size = parseInt($("#gameBoard").css("width")) - 10; // 10px padding for the border
+        block_size = Math.floor(board_size / size);
+        $("#gameBoard").empty()
+        createEmptyBoard();
+
+    } else{
+        document.getElementById("gameBoard").style.minWidth = "800px";
+        document.getElementById("gameBoard").style.width = "800px";
+        document.getElementById("stats").style.display = "block";
+        board_size = parseInt($("#gameBoard").css("width")) - 10; // 10px padding for the border
+        block_size = Math.floor(board_size / size);
+        $("#gameBoard").empty()
+        createEmptyBoard();
+    }
+}
+
+function beastmode(){
+    document.getElementById("sidebarCollapse").click();
+    if (document.getElementById("TESTING").style.display=="none"){
+        document.getElementById("TESTING").style.display="block";
+        document.getElementById("gameBoard").style.width = "800px";
+        board_size = parseInt($("#gameBoard").css("width")) - 10; // 10px padding for the border
+        block_size = Math.floor(board_size / size);
+        $("#gameBoard").empty()
+        createEmptyBoard();
+
+    }else{
+        document.getElementById("TESTING").style.display="none";
+        document.getElementById("gameBoard").style.width = "100vh";
+        board_size = parseInt($("#gameBoard").css("width")) - 10; // 10px padding for the border
+        block_size = Math.floor(board_size / size);
+        $("#gameBoard").empty()
+        createEmptyBoard();
+        
+    }
+    
+}
+
+
 window.onload = function(){
     $("#roundNum").text("1 / 1");
     $("#speedNum").text("1");

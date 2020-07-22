@@ -1,5 +1,5 @@
 import random
-
+from stubs import *
 
 class HQ:
     def __init__(self):

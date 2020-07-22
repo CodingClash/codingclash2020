@@ -67,7 +67,7 @@ class Interfacer:
     # Basic getter methods
 
     def get_team(self):
-        return self.robot.team
+        return self.robot.team.color
 
     def get_type(self):
         return self.robot.type

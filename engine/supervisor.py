@@ -77,6 +77,8 @@ class Supervisor:
                 # The robot died this turn
                 to_remove.append(interfacer)
                 continue
+            # with time_limit(GameConstants.TIME_LIMIT):
+            #     interfacer.run()
             try:
                 with time_limit(GameConstants.TIME_LIMIT):
                     interfacer.run()

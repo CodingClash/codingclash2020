@@ -15,7 +15,7 @@ class Barracks(Spawnable, Robot):
         costs = {
             RobotType.GUNNER: GameConstants.GUNNER_COST,
             RobotType.TANK: GameConstants.TANK_COST,
-            RobotType.GRENADE: GameConstants.GRENADE_COST,
+            RobotType.GRENADER: GameConstants.GRENADER_COST,
         }
         Spawnable.__init__(self, GameConstants.BARRACKS_MAX_SPAWNS, costs, GameConstants.BARRACKS_SPAWN_RADIUS)
 

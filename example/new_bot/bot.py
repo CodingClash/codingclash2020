@@ -1,6 +1,10 @@
 import random
 from stubs import *
 
+
+def inbounds(a, b):
+    return a >= 0 and b >= 0 and a < GameConstants.BOARD_WIDTH and b < GameConstants.BOARD_HEIGHT
+
 class HQ:
     def __init__(self):
         self.spawned = []
@@ -25,6 +29,8 @@ class HQ:
             if dx == 0 and dy == 0:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 self.spawned.append(robot)
                 create(robot, loc)
@@ -69,6 +75,8 @@ class Builder:
             if dx == 0 and dy == 0:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 self.spawned.append(robot)
                 create(robot, loc)
@@ -80,6 +88,8 @@ class Builder:
         options = [(dx, dy), (dx, 0), (0, dy)]
         for dx, dy in options:
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 move(loc)
                 return
@@ -113,6 +123,8 @@ class Gunner:
             if dx == 0 and dy == 0:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 move(loc)
                 return
@@ -153,6 +165,8 @@ class Tank:
             if dx == 0 and dy == 0:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 move(loc)
                 return
@@ -183,7 +197,7 @@ class Grenader:
         for curr in targets:
             if curr.team == get_team():
                 continue
-            if self.distance_2(curr.location, self.location) <= GameConstants.GRENADER_ATTACK_RANGE:
+            if self.distance_2(curr.location, self.location) <= GameConstants.GRENADER_DAMAGE_RANGE:
                 attack(curr.location)
                 return True
         return False
@@ -206,6 +220,8 @@ class Grenader:
             if dx == 0 and dy == 0:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 move(loc)
                 return
@@ -258,6 +274,8 @@ class Barracks:
             if dx == 0 and dy == 0:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
             if sense_location(loc).type == RobotType.NONE:
                 self.spawned.append(robot)
                 create(robot, loc)
@@ -283,7 +301,6 @@ class Refinery:
 
 class Turret:
     def __init__(self):
-        self.spawned = []
         self.team = get_team()
         self.location = get_location()
         # TODO: get HQ loc using blockchain comms

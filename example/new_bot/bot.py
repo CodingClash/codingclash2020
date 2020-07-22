@@ -60,8 +60,8 @@ class Builder:
                 continue
             loc = (self.location[0] + dx, self.location[1] + dy)
             if sense_location(loc).type == RobotType.NONE:
-                self.spawned.append(robot)
                 create(robot, loc)
+                self.spawned.append(robot)
                 return True
 
     def try_move(self):

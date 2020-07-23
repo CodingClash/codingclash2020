@@ -71,6 +71,10 @@ class GameSet(models.Manager):
         games = [game.get_displayable(user.team) for game in games]
         return games
 
+    def get_team_running(self, team):
+        return self.get_queryset().filter(finished=False).filter(Q(red__team__secret=team.secret) |
+                                                                Q(blue__team__secret=team.secret))
+
 
 class Game(models.Model):
 
@@ -108,7 +112,7 @@ class Game(models.Model):
         if self.finished:
             if not self.outcome:
                 outcome = "Tie"
-            elif self.outcome.get_team_name() == team.name:
+            elif self.outcome.name == team.name:
                 outcome = "Won"
             else:
                 outcome = "Lost"
@@ -117,13 +121,14 @@ class Game(models.Model):
             "blue": self.get_blue_team(),
             "outcome": outcome,
             "time": self.get_played_time(),
-            "replay": self.replay.url
+            "replay": self.replay.url if self.finished else None
         }
 
 
 class GameRequest(models.Model):
     my_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="my_team")
     opp_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="opp_team")
+    processed = models.BooleanField(default=False)
 
 
 class SubmissionUpload(forms.Form):

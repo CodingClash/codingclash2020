@@ -22,7 +22,7 @@ function search(){
         return false;
     }
     for(let i = 0; i < game_data.length; i++){
-        if(game_data[i][1] == searchTerm || game_data[i][2] == searchTerm){
+        if(game_data[i]['red'] == searchTerm || game_data[i]['blue'] == searchTerm){
             matches.push(game_data[i]);
         }
     }
@@ -57,8 +57,13 @@ function set_replay_table(data){
     table.empty();
     console.log("HI");
     table.append(get_row(["Time", "Red", "Blue", "Result", "Replay"]));
+    console.log(data);
     for(let i = 0; i < data.length; i++){
         let arr = [data[i]['time'], data[i]['red'], data[i]['blue'], data[i]['outcome'], data[i]["replay"]];
+        console.log(arr[4]);
+        if(arr[4] == null){
+            arr[4] = "";
+        }
         table.append(get_row(arr));
     }
 }

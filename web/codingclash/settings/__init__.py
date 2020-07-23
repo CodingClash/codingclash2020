@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'social_django',
+    'background_task',
     'codingclash.apps.auth.apps.AuthConfig',
     'codingclash.apps.games',
     'codingclash.apps.teams'
@@ -136,3 +137,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "serve")
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "submissions")
+
+BACKGROUND_TASK_RUN_ASYNC = True

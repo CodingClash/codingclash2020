@@ -1,11 +1,15 @@
 import time
 import random
+from django.core.files.base import ContentFile
+
 from celery.decorators import task
 from celery.utils.log import get_task_logger
-from django.core.files.base import ContentFile
+
+from codingclash.celery import app as celery_app
 
 from .models import GameRequest, Game, Submission
 from .elo import update_elo
+from ..teams.models import Team
 
 MAX_QUEUED = 3
 logger = get_task_logger(__name__)
@@ -35,7 +39,7 @@ def play_game(game_request_id):
     game_request.processed = True
 
     # TODO: Actaully run the engine code here
-    time.sleep(20)
+    time.sleep(10)
     winner = my_team if random.random() < 0.4 else opp_team if random.random() < 0.8 else None
     game.outcome = winner
     replay_content = "This be a replay file\nThe winner is: {}".format(winner.name if winner else "Tie")
@@ -51,4 +55,22 @@ def play_game(game_request_id):
         opp_team.elo = new_elo2
         my_team.save()
         opp_team.save()
+
+
+@task(name="update_ranks")
+def update_ranks():
+    print("Updating ranks")
+    # lookup user by id and send them a message
+    teams = Team.objects.all()
+    teams = [i for i in teams]
+    teams = sorted(teams, key=lambda team: team.elo, reverse=True)
+    for i, team in enumerate(teams):
+        team.rank = i + 1
+        team.save()
+
+
+@celery_app.on_after_configure.connect
+def setup_periodic_tasks(sender, **kwargs):
+    print("Setting up stuff")
+    sender.add_periodic_task(5.0, update_ranks.s(), name='Update ranks every minute')
 

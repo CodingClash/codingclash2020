@@ -64,7 +64,7 @@ def game_request(request):
             print("Can't play against yourself")
         if not opp_team:
             return HttpResponse("Failed")
-        game_request = GameRequest(my_team=request.user.team, opp_team=opp_team, ranked=False)
+        game_request = GameRequest(my_team=request.user.team, opp_team=opp_team, ranked=True)
         game_request.save()
         print("Successfully starting game")
         play_game.delay(game_request.id)

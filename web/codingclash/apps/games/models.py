@@ -2,7 +2,6 @@ import os
 import uuid
 from django import forms
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.db.models import Q
 from ..teams.models import Team
 

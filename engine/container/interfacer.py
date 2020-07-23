@@ -1,4 +1,4 @@
-from ..game.team import Team
+from ..game.team_color import TeamColor
 from ..game.robot_type import RobotType
 from ..game import constants as GameConstants
 
@@ -37,7 +37,7 @@ class Interfacer:
 
         self.enums = {
             'RobotType': RobotType,
-            'Team': Team,
+            'TeamColor': TeamColor,
             'GameConstants': GameConstants
         }
 

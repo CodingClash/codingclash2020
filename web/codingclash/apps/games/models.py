@@ -88,6 +88,7 @@ class Game(models.Model):
     blue = models.ForeignKey(Submission, on_delete=models.CASCADE, related_name="blue")
     outcome = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="outcome", blank=True, null=True)
     finished = models.BooleanField(default=False)
+    ranked = models.BooleanField(default=False)
 
     replay = models.FileField(upload_to=_replay_save_path, blank=True)
     timestamp = models.DateTimeField(auto_now_add=True, blank=True)
@@ -129,6 +130,7 @@ class GameRequest(models.Model):
     my_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="my_team")
     opp_team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="opp_team")
     processed = models.BooleanField(default=False)
+    ranked = models.BooleanField(default=False)
 
 
 class SubmissionUpload(forms.Form):

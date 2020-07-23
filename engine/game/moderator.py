@@ -34,7 +34,7 @@ class Moderator:
         self.winner = None
         self.debug, self.info = [], []
         self.ledger = []
-        self.round_num = 0
+        self.round_num = -1
 
     def update_info(self):
         for robot in self.robots:
@@ -45,6 +45,7 @@ class Moderator:
             self.info.append("[BCHAIN] {}".format(';'.join([str(i) for i in self.ledger[-1]])))
 
     def start_next_round(self):
+        self.round_num+=1
         self.ledger.append([])
 
     ## Helper methods

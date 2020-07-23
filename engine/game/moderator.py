@@ -292,10 +292,11 @@ class Moderator:
     """
 
     def kill(self, robot: Robot):
-        try:
-            self.robots.remove(robot)
-        except:
-            raise Exception("Robot that you're trying to kill not found: " + str(robot.id))
+        if robot.type != RobotType.WALL:
+            try:
+                self.robots.remove(robot)
+            except:
+                raise Exception("Robot that you're trying to kill not found: " + str(robot.id))
         if robot.type == RobotType.HQ:
             self.game_over = True
             # print("Killed", robot.team)

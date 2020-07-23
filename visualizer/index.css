@@ -2,7 +2,7 @@
   -webkit-appearance: none;
   width: 60%;
   top: 50%;
-  height: 10;
+  height: 10%;
   transform: translateY(150%);
   border-radius: 5px;  
   background: #d3d3d3;
@@ -45,7 +45,6 @@
   cursor: pointer;
 }
 
-
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
@@ -81,7 +80,7 @@
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
-  max-height:20rem;
+  max-height:30rem;
   overflow:hidden;
   overflow-y: scroll;
   background-color: black;

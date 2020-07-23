@@ -4,7 +4,7 @@ from .team_color import TeamColor
 from .helpers import squares_within_distance
 from .robot_type import RobotType
 from . import constants as GameConstants
-from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenader, SensedRobot
+from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenader, SensedRobot, Wall
 
 ROBOT_MAP = {
     RobotType.REFINERY: Refinery,
@@ -14,6 +14,7 @@ ROBOT_MAP = {
     RobotType.GUNNER: Gunner,
     RobotType.TANK: Tank,
     RobotType.GRENADER: Grenader,
+    RobotType.WALL: Wall,
 }
 
 
@@ -191,10 +192,12 @@ class Moderator:
         if self.location_occupied(location):
             raise Exception("Target creation location of {} is occupied".format(location))
         can_spawn, reason = robot.can_spawn(robot_type, location)
+
         if not can_spawn:
             raise Exception(reason)
 
         robot.spawn(robot_type, location)
+
         # Spawn the new robot
         assert(robot_type in ROBOT_MAP)
         new_robot_type = ROBOT_MAP[robot_type]
@@ -320,8 +323,11 @@ class Moderator:
         self.ledger[-1].append(data)
 
     def get_blockchain(self, robot: Robot, round_num: int):
-        if round_num < 0:
+        if round_num < 0: 
             raise Exception("There's no blockchain prior to the first round")
         if round_num >= len(self.ledger) - 1:
             raise Exception("Round {} has not finished yet".format(round_num))
         return self.ledger[round_num].copy()
+
+    def get_round_num(self, robot: Robot):
+        return self.round_num

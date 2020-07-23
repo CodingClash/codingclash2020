@@ -12,9 +12,6 @@ class Team(models.Model):
     @property
     def display_name(self):
         return self.name
-        
-    def get_latest_submission(self):
-        print(self.submission_set)
 
     def get_displayable(self):
         return {

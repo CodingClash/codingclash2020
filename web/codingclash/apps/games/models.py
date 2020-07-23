@@ -9,14 +9,29 @@ from ..teams.models import Team
 
 def _code_save_path(instance, filename):
     print(instance.__dict__)
-    return os.path.join(instance.team.name, f"{uuid.uuid4()}.py")
+    prev_submissions = Submission.objects.filter(team=instance.team)
+    return os.path.join(str(instance.team.secret), str(len(prev_submissions)) + ".py")
+#    return os.path.join(str(instance.team.secret), f"{uuid.uuid4()}.py")
 
 
 def _replay_save_path(instance, filename):
     return os.path.join("replays", f"{uuid.uuid4()}.txt")
 
 
+class SubmissionSet(models.Manager):
+    def get_team_submissions(self, team):
+        return self.get_queryset().filter(team__secret=team.secret)
+
+    def get_team_last_submission(self, team):
+        submissions = self.get_team_submissions(team)
+        if not submissions:
+            return None
+        return submissions.order_by('submitted_time').reverse()[0]
+
+
 class Submission(models.Model):
+
+    objects = SubmissionSet()
 
     team = models.ForeignKey(Team, on_delete=models.CASCADE, related_name="team")
     name = models.CharField(max_length=500, default="")
@@ -48,8 +63,8 @@ class Submission(models.Model):
 
 class GameSet(models.Manager):
     def get_user_games(self, user):
-        return self.get_queryset().filter(Q(red__team__name=user.team.name) |
-                                          Q(blue__team__name=user.team.name))
+        return self.get_queryset().filter(Q(red__team__secret=user.team.secret) |
+                                          Q(blue__team__secret=user.team.secret))
 
     def get_user_displayable(self, user):
         games = self.get_user_games(user).order_by('timestamp')

@@ -44,7 +44,11 @@ def play_game(game_request_id):
     game.save()
     logger.info("The game finished")
     if game.ranked:
-        elo1, elo2 =
-        myteam_won = winner == my_team
-        new_elo1, new_elo2 = update_elo()
+        elo1, elo2 = my_team.elo, opp_team.elo
+        winner_int = 1 if winner == my_team else -1 if winner == opp_team else 0
+        new_elo1, new_elo2 = update_elo(elo1, elo2, winner_int)
+        my_team.elo = new_elo1
+        opp_team.elo = new_elo2
+        my_team.save()
+        opp_team.save()
 

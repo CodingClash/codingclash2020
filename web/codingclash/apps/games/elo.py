@@ -11,7 +11,10 @@ def update_elo(elo1, elo2, winner):
 	if winner == 1:
 		elo1 += K * (1 - probability1)
 		elo2 += K * (0 - probability2)
-	else:
+	elif winner == 0:
+		elo1 += K * (0.5 - probability1)
+		elo2 += K * (0.5 - probability2)
+	elif winner == -1:
 		elo1 += K * (0 - probability1)
 		elo2 += K * (1 - probability2)
 

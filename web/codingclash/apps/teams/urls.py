@@ -66,5 +66,5 @@ urlpatterns = [
     path("info/", views.info, name="info"),
     path("submission/", views.submission, name="submission"),
     path("history/", views.history, name="history"),
-    path("request/", views.request, name="request")
+    path("game_request/", views.game_request, name="game_request")
 ]

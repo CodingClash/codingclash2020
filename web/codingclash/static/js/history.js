@@ -4,7 +4,7 @@ function requestScrim(){
     let oppTeam = $("#oppName").text();
     let csrftoken = Cookies.get('csrftoken');
     let xhr = new XMLHttpRequest();
-    xhr.open("POST", location.origin + "/request/", true);
+    xhr.open("POST", location.origin + "/game_request/", true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.setRequestHeader('X-CSRFToken', csrftoken);
     xhr.send(JSON.stringify({
@@ -46,7 +46,7 @@ function get_row(row_data){
 function set_search_options(data){
     $("#searchOptions").empty();
     for(let i = 0; i < data.length; i++){
-        let option = $("<option>").val(data[i][1]);
+        let option = $("<option>").val(data[i]);
         $("#searchOptions").append(option);
     }
 }

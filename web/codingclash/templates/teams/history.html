@@ -18,13 +18,13 @@
         <h4 class="title">Scrimmages</h4>
     </div>
     <div class="content">
-        <form class="mb-4 form-inline" action="#    " onsubmit="search();">
+        <form class="mb-4 form-inline" action="" onsubmit="search();return false;">
             <h5 class>Search Team:</h5>
             <div class="form-group mx-sm-3 mb-2">
                 <input list="searchOptions" class="form-control" id="searchBox" placeholder="Team Name">
                 <datalist id="searchOptions"></datalist>
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Search</button>
+            <button type="submit" onclick="search();return false;" class="btn btn-primary mb-2">Search</button>
         </form>
         <div id="playBlock" class="d-none mb-4">
             <button class="btn btn-danger" onclick="requestScrim();">Request scrimmage against <span id="oppName"></span></button>

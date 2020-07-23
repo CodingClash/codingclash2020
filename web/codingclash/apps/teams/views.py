@@ -46,7 +46,7 @@ def history(request):
     return render(request, "teams/history.html", {"games": json.dumps(games), "teams": teams})
 
 
-def request(request):
+def game_request(request):
     if request.method == "POST":
         opp_team = None
         try:

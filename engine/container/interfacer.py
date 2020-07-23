@@ -32,7 +32,8 @@ class Interfacer:
             'stun': lambda loc: self.stun(loc),
             'get_blockchain': lambda round_num : self.get_blockchain(round_num),
             'add_to_blockchain': lambda data : self.add_to_blockchain(data),
-            'dlog': lambda msg : self.dlog(msg)
+            'dlog': lambda msg : self.dlog(msg),
+            'get_round_num': lambda : self.get_round_num()
         }
 
         self.enums = {
@@ -132,3 +133,5 @@ class Interfacer:
     def dlog(self, message):
         self.moderator.dlog(self.robot, message)
 
+    def get_round_num(self):
+        return self.moderator.get_round_num(self.robot)

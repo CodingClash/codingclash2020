@@ -19,7 +19,7 @@ class HQ:
         robot = RobotType.BUILDER
         if len(self.spawned)==0:
             add_to_blockchain([1 if get_team() == TeamColor.RED else 0, self.location[0], self.location[1]])
-        if len([1 for i in sense() if i.type==RobotType.WALL])!=7:
+        if len([1 for i in sense() if i.type==RobotType.WALL])<7:
             add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 100, 100])
         
         if len(self.spawned) > 3:
@@ -52,6 +52,7 @@ class Builder:
         self.secret = 1 if get_team() == TeamColor.RED else 0
         self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:]
         self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
+        self.should_move = False
 
     def run(self):
         self.location = get_location()
@@ -68,8 +69,8 @@ class Builder:
         elif len(self.spawned) == 2:
             robot = RobotType.TURRET
             cost = GameConstants.TURRET_COST
-        elif len(self.spawned) != 0:
-            return False
+        #elif len(self.spawned) != 0:
+        #    return False
 
         if get_oil() < cost:
             return False
@@ -77,40 +78,67 @@ class Builder:
         dxdy = sorted([(x, y) for x in range(-1, 2) for y in range(-1, 2)],
                       key=lambda d: self.distance_2((self.location[0] + d[0], self.location[1] + d[1]),
                                                     tuple(self.opp_hq)))
+        #dlog(dxdy)
+        acceptable = [1, 2]
 
-        if [z for z in get_blockchain(get_round_num()) if z[0]==self.secret][-1][1:]==[100, 100]:
+        if len(self.spawned)<4:
+            dlog(self.spawned)
+            for (dx, dy) in dxdy:
+                if dx == 0 and dy == 0:
+                    continue
+                loc = (self.location[0] + dx, self.location[1] + dy)
+                if not can_sense_location(loc):
+                    continue
+                if sense_location(loc).type == RobotType.NONE and self.distance_2(loc, self.my_hq)>2:
+                    self.spawned.append(robot)
+                    create(robot, loc)
+                    return True
+
+        elif get_round_num()!=0 and [self.secret, 100, 100] in get_blockchain(get_round_num()-1):
             for (i, j) in dxdy:
                 loc = (self.location[0] + i, self.location[1] + j)
-                if self.distance_2(loc, self.my_hq)==2:
+                if self.distance_2(loc, self.my_hq) in acceptable:
                     if get_oil() < GameConstants.WALL_COST:
+                        dlog("Too expensive")
                         return False
                     if sense_location(loc).type == RobotType.NONE:
                         dlog("Created")
                         self.spawned.append(RobotType.WALL)
                         create(RobotType.WALL, loc)
                         return True
-
-        else: self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
-
-        for (dx, dy) in dxdy:
-            if dx == 0 and dy == 0:
-                continue
-            loc = (self.location[0] + dx, self.location[1] + dy)
-            if not can_sense_location(loc):
-                continue
-            if sense_location(loc).type == RobotType.NONE:
-                self.spawned.append(robot)
-                create(robot, loc)
-                return True
+        else:
+            for (dx, dy) in dxdy:
+                if dx == 0 and dy == 0:
+                    continue
+                loc = (self.location[0] + dx, self.location[1] + dy)
+                if not can_sense_location(loc):
+                    continue
+                if sense_location(loc).type == RobotType.NONE and self.distance_2(loc, self.my_hq)>8:
+                    self.spawned.append(robot)
+                    create(robot, loc)
+                    return True
 
     def try_move(self):
         
-        if [i for i in get_blockchain(get_round_num()) if i[0]==self.secret][-1][1:]==[100, 100]:
+        if get_round_num()!=0 and [self.secret, 100, 100] in get_blockchain(get_round_num()-1):
             self.opp_hq = self.my_hq
+        else: self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
+        #dlog(self.opp_hq)
+        #dlog(get_round_num())
         dx = 1 if self.opp_hq[0] > self.location[0] else -1 if self.opp_hq[0] < self.location[0] else 0
         dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
         options = [(dx, dy), (dx, 0), (0, dy)]
         for dx, dy in options:
+            loc = (self.location[0] + dx, self.location[1] + dy)
+            if not can_sense_location(loc):
+                continue
+            if sense_location(loc).type == RobotType.NONE:
+                move(loc)
+                return
+        
+        backup = [(dx, 1), (dx, -1), (1, dy), (-1, dy)]
+        backup = sorted(backup, key = lambda x: self.distance_2(self.opp_hq, (self.location[0]+x[0], self.location[1]+x[1])))
+        for dx, dy in backup:
             loc = (self.location[0] + dx, self.location[1] + dy)
             if not can_sense_location(loc):
                 continue
@@ -295,7 +323,7 @@ class Barracks:
             robot = RobotType.GUNNER
             cost = GameConstants.GUNNER_COST
 
-        if get_oil() < 3*cost:
+        if get_oil() < 4*cost:
             return False
 
         dxdy = [(x, y) for x in range(-1, 2) for y in range(-1, 2)]

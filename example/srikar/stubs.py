@@ -17,6 +17,9 @@ def get_location():
 def get_oil():
     pass
 
+def get_round_num():
+    pass
+
 def is_stunned():
     pass
 

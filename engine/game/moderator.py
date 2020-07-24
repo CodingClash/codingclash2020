@@ -45,7 +45,7 @@ class Moderator:
             self.info.append("[BCHAIN] {}".format(';'.join([str(i) for i in self.ledger[-1]])))
 
     def start_next_round(self):
-        self.round_num+=1
+        self.round_num += 1
         self.ledger.append([])
 
     ## Helper methods

@@ -19,7 +19,7 @@ logger = get_task_logger(__name__)
 def play_game(game_request_id):
     game_request = GameRequest.objects.get(id=game_request_id)
     my_team, opp_team = game_request.my_team, game_request.opp_team
-    my_queued, opp_queued = len(Game.objects.get_team_running(my_team)), len(Game.objects.get_team_running(opp_team))
+    my_queued, opp_queued = Game.objects.get_team_running(my_team).count(), Game.objects.get_team_running(opp_team).count()
     if my_queued >= MAX_QUEUED:
         logger.info("Your team ({}) currently has too many games queued, please wait".format(my_team.name))
         game_request.processed = True
@@ -61,10 +61,8 @@ def play_game(game_request_id):
 def update_elos_and_ranks():
     print("Updating ranks")
     # lookup user by id and send them a message
-    teams = Team.objects.all()
-    teams = [i for i in teams]
-    teams = sorted(teams, key=lambda team: team.elo, reverse=True)
-    for i, team in enumerate(teams):
+    teams = Team.objects.order_by('-elo')
+    for i, team in enumerate(teams.iterator()):
         team.rank = i + 1
         team.display_elo = team.elo
         team.save()

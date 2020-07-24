@@ -18,11 +18,11 @@ class HQ:
     def try_create(self):
         robot = RobotType.BUILDER
         if len(self.spawned)==0:
-            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, self.location[0], self.location[1]])
+            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, self.location[0], self.location[1], 0, 0])
         if len([1 for i in sense() if i.type==RobotType.WALL])<7:
-            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 100, 100])
+            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 100, 100, 0, 0])
         if len([1 for i in sense() if i.type==RobotType.BUILDER])==4:
-            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 101, 101])
+            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 101, 101, 0, 0])
         
         if len(self.spawned) > 3:
             return False
@@ -50,7 +50,7 @@ class Builder:
         self.spawned = []
         self.team = get_team()
         self.secret = 1 if get_team() == TeamColor.RED else 0
-        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:]
+        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:3]
         self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
         self.should_move = False
 
@@ -95,7 +95,7 @@ class Builder:
                     create(robot, loc)
                     return True
 
-        elif get_round_num()!=0 and [self.secret, 100, 100] in get_blockchain(get_round_num()-1):
+        elif get_round_num()!=0 and [self.secret, 100, 100, 0, 0] in get_blockchain(get_round_num()-1):
             for (i, j) in dxdy:
                 loc = (self.location[0] + i, self.location[1] + j)
                 if self.distance_2(loc, self.my_hq) in acceptable:
@@ -122,10 +122,10 @@ class Builder:
                     return True
 
     def try_move(self):
-        if [self.secret, 101, 101] in get_blockchain(get_round_num()-1):
+        if [self.secret, 101, 101, 0, 0] in get_blockchain(get_round_num()-1):
             self.should_move=True
         if self.should_move:
-            if get_round_num()!=0 and [self.secret, 100, 100] in get_blockchain(get_round_num()-1):
+            if get_round_num()!=0 and [self.secret, 100, 100, 0, 0] in get_blockchain(get_round_num()-1):
                 self.opp_hq = self.my_hq
             else: self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
             #dlog(self.opp_hq)
@@ -162,7 +162,7 @@ class Gunner:
     def __init__(self):
         self.team = get_team()
         self.secret = 1 if get_team() == TeamColor.RED else 0
-        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:]
+        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:3]
         self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
 
     def try_attack(self):
@@ -210,7 +210,7 @@ class Tank:
     def __init__(self):
         self.team = get_team()
         self.secret = 1 if get_team() == TeamColor.RED else 0
-        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:]
+        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:3]
         self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
 
     def try_attack(self):
@@ -255,7 +255,7 @@ class Grenader:
         self.team = get_team()
         # TODO: get HQ loc using blockchain comms
         self.secret = 1 if get_team() == TeamColor.RED else 0
-        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:]
+        self.my_hq = [i for i in get_blockchain(0) if i[0]==self.secret][0][1:3]
         self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
 
     def try_attack(self):

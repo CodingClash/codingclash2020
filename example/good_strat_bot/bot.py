@@ -19,7 +19,7 @@ class HQ:
         robot = RobotType.BUILDER
         if len(self.spawned)==0:
             add_to_blockchain([1 if get_team() == TeamColor.RED else 0, self.location[0], self.location[1]])
-        if len([1 for i in sense() if i.type==RobotType.WALL])<7:
+        if len([1 for i in sense() if i.type==RobotType.WALL])<8:
             add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 100, 100])
         
         if len(self.spawned) > 3:
@@ -81,7 +81,7 @@ class Builder:
         #dlog(dxdy)
         acceptable = [1, 2]
 
-        if len(self.spawned)<4:
+        if len(self.spawned)<3:
             dlog(self.spawned)
             for (dx, dy) in dxdy:
                 if dx == 0 and dy == 0:
@@ -175,7 +175,7 @@ class Gunner:
         dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
         options = [(dx, dy), (dx, 0), (0, dy)]
 
-        if [i.type for i in sense()].count(RobotType.GUNNER) < 3: return
+        if [i.type for i in sense()].count(RobotType.GUNNER) < 1: return
         for dx, dy in options:
             loc = (self.location[0] + dx, self.location[1] + dy)
             if sense_location(loc).type == RobotType.NONE:
@@ -313,17 +313,17 @@ class Barracks:
             return
 
     def try_create(self):
-        if len(self.spawned)<6:
+        if len(self.spawned)<3:
             robot = RobotType.TANK
             cost = GameConstants.TANK_COST
-        elif len(self.spawned)==6:
-            robot = RobotType.GRENADER
-            cost = GameConstants.GRENADER_COST
-        elif len(self.spawned)==7:
+        elif len(self.spawned)<5:
             robot = RobotType.GUNNER
             cost = GameConstants.GUNNER_COST
+        elif len(self.spawned)<=7:
+            robot = RobotType.GRENADER
+            cost = GameConstants.GRENADER_COST
 
-        if get_oil() < 4*cost:
+        if get_oil() < 6 * cost:
             return False
 
         dxdy = [(x, y) for x in range(-1, 2) for y in range(-1, 2)]

@@ -10,7 +10,14 @@ from RestrictedPython import utility_builtins
 
 
 def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='Interfacer'):
-    print(name)
+    assert(isinstance(name, str))
+    if name == 'random':
+        import random
+        return random
+    if name == 'math':
+        import math
+        return math
+    raise Exception("Disallowed import call: {}".format(name))
 
 
 

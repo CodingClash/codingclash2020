@@ -57,8 +57,8 @@ def play_game(game_request_id):
         opp_team.save()
 
 
-@task(name="update_ranks")
-def update_ranks():
+@task(name="update_elos_and_ranks")
+def update_elos_and_ranks():
     print("Updating ranks")
     # lookup user by id and send them a message
     teams = Team.objects.all()
@@ -66,11 +66,16 @@ def update_ranks():
     teams = sorted(teams, key=lambda team: team.elo, reverse=True)
     for i, team in enumerate(teams):
         team.rank = i + 1
+        team.display_elo = team.elo
         team.save()
 
 
-@celery_app.on_after_configure.connect
+@celery_app.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     print("Setting up stuff")
-    sender.add_periodic_task(5.0, update_ranks.s(), name='Update ranks every minute')
+    sender.add_periodic_task(300.0, update_elos_and_ranks.s(), name='Updates elos and ranks every minute')
 
+
+@celery_app.task
+def test(arg):
+    print(arg)

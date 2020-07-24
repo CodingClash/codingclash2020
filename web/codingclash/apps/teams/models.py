@@ -5,6 +5,7 @@ class Team(models.Model):
     name = models.CharField(max_length=100)
     rank = models.IntegerField(default=-1)
     elo = models.IntegerField(default=1200)
+    display_elo = models.IntegerField(default=1200)
     secret = models.CharField(max_length=16)
 
     @property
@@ -15,7 +16,7 @@ class Team(models.Model):
         return {
             "name": self.display_name,
             "rank": self.rank,
-            "elo": self.elo,
+            "elo": self.display_elo,
         }
 
     def __str__(self):

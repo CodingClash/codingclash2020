@@ -19,17 +19,17 @@ class HQ:
         robot = RobotType.BUILDER
         if len(self.spawned)==0:
             add_to_blockchain([1 if get_team() == TeamColor.RED else 0, self.location[0], self.location[1]])
-        if len([1 for i in sense() if i.type==RobotType.WALL])<8:
+        if len([1 for i in sense() if i.type==RobotType.WALL])<7:
             add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 100, 100])
+        if len([1 for i in sense() if i.type==RobotType.BUILDER])==4:
+            add_to_blockchain([1 if get_team() == TeamColor.RED else 0, 101, 101])
         
         if len(self.spawned) > 3:
             return False
         if get_oil() < GameConstants.BUILDER_COST:
             return False
 
-        dxdy = sorted([(x, y) for x in range(-1, 2) for y in range(-1, 2)],
-                      key=lambda d: self.distance_2((self.location[0] + d[0], self.location[1] + d[1]),
-                                                    tuple(self.opp_hq)))
+        dxdy = [(1,0), (0,1), (-1, 0), (0,-1)]
         for (dx, dy) in dxdy:
             if dx == 0 and dy == 0:
                 continue
@@ -63,12 +63,13 @@ class Builder:
     def try_create(self):
         robot = RobotType.REFINERY
         cost = GameConstants.REFINERY_COST
-        if len(self.spawned) == 1:
+        if len(self.spawned)%3 == 1:
             robot = RobotType.BARRACKS
             cost = GameConstants.BARRACKS_COST
-        elif len(self.spawned) == 2:
+        elif len(self.spawned)%3 == 2:
             robot = RobotType.TURRET
             cost = GameConstants.TURRET_COST
+
         #elif len(self.spawned) != 0:
         #    return False
 
@@ -79,7 +80,7 @@ class Builder:
         #dlog(dxdy)
         acceptable = [1, 2]
 
-        if len(self.spawned)<3:
+        if len(self.spawned)<2:
             if get_oil() < cost:
                 return False
             dlog(self.spawned)
@@ -107,7 +108,7 @@ class Builder:
                         create(RobotType.WALL, loc)
                         return True
         else:
-            if get_oil() < cost:
+            if get_oil() < 2*cost:
                 return False
             for (dx, dy) in dxdy:
                 if dx == 0 and dy == 0:
@@ -115,38 +116,43 @@ class Builder:
                 loc = (self.location[0] + dx, self.location[1] + dy)
                 if not can_sense_location(loc):
                     continue
-                if sense_location(loc).type == RobotType.NONE and self.distance_2(loc, self.my_hq)>8:
+                if sense_location(loc).type == RobotType.NONE and self.distance_2(loc, self.my_hq)>8 and self.distance_2(loc, self.my_hq)<self.distance_2(self.location, self.my_hq):
                     self.spawned.append(robot)
                     create(robot, loc)
                     return True
 
     def try_move(self):
-        
-        if get_round_num()!=0 and [self.secret, 100, 100] in get_blockchain(get_round_num()-1):
-            self.opp_hq = self.my_hq
-        else: self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
-        #dlog(self.opp_hq)
-        #dlog(get_round_num())
-        dx = 1 if self.opp_hq[0] > self.location[0] else -1 if self.opp_hq[0] < self.location[0] else 0
-        dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
-        options = [(dx, dy), (dx, 0), (0, dy)]
-        for dx, dy in options:
-            loc = (self.location[0] + dx, self.location[1] + dy)
-            if not can_sense_location(loc) or self.distance_2(loc, self.opp_hq) in [1,2]:
-                continue
-            if sense_location(loc).type == RobotType.NONE:
-                move(loc)
-                return
-        
-        backup = [(dx, 1), (dx, -1), (1, dy), (-1, dy)]
-        backup = sorted(backup, key = lambda x: self.distance_2(self.opp_hq, (self.location[0]+x[0], self.location[1]+x[1])))
-        for dx, dy in backup:
-            loc = (self.location[0] + dx, self.location[1] + dy)
-            if not can_sense_location(loc) or self.distance_2(loc, self.opp_hq) in [1,2]:
-                continue
-            if sense_location(loc).type == RobotType.NONE:
-                move(loc)
-                return
+        if [self.secret, 101, 101] in get_blockchain(get_round_num()-1):
+            self.should_move=True
+        if self.should_move:
+            if get_round_num()!=0 and [self.secret, 100, 100] in get_blockchain(get_round_num()-1):
+                self.opp_hq = self.my_hq
+            else: self.opp_hq = (GameConstants.BOARD_HEIGHT - self.my_hq[0], GameConstants.BOARD_WIDTH - self.my_hq[1])
+            #dlog(self.opp_hq)
+            #dlog(get_round_num())
+            dx = 1 if self.opp_hq[0] > self.location[0] else -1 if self.opp_hq[0] < self.location[0] else 0
+            dy = 1 if self.opp_hq[1] > self.location[1] else -1 if self.opp_hq[1] < self.location[1] else 0
+            options = [(dx, dy), (dx, 0), (0, dy)]
+            for dx, dy in options:
+                loc = (self.location[0] + dx, self.location[1] + dy)
+                if not can_sense_location(loc) or (self.opp_hq==self.my_hq and self.distance_2(loc, self.opp_hq) not in [4, 5, 8]):
+                    continue
+                if self.opp_hq!=self.my_hq and [(i.type, i.team) for i in sense()].count((RobotType.GUNNER, get_team())) < 2:
+                    return
+                if sense_location(loc).type == RobotType.NONE:
+                    move(loc)
+                    return
+            
+            backup = [(dx, 1), (dx, -1), (1, dy), (-1, dy), (0, 0)]
+            backup = sorted(backup, key = lambda x: self.distance_2(self.opp_hq, (self.location[0]+x[0], self.location[1]+x[1])))
+            for dx, dy in backup:
+                loc = (self.location[0] + dx, self.location[1] + dy)
+                if not can_sense_location(loc) or (self.opp_hq==self.my_hq and self.distance_2(loc, self.opp_hq) not in [4, 5, 8]):
+                    continue
+                if sense_location(loc).type == RobotType.NONE:
+                    move(loc)
+                    return
+        return
 
     def distance_2(self, p1, p2):
         return (p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2

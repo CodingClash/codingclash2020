@@ -9,3 +9,5 @@ secret.py
 *.sqlite3
 serve/
 submissions/
+web/celerybeat-schedule
+web/celerybeat.pid

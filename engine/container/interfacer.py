@@ -20,8 +20,6 @@ def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='I
     raise Exception("Disallowed import call: {}".format(name))
 
 
-
-
 class Interfacer:
     def __init__(self, moderator, code, robot, id):
         self.moderator = moderator
@@ -60,6 +58,7 @@ class Interfacer:
             'get_health': lambda : self.get_health(),
             'get_location': lambda : self.get_location(),
             'get_oil': lambda : self.get_oil(),
+            'get_round_num': lambda : self.get_round_num(),
             'is_stunned': lambda : self.is_stunned(),
             'sense': lambda : self.sense(),
             'can_sense_location': lambda loc : self.can_sense_location(loc),
@@ -120,6 +119,9 @@ class Interfacer:
     
     def get_oil(self):
         return self.robot.team.oil
+    
+    def get_round_num(self):
+        return self.moderator.round_num
     
     def is_stunned(self):
          return self.robot.stun_rounds > 0

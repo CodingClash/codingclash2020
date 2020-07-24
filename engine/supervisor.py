@@ -77,15 +77,15 @@ class Supervisor:
                 # The robot died this turn
                 to_remove.append(interfacer)
                 continue
-            # with time_limit(GameConstants.TIME_LIMIT):
-            #     interfacer.run()
-            try:
-                with time_limit(GameConstants.TIME_LIMIT):
-                    interfacer.run()
-            except Exception as e:
-                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
-                print(error_str)
-                self.errors.append(error_str)
+            with time_limit(GameConstants.TIME_LIMIT):
+                interfacer.run()
+            # try:
+            #     with time_limit(GameConstants.TIME_LIMIT):
+            #         interfacer.run()
+            # except Exception as e:
+            #     error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
+            #     print(error_str)
+            #     self.errors.append(error_str)
             signal.alarm(0)
 
             if self.moderator.game_over:

@@ -118,7 +118,7 @@ class Moderator:
         robot = self.get_robot(location)
         sensed = None
         if robot == RobotType.NONE:
-            sensed = SensedRobot(RobotType.NONE, None, None, None)
+            sensed = SensedRobot(RobotType.NONE, None, location, None)
         else:
             sensed = SensedRobot(robot.type, robot.team.color, robot.location, robot.health)
         return sensed

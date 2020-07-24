@@ -44,7 +44,7 @@ BARRACKS_SPAWN_RADIUS = 2
 BARRACKS_SENSE_RANGE = 8
 
 # Walls constants
-WALL_HEALTH = 20
+WALL_HEALTH = 40
 WALL_COST = 2
 
 ## Troops constants

@@ -2,7 +2,18 @@ from ..game.team_color import TeamColor
 from ..game.robot_type import RobotType
 from ..game import constants as GameConstants
 
-# TODO: Don't let troops perform multiple actions
+from RestrictedPython import compile_restricted as compile
+
+from RestrictedPython import safe_builtins
+from RestrictedPython import limited_builtins
+from RestrictedPython import utility_builtins
+
+
+def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='Interfacer'):
+    print(name)
+
+
+
 
 class Interfacer:
     def __init__(self, moderator, code, robot, id):
@@ -10,11 +21,31 @@ class Interfacer:
         self.code = code
         self.robot = robot
         self.id = id
-        self.locals = {}
+        builts = {i: built[i] for built in [safe_builtins, limited_builtins, utility_builtins] for i in built}
         self.globals = {
-            '__builtins__': __builtins__.copy(),
+            '__builtins__': builts,
             '__name__': '__main__'
             }
+       
+        # self.locals = self.globals
+        # self.locals = {}
+        # self.locals = {
+        #     '__builtins__': __builtins__.copy(),
+        #     '__name__': '__main__'
+        #     }
+
+        # Add extra builtins not included in RestrictedPython
+        self.extra_builtins = {}
+        self.extra_builtins['__import__'] = import_call
+        self.extra_builtins['print'] = print
+        self.extra_builtins['super'] = super
+        self.extra_builtins['min'] = min
+        self.extra_builtins['max'] = max
+        self.extra_builtins['sorted'] = sorted
+        
+        for built in self.extra_builtins:
+            self.globals['__builtins__'][built] = self.extra_builtins[built]
+
 
         self.game_methods = {
             'get_team': lambda : self.get_team(),
@@ -57,13 +88,12 @@ class Interfacer:
         
 
     def init_code(self):
-        exec(self.code, self.globals, self.locals)
-        for key in self.locals:
-            self.globals[key] = self.locals[key]
+        exec(self.code, self.globals)
 
     def run(self):
         self.robot.run()
-        exec(self.locals['turn'].__code__, self.globals, self.locals)
+        code = self.globals['turn'].__code__
+        exec(code, self.globals)
 
     ## Translation of moderator methods
     

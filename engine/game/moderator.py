@@ -1,7 +1,7 @@
 import random
 from .team import Team
 from .team_color import TeamColor
-from .helpers import squares_within_distance
+from .helpers import squares_within_distance, in_between
 from .robot_type import RobotType
 from . import constants as GameConstants
 from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenader, SensedRobot, Wall
@@ -123,27 +123,6 @@ class Moderator:
             sensed = SensedRobot(robot.type, robot.team.color, robot.location, robot.health)
         return sensed
 
-    def in_between(self, pointa, pointb, pointc):
-        dx = pointb[0] - pointa[0]
-        dy = pointb[1] - pointa[1]
-
-        ranx = sorted([pointa[0], pointb[0]])
-        rany = sorted([pointa[1], pointb[1]])
-
-        if not (ranx[0] < pointc[0] < ranx[1] and rany[0] < pointc[1] < rany[1]): return False
-
-        linex = lambda x: pointa[1] + dy / dx * (x - pointa[0])
-
-        if dx == 0:
-            r = sorted([pointa[1], pointb[1]])
-            if pointc[0] == pointa[0] and r[0] < pointc[1] < r[1]: return True
-
-        elif (linex(pointc[0]) <= pointc[1] and linex(pointc[0]) + 1 > pointc[1]) or (
-                linex(pointc[0]) >= pointc[1] and linex(pointc[0]) + 1 < pointc[1]):
-            return True
-
-        return False
-
     ## Game Action methods (player outputs)
 
     """
@@ -233,7 +212,7 @@ class Moderator:
                 continue
             worked = True
             for i in self.sense(robot):
-                if i.team != robot.team.color and self.in_between(robot.location, loc, i.location):
+                if i.team != robot.team.color and in_between(robot.location, loc, i.location):
                     worked = False
             if not worked:
                 continue
@@ -273,7 +252,7 @@ class Moderator:
             if target_robot.team.color == robot.team.color:
                 worked = False
             for i in self.sense(robot):
-                if i.team.color != robot.team.color and self.in_between(robot.location, loc, i.location):
+                if i.team.color != robot.team.color and in_between(robot.location, loc, i.location):
                     worked = False
             if worked:
                 target_robots.append(target_robot)

@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="codingclash2020",
-    version="0.0.1",
+    version="0.0.3",
     author="Srikar Gouru",
     author_email="srikarg89@gmail.com",
     description="Pip package for CodingClash2020",
@@ -13,7 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/CodingClash2020/codingclash2020",
 #    packages=setuptools.find_packages('engine'),
-    packages=['engine'],
+    packages=setuptools.find_packages(),
     install_requires = [], # List all your dependencies inside the list
     license = 'MIT'
 )

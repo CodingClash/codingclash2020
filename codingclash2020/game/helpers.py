@@ -12,7 +12,7 @@ def squares_within_distance(radius_squared):
                 squares.append((dx, dy))
     return squares
 
-def in_between(self, pointa, pointb, pointc):
+def in_between(pointa, pointb, pointc):
     dx = pointb[0] - pointa[0]
     dy = pointb[1] - pointa[1]
 

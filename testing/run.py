@@ -2,11 +2,9 @@
 #cd /cygdrive/c/Users/Srikar/Documents/Projects/CodingClash/CodingClash2020
 #python3 run.py example/srikar example/srikar --save srikar.txt
 
-#https://docs.google.com/document/d/1EOVxW90hnHGjP_ymLJZFV8mYr4PDA5B82qLAjYh-J_k/edit
-
 import os
 import argparse
-from engine.supervisor import Supervisor
+from codingclash2020.supervisor import Supervisor
 
 parser = argparse.ArgumentParser()
 parser.add_argument('folders', nargs='+', help='Folder name of the first bot')

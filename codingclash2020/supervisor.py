@@ -44,6 +44,7 @@ class Supervisor:
             self.robot_to_str[(TeamColor.BLUE, robot_type)] = letter.lower()
         self.robot_to_str[RobotType.NONE] = "n"
         self.boards = []
+        self.quiet = False
 
 
     def read_code(self, filename):
@@ -84,7 +85,8 @@ class Supervisor:
             #         interfacer.run()
             # except Exception as e:
             #     error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
-            #     print(error_str)
+                # if not self.quiet:
+                #     print(error_str)
             #     self.errors.append(error_str)
             signal.alarm(0)
 
@@ -95,13 +97,14 @@ class Supervisor:
             self.interfacers.remove(interfacer)
 
 
-    def run(self, max_rounds):
+    def run(self, max_rounds=GameConstants.NUM_ROUNDS):
         self.boards = [[row.copy() for row in self.moderator.board]]
         self.moderator.update_info()
         self.comments = {0: self.moderator.info + self.moderator.debug.copy()}
         self.errors = []
         for i in range(max_rounds):
-            print("Turn", i)
+            if not self.quiet:
+                print("Turn", i)
             self.moderator.debug, self.moderator.info, self.errors = [], [], []
             self.moderator.start_next_round()
             self.run_turn()
@@ -110,9 +113,12 @@ class Supervisor:
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
-        print("Winner: {}".format(self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2))
+        file_winner = self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2 if self.moderator.winner == TeamColor.RED else None
+        if not self.quiet:
+            print("Winner: {}".format(file_winner if file_winner else "Tie"))
+        return self.moderator.winner
 
-    
+
     def get_replayable_board(self, moderator_board):
         board = []
         for row in moderator_board:
@@ -131,18 +137,18 @@ class Supervisor:
         return "#"+"".join(bout)
 
 
-    def save(self, filename):
+    def get_replay(self):
         #print(self.boards)
         data = []
+        data.append("|blue: {}".format(self.filename1))
+        data.append("|red: {}".format(self.filename2))
         for i, board in enumerate(self.boards):
             data.append(self.board_to_string(self.get_replayable_board(board)))
             if i in self.comments:
                 for comment in self.comments[i]:
                     data.append(comment)
 
-        with open(filename, "w+") as file:
-            file.write("|blue: {}\n".format(self.filename1))
-            file.write("|red: {}\n".format(self.filename2))
-            file.write("\n".join(data))
-            file.write("\n|Winner: {}".format(self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2))
-            file.write("\n|Winner color: {}".format("blue" if self.moderator.winner == TeamColor.BLUE else "red"))
+        data.append("|Winner: {}".format(self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2))
+        data.append("|Winner color: {}".format("blue" if self.moderator.winner == TeamColor.BLUE else "red"))
+
+        return "\n".join(data)

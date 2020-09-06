@@ -312,3 +312,15 @@ class Moderator:
 
     def get_round_num(self, robot: Robot):
         return self.round_num
+
+    def tiebreak(self):
+        if not self.winner:
+            if self.HQs[TeamColor.RED] > self.HQs[TeamColor.BLUE]:
+                self.winner = TeamColor.RED
+                return
+            elif self.HQs[TeamColor.RED] < self.HQs[TeamColor.BLUE]:
+                self.winner = TeamColor.BLUE
+                return
+
+            coinflip = random.randint(0, 1)
+            self.winner = TeamColor.RED if coinflip else TeamColor.BLUE

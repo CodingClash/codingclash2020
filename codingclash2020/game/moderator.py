@@ -1,7 +1,7 @@
 import random
 from .team import Team
 from .team_color import TeamColor
-from .helpers import squares_within_distance, in_between
+from .helpers import dist, squares_within_distance, in_between
 from .robot_type import RobotType
 from . import constants as GameConstants
 from .robots import Robot, HQ, Refinery, Barracks, Turret, Builder, Gunner, Tank, Grenader, SensedRobot, Wall
@@ -18,13 +18,15 @@ ROBOT_MAP = {
 }
 
 
+
 class Moderator:
     def __init__(self):
         self.board_width = GameConstants.BOARD_WIDTH
         self.board_height = GameConstants.BOARD_HEIGHT
-        self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
+        self.board = self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
         self.ids = set()
         self.red, self.blue = Team(TeamColor.RED), Team(TeamColor.BLUE)
+        self.generate_random_board()
         self.HQs = {
             TeamColor.RED: self.create_hq(self.red),
             TeamColor.BLUE: self.create_hq(self.blue)
@@ -35,6 +37,22 @@ class Moderator:
         self.debug, self.info = [], []
         self.ledger = []
         self.round_num = -1
+
+    def generate_random_board(self):
+        
+        for _ in range(int(.04*self.board_height*self.board_width)):
+            x, y = random.randint(0, self.board_height-1), random.randint(0, self.board_width-1)
+            if dist((x,y), GameConstants.RED_HQ_LOCATION)<6 or dist((x,y), GameConstants.BLUE_HQ_LOCATION)<6: continue
+            listcheck = [i for i in [(x, y+1), (x, y-1), (x+1, y), (x-1, y)] if i[0]>=0 and i[1]>=0 and i[0]<self.board_height and i[1]<self.board_width]
+            if sum([1 for i in listcheck if self.board[i[0]][i[1]]==RobotType.WALL])<2: #and min(i[0], self.board_height-1-i[0])!=min(i[1], self.board_width-1-i[1])
+                self.board[x][y] = RobotType.WALL
+                self.board[y][x] = RobotType.WALL
+                l = [(x, y), (y, x), (self.board_height-1-x, self.board_width-1-y), (self.board_height-1-y, self.board_width-1-x)]
+                for item in l:
+                    id = random.random()
+                    self.put_robot(Wall(id, (item[0], item[1])), (item[0], item[1]))
+                    self.ids.add(id)
+        return self.board
 
     def update_info(self):
         for robot in self.robots:
@@ -182,7 +200,11 @@ class Moderator:
         assert(robot_type in ROBOT_MAP)
         new_robot_type = ROBOT_MAP[robot_type]
         id = random.random()
-        new_robot = new_robot_type(id, location, team)
+        #print(new_robot_type)
+        if robot_type != RobotType.WALL:
+            new_robot = new_robot_type(id, location, team)
+        else: 
+            new_robot = new_robot_type(id, location)
 
         self.ids.add(id)
         self.put_robot(new_robot, location)
@@ -315,10 +337,10 @@ class Moderator:
 
     def tiebreak(self):
         if not self.winner:
-            if self.HQs[TeamColor.RED] > self.HQs[TeamColor.BLUE]:
+            if self.HQs[TeamColor.RED].health > self.HQs[TeamColor.BLUE].health:
                 self.winner = TeamColor.RED
                 return
-            elif self.HQs[TeamColor.RED] < self.HQs[TeamColor.BLUE]:
+            elif self.HQs[TeamColor.RED].health < self.HQs[TeamColor.BLUE].health:
                 self.winner = TeamColor.BLUE
                 return
 

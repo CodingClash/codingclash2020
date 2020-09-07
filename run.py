@@ -27,5 +27,5 @@ game.run(max_rounds=args.max_rounds)
 if args.save:
     replay = game.get_replay()
     with open(args.save, "w+") as file:
-        file.write("\n".join(replay))
+        file.write(replay)
     print("Saved")

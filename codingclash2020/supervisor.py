@@ -36,12 +36,13 @@ class Supervisor:
         self.interfacers = []
         self.robot_ids = set()
         # Used for visualization
-        self.robot_letter_map = {RobotType.BARRACKS: "S", RobotType.BUILDER: "B", RobotType.GUNNER: "G", RobotType.GRENADER: "E", RobotType.HQ: "H", RobotType.REFINERY: "R", RobotType.TANK: "T", RobotType.TURRET: "U", RobotType.WALL: "W"}
+        self.robot_letter_map = {RobotType.BARRACKS: "S", RobotType.BUILDER: "B", RobotType.GUNNER: "G", RobotType.GRENADER: "E", RobotType.HQ: "H", RobotType.REFINERY: "R", RobotType.TANK: "T", RobotType.TURRET: "U"}
         self.robot_to_str = {}
         for robot_type in self.robot_letter_map:
             letter = self.robot_letter_map[robot_type]
             self.robot_to_str[(TeamColor.RED, robot_type)] = letter.upper()
             self.robot_to_str[(TeamColor.BLUE, robot_type)] = letter.lower()
+        self.robot_to_str[(None, RobotType.WALL)] = "W"
         self.robot_to_str[RobotType.NONE] = "n"
         self.boards = []
         self.quiet = False
@@ -78,16 +79,14 @@ class Supervisor:
                 # The robot died this turn
                 to_remove.append(interfacer)
                 continue
-            with time_limit(GameConstants.TIME_LIMIT):
-                interfacer.run()
-            # try:
-            #     with time_limit(GameConstants.TIME_LIMIT):
-            #         interfacer.run()
-            # except Exception as e:
-            #     error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
-                # if not self.quiet:
-                #     print(error_str)
-            #     self.errors.append(error_str)
+            try:
+                with time_limit(GameConstants.TIME_LIMIT):
+                    interfacer.run()
+            except Exception as e:
+                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
+                if not self.quiet:
+                    print(error_str)
+                self.errors.append(error_str)
             signal.alarm(0)
 
             if self.moderator.game_over:

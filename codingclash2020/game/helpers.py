@@ -1,7 +1,7 @@
 import math
 
 def dist(loc1, loc2):
-    return (loc1[0] - loc2[0]) ** 2 + (loc1[1] - loc2[1])
+    return (loc1[0] - loc2[0]) ** 2 + (loc1[1] - loc2[1]) ** 2
 
 def squares_within_distance(radius_squared):
     radius = math.ceil(math.sqrt(radius_squared))

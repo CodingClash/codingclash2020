@@ -3,11 +3,15 @@ from ..robot_type import RobotType
 from ..helpers import dist
 from .robot import Robot
 
+class NoneTeam():
+    def __init__(self):
+        self.color = None
+
 class Wall(Robot):
-    def __init__(self, id, location, team):
+    def __init__(self, id, location):
         Robot.__init__(self, id,
                          location,
-                         team, 
+                         NoneTeam(), 
                          RobotType.WALL, 
                          GameConstants.WALL_HEALTH, 
                          -1)

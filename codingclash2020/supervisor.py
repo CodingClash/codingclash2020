@@ -113,8 +113,7 @@ class Supervisor:
             self.boards.append([row.copy() for row in self.moderator.board])
             if self.moderator.game_over:
                 break
-        if not self.moderator.winner:
-            self.moderator.tiebreak()
+        self.moderator.run_tiebreak()
         file_winner = self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2 if self.moderator.winner == TeamColor.RED else None
         if not self.quiet:
             print("Winner: {}".format(file_winner if file_winner else "Tie"))

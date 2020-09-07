@@ -313,14 +313,23 @@ class Moderator:
     def get_round_num(self, robot: Robot):
         return self.round_num
 
-    def tiebreak(self):
-        if not self.winner:
-            if self.HQs[TeamColor.RED] > self.HQs[TeamColor.BLUE]:
-                self.winner = TeamColor.RED
-                return
-            elif self.HQs[TeamColor.RED] < self.HQs[TeamColor.BLUE]:
-                self.winner = TeamColor.BLUE
-                return
+    def run_tiebreak(self):
+        if self.winner:
+            return
+        if self.HQs[TeamColor.RED].health > self.HQs[TeamColor.BLUE].health:
+            self.winner = TeamColor.RED
+            return
+        elif self.HQs[TeamColor.RED].health < self.HQs[TeamColor.BLUE].health:
+            self.winner = TeamColor.BLUE
+            return
+        red_oil, blue_oil = self.red.oil, self.blue.oil
+        self.winner = TeamColor.RED if red_oil > 
+        if self.red.oil > self.blue.oil:
+            self.winner = TeamColor.RED
+            return
+        if self.blue.oil > self.red.oil:
+            self.winner = TeamColor.BLUE
+            return
 
-            coinflip = random.randint(0, 1)
-            self.winner = TeamColor.RED if coinflip else TeamColor.BLUE
+        coinflip = random.randint(0, 1)
+        self.winner = TeamColor.RED if coinflip else TeamColor.BLUE

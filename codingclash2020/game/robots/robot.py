@@ -8,7 +8,6 @@ class Robot:
         self.type = robot_type
         self.health = health
         self.sense_range = sense_range
-        self.oil = 0
         self.performed_action = False
         self.added_blockchain = False
         self.spawnable = False

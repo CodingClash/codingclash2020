@@ -2,6 +2,12 @@ from enum import Enum, auto
 
 # Basic getter methods
 
+def get_board_width():
+    pass
+
+def get_board_height():
+    pass
+
 def get_team():
     pass
 
@@ -15,6 +21,9 @@ def get_location():
     pass
 
 def get_oil():
+    pass
+
+def get_round_num():
     pass
 
 def is_stunned():

@@ -18,19 +18,11 @@ ROBOT_MAP = {
 }
 
 
-
 class Moderator:
-    def __init__(self):
-        self.board_width = GameConstants.BOARD_WIDTH
-        self.board_height = GameConstants.BOARD_HEIGHT
-        self.board = self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
+    def __init__(self, map_filename):
         self.ids = set()
         self.red, self.blue = Team(TeamColor.RED), Team(TeamColor.BLUE)
-        self.generate_random_board()
-        self.HQs = {
-            TeamColor.RED: self.create_hq(self.red),
-            TeamColor.BLUE: self.create_hq(self.blue)
-        }
+        self.load_map(map_filename)
         self.robots = [self.HQs[TeamColor.RED], self.HQs[TeamColor.BLUE]]
         self.game_over = False
         self.winner = None
@@ -38,21 +30,29 @@ class Moderator:
         self.ledger = []
         self.round_num = -1
 
-    def generate_random_board(self):
-        
-        for _ in range(int(.04*self.board_height*self.board_width)):
-            x, y = random.randint(0, self.board_height-1), random.randint(0, self.board_width-1)
-            if dist((x,y), GameConstants.RED_HQ_LOCATION)<6 or dist((x,y), GameConstants.BLUE_HQ_LOCATION)<6: continue
-            listcheck = [i for i in [(x, y+1), (x, y-1), (x+1, y), (x-1, y)] if i[0]>=0 and i[1]>=0 and i[0]<self.board_height and i[1]<self.board_width]
-            if sum([1 for i in listcheck if self.board[i[0]][i[1]]==RobotType.WALL])<2: #and min(i[0], self.board_height-1-i[0])!=min(i[1], self.board_width-1-i[1])
-                self.board[x][y] = RobotType.WALL
-                self.board[y][x] = RobotType.WALL
-                l = [(x, y), (y, x), (self.board_height-1-x, self.board_width-1-y), (self.board_height-1-y, self.board_width-1-x)]
-                for item in l:
+    def load_map(self, map_name):
+        self.board = []
+        self.HQs = {}
+        file = open("maps/" + map_name + ".map")
+        lines = [line.strip() for line in file]
+        self.board_height = len(lines)
+        self.board_width = len(lines[0])
+        # Allow only square maps for now, NOTE: We should allow rectangle maps eventually
+        assert(self.board_width == self.board_height)
+        self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
+        for y, line in enumerate(lines):
+            for x, char in enumerate(line):
+                if char == 'H':
+                    self.HQs[TeamColor.RED] = self.create_hq(self.red, (x,y))
+                elif char == 'h':
+                    self.HQs[TeamColor.BLUE] = self.create_hq(self.blue, (x,y))
+                elif char == 'w':
                     id = random.random()
-                    self.put_robot(Wall(id, (item[0], item[1])), (item[0], item[1]))
                     self.ids.add(id)
-        return self.board
+                    wall = Wall(id, (x,y))
+                    self.put_robot(wall, (x,y))
+
+
 
     def update_info(self):
         for robot in self.robots:
@@ -166,12 +166,8 @@ class Moderator:
         self.remove_robot(curr_location)
         return True
 
-    def create_hq(self, team: Team) -> HQ:
+    def create_hq(self, team: Team, location: tuple) -> HQ:
         id = random.random()
-        if team.color == TeamColor.RED:
-            location = GameConstants.RED_HQ_LOCATION
-        else:
-            location = GameConstants.BLUE_HQ_LOCATION
         hq = HQ(id, location, team)
         self.put_robot(hq, location)
         self.ids.add(id)

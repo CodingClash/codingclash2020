@@ -2,6 +2,12 @@ from enum import Enum, auto
 
 # Basic getter methods
 
+def get_board_width():
+    pass
+
+def get_board_height():
+    pass
+
 def get_team():
     pass
 
@@ -75,10 +81,6 @@ class GameConstants:
     """
 
     # General constants
-    BOARD_WIDTH = 40
-    BOARD_HEIGHT = 40
-    MIN_ELEVATION = -20
-    MAX_ELEVATION = 20
     TIME_LIMIT = 0.1
 
     # Navigation constants
@@ -87,8 +89,6 @@ class GameConstants:
     ## Buildings
 
     # HQ constants
-    RED_HQ_LOCATION = (5, 5)
-    BLUE_HQ_LOCATION = (35, 35)
     HQ_HEALTH = 200
     HQ_MAX_SPAWNS = 1
     HQ_SENSE_RANGE = 36

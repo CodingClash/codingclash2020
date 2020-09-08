@@ -30,7 +30,7 @@ def dist(loc1, loc2):
     return (loc2[0] - loc1[0]) ** 2 + (loc2[1] - loc1[1]) ** 2
 
 def inbounds(a, b):
-    return a >= 0 and b >= 0 and a < GameConstants.BOARD_WIDTH and b < GameConstants.BOARD_HEIGHT
+    return a >= 0 and b >= 0 and a < get_board_width() and b < get_board_height()
 
 def filter_blockchain(round_num):
     blocks = get_blockchain(round_num)
@@ -71,8 +71,8 @@ class Robot:
         self.team = get_team()
         self.type = get_type()
         self.location = get_location()
-        self.board_width = GameConstants.BOARD_WIDTH
-        self.board_height = GameConstants.BOARD_HEIGHT
+        self.board_width = get_board_width()
+        self.board_height = get_board_height()
         self.round_num = get_round_num()
         self.since_spawn = 0
         if self.type != RobotType.HQ:

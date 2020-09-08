@@ -53,6 +53,8 @@ class Interfacer:
 
 
         self.game_methods = {
+            'get_board_width': lambda : self.get_board_width(),
+            'get_board_height': lambda : self.get_board_height(),
             'get_team': lambda : self.get_team(),
             'get_type': lambda : self.get_type(),
             'get_health': lambda : self.get_health(),
@@ -97,6 +99,7 @@ class Interfacer:
 
     def run(self):
         self.robot.run()
+        # TODO: Also reimport libraries and reset GameConstants and whatnot every time
         code = self.globals['turn'].__code__
         exec(code, self.globals)
 
@@ -104,6 +107,12 @@ class Interfacer:
     
     # Basic getter methods
 
+    def get_board_width(self):
+        return self.moderator.board_width
+
+    def get_board_height(self):
+        return self.moderator.board_height
+    
     def get_team(self):
         return self.robot.team.color
 

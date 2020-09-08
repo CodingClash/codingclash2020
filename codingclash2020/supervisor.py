@@ -27,12 +27,12 @@ def time_limit(seconds):
 
 
 class Supervisor:
-    def __init__(self, filename1, filename2):
+    def __init__(self, filename1, filename2, map_filename='empty'):
         self.filename1 = filename1
         self.filename2 = filename2
         self.code1 = self.read_code(filename1)
         self.code2 = self.read_code(filename2)
-        self.moderator = Moderator()
+        self.moderator = Moderator(map_filename)
         self.interfacers = []
         self.robot_ids = set()
         # Used for visualization
@@ -96,7 +96,7 @@ class Supervisor:
             self.interfacers.remove(interfacer)
 
 
-    def run(self, max_rounds=GameConstants.NUM_ROUNDS):
+    def run(self, max_rounds=GameConstants.DEFAULT_NUM_ROUNDS):
         self.boards = [[row.copy() for row in self.moderator.board]]
         self.moderator.update_info()
         self.comments = {0: self.moderator.info + self.moderator.debug.copy()}

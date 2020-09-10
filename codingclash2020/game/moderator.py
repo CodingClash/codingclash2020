@@ -106,7 +106,7 @@ class Moderator:
 
         return sensed_list
 
-    def sense_radius(self, robot: Robot, radius):
+    def sense_radius(self, robot: Robot, radius: float):
         sense_range = radius
         if sense_range > robot.sense_range:
             # Can't sense outside of your sensor range

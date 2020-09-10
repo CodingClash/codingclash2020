@@ -111,6 +111,12 @@ class Interfacer:
         code = self.globals['turn'].__code__
         exec(code, self.globals)
 
+
+    def check_types(self, vars):
+        for var_name, var, var_type in vars:
+            if type(var) != var_type:
+                raise Exception("Type {} was expected for {}, but type {} was given instead".format(var_type, var_name, type(var)))
+
     ## Translation of moderator methods
     
     # Basic getter methods
@@ -147,13 +153,16 @@ class Interfacer:
     def sense(self):
         return self.moderator.sense(self.robot)
 
-    def sense_radius(self, radius):
+    def sense_radius(self, radius: float):
+        self.check_types([("radius", radius, float)])
         return self.moderator.sense(self.robot, radius)
 
-    def can_sense_location(self, location):
+    def can_sense_location(self, location: tuple):
+        self.check_types([("location", location, tuple)])
         return self.moderator.can_sense_location(self.robot, location)
 
-    def sense_location(self, location):
+    def sense_location(self, location: tuple):
+        self.check_types([("location", location, tuple)])
         sensed = self.moderator.sense_location(self.robot, location)
         if not sensed:
             raise Exception("The location {} that you're trying to sense is either out of bounds or not within your sensor range".format(location))
@@ -162,28 +171,39 @@ class Interfacer:
     # Creating robots
 
     def create(self, robot_type, location):
+        self.check_types([("robot_type", robot_type, RobotType), ("location", location, tuple)])
         return self.moderator.create(self.robot, robot_type, self.robot.team, location)
 
     # Robot actions (can only do one per turn)
 
     def move(self, location):
+        self.check_types([("location", location, tuple)])
         return self.moderator.move(self.robot, location)
     
     def attack(self, location):
+        self.check_types([("location", location, tuple)])
         return self.moderator.attack(self.robot, location)
     
     def stun(self, location):
+        self.check_types([("location", location, tuple)])
         return self.moderator.stun(self.robot, location)
 
     # Blockchain
 
     def add_to_blockchain(self, data):
+        self.check_types([("data", data, list)])
+        for i in data:
+            if type(i) != int:
+                raise Exception("A list of type int was expected for data, but a list with type {} was given instead".format(type(i)))
+
         return self.moderator.add_to_blockchain(self.robot, data)
 
     def get_blockchain(self, round_num):
+        self.check_types([("round_num", round_num, int)])
         return self.moderator.get_blockchain(self.robot, round_num)
 
     # Logging
 
     def dlog(self, message):
+        self.check_types([("message", message, str)])
         self.moderator.dlog(self.robot, message)

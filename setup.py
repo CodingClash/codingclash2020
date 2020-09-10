@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.5",
     author="Srikar Gouru",
     author_email="srikarg89@gmail.com",
-    description="Pip package for CodingClash2020",
+    description="Pip package containing the CodingClash2020 engine",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/CodingClash2020/codingclash2020",

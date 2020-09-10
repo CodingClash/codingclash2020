@@ -37,7 +37,8 @@ class Moderator:
         lines = [line.strip() for line in file]
         self.board_height = len(lines)
         self.board_width = len(lines[0])
-        # Allow only square maps for now, NOTE: We should allow rectangle maps eventually
+        # Allow only square maps for now
+        # TODO: We should allow rectangle maps eventually
         assert(self.board_width == self.board_height)
         self.board = [[RobotType.NONE for i in range(self.board_height)] for j in range(self.board_width)]
         for y, line in enumerate(lines):

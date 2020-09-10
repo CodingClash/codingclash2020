@@ -74,12 +74,6 @@ def dlog(message):
 
 
 class GameConstants:
-
-    """
-    Notes
-    Ranges are in euclidian distance
-    """
-
     # General constants
     TIME_LIMIT = 0.1
 

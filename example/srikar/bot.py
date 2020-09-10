@@ -258,7 +258,6 @@ class Builder(Robot):
         self.barracks = 0
         self.max_refineries = 2
         self.max_barracks = 2
-        # TODO: Build towards the enemy HQ
     
 
     def run(self):

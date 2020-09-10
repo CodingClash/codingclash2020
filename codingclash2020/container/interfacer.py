@@ -1,3 +1,4 @@
+import importlib
 from ..game.team_color import TeamColor
 from ..game.robot_type import RobotType
 from ..game import constants as GameConstants
@@ -8,14 +9,15 @@ from RestrictedPython import safe_builtins
 from RestrictedPython import limited_builtins
 from RestrictedPython import utility_builtins
 
-
 def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='Interfacer'):
     assert(isinstance(name, str))
     if name == 'random':
         import random
+        importlib.reload(random)
         return random
     if name == 'math':
         import math
+        importlib.reload(random)
         return math
     raise Exception("Disallowed import call: {}".format(name))
 

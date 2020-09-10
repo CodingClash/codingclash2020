@@ -9,15 +9,19 @@ from RestrictedPython import safe_builtins
 from RestrictedPython import limited_builtins
 from RestrictedPython import utility_builtins
 
+import sys
+
 def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='Interfacer'):
     assert(isinstance(name, str))
     if name == 'random':
+        if "random" in sys.modules:
+            sys.modules.pop("random", None)
         import random
-        importlib.reload(random)
         return random
     if name == 'math':
+        if "math" in sys.modules:
+            sys.modules.pop("math", None)
         import math
-        importlib.reload(random)
         return math
     raise Exception("Disallowed import call: {}".format(name))
 
@@ -49,6 +53,8 @@ class Interfacer:
         self.extra_builtins['min'] = min
         self.extra_builtins['max'] = max
         self.extra_builtins['sorted'] = sorted
+        self.extra_builtins['reversed'] = reversed
+        self.extra_builtins['map'] = map
         
         for built in self.extra_builtins:
             self.globals['__builtins__'][built] = self.extra_builtins[built]

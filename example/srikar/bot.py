@@ -226,6 +226,7 @@ class HQ(Robot):
         add_to_blockchain([TEAM_KEY, HQ_LOCATION, self.location[0], self.location[1], 0])
         self.num_builders = 0
         self.max_builders = 1
+        # math.hello = 5
 
 
     def run(self):
@@ -328,6 +329,7 @@ class Gunner(Robot):
         self.speed = GameConstants.GUNNER_SPEED
         self.attack_range = GameConstants.GUNNER_ATTACK_RANGE
         self.attack_cost = GameConstants.GUNNER_ATTACK_COST
+        # print(math.hello)
 
     def run(self):
         super().run()

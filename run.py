@@ -1,4 +1,3 @@
-#python run.py example/gunsblazin example/bunsblazin --save timertest.txt
 #cd /cygdrive/c/Users/Srikar/Documents/Projects/CodingClash/CodingClash2020
 #python3 run.py example/srikar example/srikar --save srikar.txt
 

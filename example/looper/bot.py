@@ -352,6 +352,7 @@ obj = type_to_obj[get_type()]
 robot = obj()
 
 def turn():
-    while True:
+    try:
+        turn()
+    except RecursionError:
         pass
-

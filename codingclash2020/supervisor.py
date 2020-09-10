@@ -9,6 +9,8 @@ from .game import constants as GameConstants
 import signal
 from contextlib import contextmanager
 
+REPLAY_DLOG_MAX_LEN = 500
+
 # Exception when time limit is exceeded
 class TimeoutException(Exception): pass
 
@@ -146,6 +148,9 @@ class Supervisor:
             data.append(self.board_to_string(self.get_replayable_board(board)))
             if i in self.comments:
                 for comment in self.comments[i]:
+                    # Prevent them from creating a massive string that causes errors while tryna save to file
+                    if len(comment) > REPLAY_DLOG_MAX_LEN:
+                        comment = comment[:REPLAY_DLOG_MAX_LEN]
                     data.append(comment)
 
         data.append("|Winner: {}".format(self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2))

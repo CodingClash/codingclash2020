@@ -227,6 +227,9 @@ class HQ(Robot):
         self.num_builders = 0
         self.max_builders = 1
         # math.hello = 5
+    
+    def __lt__(self, other):
+        pass
 
 
     def run(self):

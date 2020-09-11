@@ -78,6 +78,9 @@ class Moderator:
     def remove_robot(self, location: tuple):
         self.board[location[0]][location[1]] = RobotType.NONE
 
+    def get_round_num(self, robot: Robot):
+        return self.round_num
+
     def inbounds(self, location: tuple):
         return location[0] >= 0 and location[0] < self.board_width and location[1] >= 0 and location[
             1] < self.board_height
@@ -93,18 +96,7 @@ class Moderator:
         self.debug.append("[DLOG] [{}] {}".format(robot.id, message))
 
     def sense(self, robot: Robot):
-        sense_range = robot.sense_range
-        squares = squares_within_distance(sense_range)
-        robot_location = robot.location
-        sensed_list = []
-
-        for dx, dy in squares:
-            loc = (robot_location[0] + dx, robot_location[1] + dy)
-            sensed = self.sense_location(robot, loc)
-            if sensed and sensed.type != RobotType.NONE:
-                sensed_list.append(sensed)
-
-        return sensed_list
+        return self.sense_radius(robot, robot.sense_range)
 
     def sense_radius(self, robot: Robot, radius: float):
         sense_range = radius
@@ -135,10 +127,8 @@ class Moderator:
             # The location you are trying to sense is not within your sensor range
             return None
         robot = self.get_robot(location)
-        sensed = None
-        if robot == RobotType.NONE:
-            sensed = SensedRobot(RobotType.NONE, None, location, None)
-        else:
+        sensed = SensedRobot(RobotType.NONE, None, location, None)
+        if robot != RobotType.NONE:
             sensed = SensedRobot(robot.type, robot.team.color, robot.location, robot.health)
         return sensed
 
@@ -328,9 +318,6 @@ class Moderator:
         if round_num >= len(self.ledger) - 1:
             raise Exception("Round {} has not finished yet".format(round_num))
         return self.ledger[round_num].copy()
-
-    def get_round_num(self, robot: Robot):
-        return self.round_num
 
     def run_tiebreak(self):
         if self.winner:

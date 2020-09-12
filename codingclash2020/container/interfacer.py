@@ -23,6 +23,10 @@ def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='I
             sys.modules.pop("math", None)
         import math
         return math
+    if 'stubs' in name:
+        class Empty:
+            __all__ = []
+        return Empty()
     raise Exception("Disallowed import call: {}".format(name))
 
 

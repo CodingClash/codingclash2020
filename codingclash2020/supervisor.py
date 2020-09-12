@@ -6,26 +6,62 @@ from .container.interfacer import Interfacer
 from .game import constants as GameConstants
 
 # Imports used for setting time limit on method
-import signal
-from contextlib import contextmanager
+import platform
+
+WINDOWS = platform.system() == 'Windows'
+
+if WINDOWS:
+    import concurrent.futures as futures
+else:
+    import signal
+    from contextlib import contextmanager
 
 REPLAY_DLOG_MAX_LEN = 500
 
 # Exception when time limit is exceeded
 class TimeoutException(Exception): pass
 
+if not WINDOWS:
+    @contextmanager
+    def time_limit(seconds):
+        def signal_handler(signum, frame):
+            raise TimeoutException("Timed out!")
+        signal.signal(signal.SIGALRM, signal_handler)
+    #    signal.alarm(seconds)
+        signal.setitimer(signal.ITIMER_REAL, seconds)
+        try:
+            yield
+        finally:
+            signal.alarm(0)
 
-@contextmanager
-def time_limit(seconds):
-    def signal_handler(signum, frame):
-        raise TimeoutException("Timed out!")
-    signal.signal(signal.SIGALRM, signal_handler)
-#    signal.alarm(seconds)
-    signal.setitimer(signal.ITIMER_REAL, seconds)
-    try:
-        yield
-    finally:
-        signal.alarm(0)
+else:
+    def timeout(timelimit):
+        def decorator(func):
+            def decorated(*args, **kwargs):
+                with futures.ThreadPoolExecutor(max_workers=1) as executor:
+                    future = executor.submit(func, *args, **kwargs)
+                    timed_out = False
+                    try:
+                        result = future.result(timelimit)
+                    except futures.TimeoutError:
+                        timed_out = True
+                        # raise TimeoutException("Timed out!")
+                    # else:
+                    #     print(result)
+                    executor._threads.clear()
+                    futures.thread._threads_queues.clear()
+                    if timed_out:
+                        raise Exception("Timed out!")
+                    return result
+            return decorated
+        return decorator
+
+    """
+    Decorator function that sets time limit when run on Windows
+    """
+    @timeout(GameConstants.TIME_LIMIT)
+    def run_robot_windows(interfacer):
+        interfacer.run()
 
 
 class Supervisor:
@@ -82,8 +118,36 @@ class Supervisor:
                 to_remove.append(interfacer)
                 continue
             try:
-                with time_limit(GameConstants.TIME_LIMIT):
-                    interfacer.run()
+                if WINDOWS:
+                    run_robot_windows(interfacer)
+                else:
+                    with time_limit(GameConstants.TIME_LIMIT):
+                        interfacer.run()
+            except Exception as e:
+                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
+                if not self.quiet:
+                    print(error_str)
+                self.errors.append(error_str)
+            if not WINDOWS:
+                signal.alarm(0)
+
+            if self.moderator.game_over:
+                break
+
+        for interfacer in to_remove:
+            self.interfacers.remove(interfacer)
+
+
+    def run_turn_windows(self):
+        self.update_interfacers()
+        to_remove = []
+        for interfacer in self.interfacers:
+            if interfacer.robot not in self.moderator.robots:
+                # The robot died this turn
+                to_remove.append(interfacer)
+                continue
+            try:
+                self.run_robot_windows(interfacer)
             except Exception as e:
                 error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
                 if not self.quiet:

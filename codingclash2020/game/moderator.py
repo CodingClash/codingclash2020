@@ -109,6 +109,8 @@ class Moderator:
 
         for dx, dy in squares:
             loc = (robot_location[0] + dx, robot_location[1] + dy)
+            if not self.can_sense_location(robot, loc):
+                continue
             sensed = self.sense_location(robot, loc)
             if sensed and sensed.type != RobotType.NONE:
                 sensed_list.append(sensed)
@@ -125,7 +127,7 @@ class Moderator:
     def sense_location(self, robot: Robot, location: tuple):
         if not self.can_sense_location(robot, location):
             # The location you are trying to sense is not within your sensor range
-            return None
+            raise Exception("Robot of type {} at location {} cannot sense location {}".format(robot.type, robot.location, location))
         robot = self.get_robot(location)
         sensed = SensedRobot(RobotType.NONE, None, location, None)
         if robot != RobotType.NONE:

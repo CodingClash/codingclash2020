@@ -27,6 +27,9 @@ def import_call(name, globals=None, locals=None, fromlist=(), level=0, caller='I
         class Empty:
             __all__ = []
         return Empty()
+    if name == 'time':
+        import time
+        return time
     raise Exception("Disallowed import call: {}".format(name))
 
 

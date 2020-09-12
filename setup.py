@@ -5,10 +5,10 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="codingclash2020",
-    version="0.0.8",
+    version="1.0.0",
     author="Srikar Gouru",
     author_email="srikarg89@gmail.com",
-    description="Pip package containing the CodingClash2020 engine",
+    description="Pip package containing the engine for CodingClash2020",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/CodingClash2020/codingclash2020",

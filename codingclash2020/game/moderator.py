@@ -276,7 +276,7 @@ class Moderator:
         # Actually attack
         robot.stun()
         for target_robot in filtered:
-            target_robot.stun_rounds += robot.stun_turns
+            target_robot.stun_rounds = robot.stun_turns
 
     """
     Wipes a robot out of existence

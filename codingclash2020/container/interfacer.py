@@ -95,9 +95,8 @@ class Interfacer:
             'GameConstants': GameConstants
         }
 
-        # TODO: add print back to this
-        self.disallowed_enums = []
-#        self.disallowed_enums = ['print']
+        # self.disallowed_enums = []
+       self.disallowed_enums = ['print']
 
         for key in self.disallowed_enums:
             del self.globals['__builtins__'][key]
@@ -114,7 +113,6 @@ class Interfacer:
 
     def run(self):
         self.robot.run()
-        # TODO: Also reimport libraries and reset GameConstants and whatnot every time
         code = self.globals['turn'].__code__
         exec(code, self.globals)
 

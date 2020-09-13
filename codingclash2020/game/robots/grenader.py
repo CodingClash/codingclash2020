@@ -17,7 +17,8 @@ class Grenader(Moveable, Attackable, Stunnable, Robot):
         Moveable.__init__(self, GameConstants.GRENADER_SPEED)
         Attackable.__init__(self, GameConstants.GRENADER_DAMAGE_DAMAGE, GameConstants.GRENADER_DAMAGE_RANGE, GameConstants.GRENADER_DAMAGE_COST, GameConstants.GRENADER_DAMAGE_AOE)
         Stunnable.__init__(self, GameConstants.GRENADER_STUN_TURNS, GameConstants.GRENADER_STUN_RANGE, GameConstants.GRENADER_STUN_COST, GameConstants.GRENADER_STUN_AOE)
-    
+        self.damage_around = GameConstants.GRENADER_DAMAGE_AROUND
+        self.stun_around = GameConstants.GRENADER_STUN_AROUND
 
     def run(self):
         Robot.run(self)

@@ -236,7 +236,13 @@ class Moderator:
         # Actually attack
         robot.attack()
         for target_robot in filtered:
-            target_robot.health -= robot.damage
+            if robot.type != RobotType.GRENADER:
+                target_robot.health -= robot.damage
+            else:
+                if target_robot.location == target_location:
+                    target_robot.health -= robot.damage
+                else:
+                    target_robot.health -= robot.damage_around
             if target_robot.health <= 0:
                 self.kill(target_robot)
 
@@ -275,7 +281,13 @@ class Moderator:
         # Actually attack
         robot.stun()
         for target_robot in filtered:
-            target_robot.stun_rounds = robot.stun_turns
+            if robot.type != RobotType.GRENADER:
+                target_robot.stun_rounds = max(target_robot.stun_rounds, robot.stun_rounds)
+            else:
+                if target_robot.location == target_location:
+                    target_robot.stun_rounds = max(target_robot.stun_rounds, robot.stun_rounds)
+                else:
+                    target_robot.stun_rounds = max(target_robot.stun_rounds, robot.stun_around)
 
     """
     Wipes a robot out of existence

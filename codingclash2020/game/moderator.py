@@ -217,17 +217,17 @@ class Moderator:
         for dx, dy in squares:
             loc = (target_location[0] + dx, target_location[1] + dy)
             target_robot = self.get_robot(loc)
-            if target_robot == RobotType.NONE:
-                continue
-            if target_robot.team.color == robot.team.color:
-                continue
             worked = True
-            for i in self.sense(robot):
-                if i.team != robot.team.color and in_between(robot.location, loc, i.location):
-                    worked = False
-            if not worked:
-                continue
-            target_robots.append(target_robot)
+            if target_robot == RobotType.NONE:
+                worked = False
+            if target_robot.team.color == robot.team.color:
+                worked = False
+            # worked = True
+            # for i in self.sense(robot):
+            #     if i.team != robot.team.color and in_between(robot.location, loc, i.location):
+            #         worked = False
+            if worked:
+                target_robots.append(target_robot)
         filtered, reason = robot.can_attack(target_robots)
         if reason:
             raise Exception(reason)
@@ -262,9 +262,9 @@ class Moderator:
                 worked = False
             if target_robot.team.color == robot.team.color:
                 worked = False
-            for i in self.sense(robot):
-                if i.team.color != robot.team.color and in_between(robot.location, loc, i.location):
-                    worked = False
+            # for i in self.sense(robot):
+            #     if i.team.color != robot.team.color and in_between(robot.location, loc, i.location):
+            #         worked = False
             if worked:
                 target_robots.append(target_robot)
         filtered, reason = robot.can_stun(target_robots)

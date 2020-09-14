@@ -96,7 +96,7 @@ class Interfacer:
         }
 
         # self.disallowed_enums = []
-       self.disallowed_enums = ['print']
+        self.disallowed_enums = ['print']
 
         for key in self.disallowed_enums:
             del self.globals['__builtins__'][key]

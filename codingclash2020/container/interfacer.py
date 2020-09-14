@@ -78,6 +78,7 @@ class Interfacer:
             'get_round_num': lambda : self.get_round_num(),
             'is_stunned': lambda : self.is_stunned(),
             'sense': lambda : self.sense(),
+            'sense_radius': lambda radius: self.sense_radius(radius),
             'can_sense_location': lambda loc : self.can_sense_location(loc),
             'sense_location': lambda loc : self.sense_location(loc),
             'move': lambda loc : self.move(loc),

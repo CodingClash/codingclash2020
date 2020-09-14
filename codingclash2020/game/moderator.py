@@ -314,14 +314,14 @@ class Moderator:
     def add_to_blockchain(self, robot: Robot, data: list):
         if robot.added_blockchain:
             raise Exception("Robot can only add to blockchain once per round")
-        if not isinstance(data, list) or not isinstance(data[0], int) or len(
-                data) != GameConstants.BLOCKCHAIN_BYTE_COUNT:
-            raise Exception(
-                "Blockchain requires a list of ints of length {}".format(GameConstants.BLOCKCHAIN_BYTE_COUNT))
-        for byt in data:
+        if not isinstance(data, list) or len(data) != GameConstants.BLOCKCHAIN_BYTE_COUNT:
+            raise Exception("Blockchain requires a list of ints of length {}".format(GameConstants.BLOCKCHAIN_BYTE_COUNT))
+        for index, byt in enumerate(data):
+            if type(byt) != int:
+                raise Exception("A list of type int was expected for data, but a list with type {} at index {} was given instead".format(type(byt), index))
             if byt > GameConstants.BLOCKCHAIN_MAX_NUM_SIZE or byt < GameConstants.BLOCKCHAIN_MIN_NUM_SIZE:
-                raise Exception("Blockchain ints must be between {} and {}, but received int of {}".format(
-                    GameConstants.BLOCKCHAIN_MIN_NUM_SIZE, GameConstants.BLOCKCHAIN_MAX_NUM_SIZE, byt))
+                raise Exception("Blockchain ints must be between {} and {}, but received int of {} at index {}".format(
+                    GameConstants.BLOCKCHAIN_MIN_NUM_SIZE, GameConstants.BLOCKCHAIN_MAX_NUM_SIZE, byt, index))
 
         self.ledger[-1].append(data)
 

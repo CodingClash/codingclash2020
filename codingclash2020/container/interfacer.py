@@ -198,10 +198,6 @@ class Interfacer:
 
     def add_to_blockchain(self, data):
         self.check_types([("data", data, list)])
-        for i in data:
-            if type(i) != int:
-                raise Exception("A list of type int was expected for data, but a list with type {} was given instead".format(type(i)))
-
         return self.moderator.add_to_blockchain(self.robot, data)
 
     def get_blockchain(self, round_num):

@@ -59,6 +59,7 @@ class Moderator:
             # Format: [INFO] [ID] X Y HEALTH
             self.info.append(
                 "[INFO] [{}] {} {} {}".format(robot.id, robot.location[0], robot.location[1], robot.health))
+        self.info.append("[GENERAL] {} {}".format(self.blue.oil, self.red.oil))
         if self.ledger:
             self.info.append("[BCHAIN] {}".format(';'.join([str(i) for i in self.ledger[-1]])))
 

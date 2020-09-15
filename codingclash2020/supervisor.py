@@ -179,9 +179,12 @@ class Supervisor:
             if self.moderator.game_over:
                 break
         self.moderator.run_tiebreak()
-        file_winner = self.filename1 if self.moderator.winner == TeamColor.BLUE else self.filename2 if self.moderator.winner == TeamColor.RED else None
+        color_winner = "Blue" if self.moderator.winner == TeamColor.BLUE else "Red" if self.moderator.winner == TeamColor.RED else None
         if not self.quiet:
-            print("Winner: {}".format(file_winner if file_winner else "Tie"))
+            if color_winner:
+                print("Winner: {}".format(color_winner))
+            else:
+                print("Tie")
         return self.moderator.winner
 
 

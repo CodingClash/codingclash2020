@@ -143,7 +143,6 @@ class Supervisor:
 
     def run_turn_windows(self):
         self.update_interfacers()
-        print("Running turn!")
         to_remove = []
         for interfacer in self.interfacers:
             if interfacer.robot not in self.moderator.robots:

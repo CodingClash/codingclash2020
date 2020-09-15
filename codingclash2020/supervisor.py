@@ -5,6 +5,7 @@ from .game.robot_type import RobotType
 from .container.interfacer import Interfacer
 from .game import constants as GameConstants
 
+import traceback 
 # Imports used for setting time limit on method
 import platform
 
@@ -124,7 +125,9 @@ class Supervisor:
                     with time_limit(GameConstants.TIME_LIMIT):
                         interfacer.run()
             except Exception as e:
-                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
+                # error = str(e)
+                error = traceback.format_exc()
+                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, error)
                 if not self.quiet:
                     print(error_str)
                 self.errors.append(error_str)
@@ -149,7 +152,9 @@ class Supervisor:
             try:
                 self.run_robot_windows(interfacer)
             except Exception as e:
-                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, e)
+                # error = str(e)
+                error = traceback.format_exc()
+                error_str = "[ERROR] [{}] [{}] [{}]: {}".format(interfacer.robot.id, interfacer.robot.team.color, interfacer.robot.type, error)
                 if not self.quiet:
                     print(error_str)
                 self.errors.append(error_str)

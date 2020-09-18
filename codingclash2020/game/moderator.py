@@ -316,7 +316,7 @@ class Moderator:
         if robot.added_blockchain:
             raise Exception("Robot can only add to blockchain once per round")
         if not isinstance(data, list) or len(data) > GameConstants.BLOCKCHAIN_BYTE_COUNT:
-            raise Exception("Blockchain requires a list of ints of length {}".format(GameConstants.BLOCKCHAIN_BYTE_COUNT))
+            raise Exception("Blockchain requires a list of ints of length less than {}, but data is of type {} and length {}".format(GameConstants.BLOCKCHAIN_BYTE_COUNT, type(data), len(data)))
         for index, byt in enumerate(data):
             if type(byt) != int:
                 raise Exception("A list of type int was expected for data, but a list with type {} at index {} was given instead".format(type(byt), index))

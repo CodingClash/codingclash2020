@@ -315,7 +315,7 @@ class Moderator:
     def add_to_blockchain(self, robot: Robot, data: list):
         if robot.added_blockchain:
             raise Exception("Robot can only add to blockchain once per round")
-        if not isinstance(data, list) or len(data) != GameConstants.BLOCKCHAIN_BYTE_COUNT:
+        if not isinstance(data, list) or len(data) > GameConstants.BLOCKCHAIN_BYTE_COUNT:
             raise Exception("Blockchain requires a list of ints of length {}".format(GameConstants.BLOCKCHAIN_BYTE_COUNT))
         for index, byt in enumerate(data):
             if type(byt) != int:
